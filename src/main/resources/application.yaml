@@ -1,1 +1,15 @@
-
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/axon_db
+    username: admin
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+  sql:
+    init:
+      mode: always
+      platform: postgres

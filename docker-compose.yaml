@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_DB: axon_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer
+    depends_on:
+      - db
+    ports:
+      - "8090:8080"
+    profiles:
+      - "dev"
+
+  axonserver:
+    image: axoniq/axonserver:4.5.6
+    hostname: axonserver
+    volumes:
+      - type: bind
+        source: ./axonserver/data
+        target: /data
+      - type: bind
+        source: ./axonserver/events
+        target: /eventdata
+      - type: bind
+        source: ./axonserver/config
+        target: /config
+        read_only: true
+    ports:
+      - "8024:8024"
+      - "8124:8124"
+      - "8224:8224"
