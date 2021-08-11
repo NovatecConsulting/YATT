@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("io.projectreactor:reactor-core:3.4.8")
 	implementation("org.axonframework:axon-spring-boot-starter:4.5.2")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

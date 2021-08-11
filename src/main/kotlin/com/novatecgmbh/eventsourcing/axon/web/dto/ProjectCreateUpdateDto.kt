@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.web.dto
 
 import java.time.LocalDate
 
-data class ProjectCreationDto(
+data class ProjectCreateUpdateDto(
     val projectName: String,
     val plannedStartDate: LocalDate,
     val deadline: LocalDate,
