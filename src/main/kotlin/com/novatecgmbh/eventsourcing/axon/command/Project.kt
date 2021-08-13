@@ -48,11 +48,13 @@ class Project {
         event.payload is ProjectRenamedEvent && hasDifferentAttributes
       }
     }
-    AggregateLifecycle.apply(
-        ProjectRenamedEvent(
-            projectId = command.projectId,
-            newName = command.newName,
-        ))
+    if (command.newName != projectName) {
+      AggregateLifecycle.apply(
+          ProjectRenamedEvent(
+              projectId = command.projectId,
+              newName = command.newName,
+          ))
+    }
     return AggregateLifecycle.getVersion()
   }
 
@@ -74,12 +76,14 @@ class Project {
     if (command.newStartDate.isAfter(command.newDeadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
     } else {
-      AggregateLifecycle.apply(
-          ProjectRescheduledEvent(
-              projectId = command.projectId,
-              newStartDate = command.newStartDate,
-              newDeadline = command.newDeadline,
-          ))
+      if (command.newStartDate != plannedStartDate || command.newDeadline != deadline) {
+        AggregateLifecycle.apply(
+            ProjectRescheduledEvent(
+                projectId = command.projectId,
+                newStartDate = command.newStartDate,
+                newDeadline = command.newDeadline,
+            ))
+      }
       return AggregateLifecycle.getVersion()
     }
   }
