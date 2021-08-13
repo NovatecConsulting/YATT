@@ -5,6 +5,7 @@ import java.lang.IllegalArgumentException
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
+import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
@@ -34,7 +35,19 @@ class Project {
   }
 
   @CommandHandler
-  fun handle(command: RenameProjectCommand): Long {
+  fun handle(command: RenameProjectCommand, conflictResolver: ConflictResolver): Long {
+    conflictResolver.detectConflicts {
+      it.stream().anyMatch { event ->
+        val hasDifferentAttributes =
+            if (event.payload is ProjectRenamedEvent) {
+              val eventPayload = event.payload as ProjectRenamedEvent
+              eventPayload.newName != command.newName
+            } else {
+              false
+            }
+        event.payload is ProjectRenamedEvent && hasDifferentAttributes
+      }
+    }
     AggregateLifecycle.apply(
         ProjectRenamedEvent(
             projectId = command.projectId,
@@ -44,7 +57,20 @@ class Project {
   }
 
   @CommandHandler
-  fun handle(command: RescheduleProjectCommand): Long {
+  fun handle(command: RescheduleProjectCommand, conflictResolver: ConflictResolver): Long {
+    conflictResolver.detectConflicts {
+      it.stream().anyMatch { event ->
+        val hasDifferentAttributes =
+            if (event.payload is ProjectRescheduledEvent) {
+              val eventPayload = event.payload as ProjectRescheduledEvent
+              eventPayload.newStartDate != command.newStartDate ||
+                  eventPayload.newDeadline != command.newDeadline
+            } else {
+              false
+            }
+        event.payload is ProjectRescheduledEvent && hasDifferentAttributes
+      }
+    }
     if (command.newStartDate.isAfter(command.newDeadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
     } else {
@@ -59,15 +85,20 @@ class Project {
   }
 
   @CommandHandler
-  fun handle(command: UpdateProjectCommand): Long {
-    handle(RenameProjectCommand(command.aggregateVersion, command.projectId, command.projectName))
+  fun handle(command: UpdateProjectCommand, conflictResolver: ConflictResolver): Long {
+    handle(
+        RenameProjectCommand(command.aggregateVersion, command.projectId, command.projectName),
+        conflictResolver,
+    )
     handle(
         RescheduleProjectCommand(
             command.aggregateVersion,
             command.projectId,
             command.plannedStartDate,
             command.deadline,
-        ))
+        ),
+        conflictResolver,
+    )
     return AggregateLifecycle.getVersion()
   }
 
