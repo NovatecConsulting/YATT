@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.web
 import com.novatecgmbh.eventsourcing.axon.coreapi.*
 import com.novatecgmbh.eventsourcing.axon.query.ProjectEntity
 import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreationDto
+import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -12,7 +13,6 @@ import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDate
 
 /** REST API where creation and update of a resource also return the changed resource */
 @RequestMapping("/v1/projects")
@@ -79,6 +79,7 @@ class ProjectControllerV1(
                     ))
             val projectEntity =
                 it.updates()
+                    .startWith(it.initialResult().block())
                     .skipUntil { entity -> entity.aggregateVersion == expectedAggregateVersion }
                     .blockFirst()
             return ResponseEntity.ok(projectEntity)
