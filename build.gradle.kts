@@ -16,10 +16,14 @@ repositories {
 	mavenCentral()
 }
 
+val axonVersion by extra("4.5.2")
+val reactorVersion by extra("3.4.8")
+
 dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("io.projectreactor:reactor-core:3.4.8")
-	implementation("org.axonframework:axon-spring-boot-starter:4.5.2")
+	implementation("io.projectreactor:reactor-core:$reactorVersion")
+	implementation("org.axonframework:axon-spring-boot-starter")
+	implementation("org.axonframework.extensions.kotlin:axon-kotlin")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -29,6 +33,12 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.axonframework:axon-bom:$axonVersion")
+	}
 }
 
 tasks.withType<KotlinCompile> {
