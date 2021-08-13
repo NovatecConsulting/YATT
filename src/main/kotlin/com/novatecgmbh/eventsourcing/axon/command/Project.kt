@@ -34,16 +34,17 @@ class Project {
   }
 
   @CommandHandler
-  fun handle(command: RenameProjectCommand) {
+  fun handle(command: RenameProjectCommand): Long {
     AggregateLifecycle.apply(
         ProjectRenamedEvent(
             projectId = command.projectId,
             newName = command.newName,
         ))
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: RescheduleProjectCommand) {
+  fun handle(command: RescheduleProjectCommand): Long {
     if (command.newStartDate.isAfter(command.newDeadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
     } else {
@@ -53,7 +54,21 @@ class Project {
               newStartDate = command.newStartDate,
               newDeadline = command.newDeadline,
           ))
+      return AggregateLifecycle.getVersion()
     }
+  }
+
+  @CommandHandler
+  fun handle(command: UpdateProjectCommand): Long {
+    handle(RenameProjectCommand(command.aggregateVersion, command.projectId, command.projectName))
+    handle(
+        RescheduleProjectCommand(
+            command.aggregateVersion,
+            command.projectId,
+            command.plannedStartDate,
+            command.deadline,
+        ))
+    return AggregateLifecycle.getVersion()
   }
 
   @EventSourcingHandler
