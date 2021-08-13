@@ -7,15 +7,15 @@ import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreateUpdateDto
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.extensions.kotlin.queryMany
+import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.modelling.command.Repository
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-/**
- * REST API where creation and update of a resource also return the changed resource
- */
+/** REST API where creation and update of a resource also return the changed resource */
 @RequestMapping("/v1/projects")
 @RestController
 class ProjectControllerV1(
@@ -25,15 +25,13 @@ class ProjectControllerV1(
 ) {
   @GetMapping
   fun getAllProjects(): CompletableFuture<List<ProjectEntity>> =
-      queryGateway.query(
-          AllProjectsQuery(), ResponseTypes.multipleInstancesOf(ProjectEntity::class.java))
+      queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping("/{projectId}")
   fun getProjectById(
       @PathVariable("projectId") projectId: String
   ): CompletableFuture<Optional<ProjectEntity>> =
-      queryGateway.query(
-          ProjectQuery(projectId), ResponseTypes.optionalInstanceOf(ProjectEntity::class.java))
+      queryGateway.queryOptional(ProjectQuery(projectId))
 
   @PostMapping
   fun createProject(@RequestBody project: ProjectCreateUpdateDto): ResponseEntity<ProjectEntity> =

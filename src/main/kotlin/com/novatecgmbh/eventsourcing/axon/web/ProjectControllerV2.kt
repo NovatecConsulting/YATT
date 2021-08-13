@@ -7,13 +7,14 @@ import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
-import org.axonframework.messaging.responsetypes.ResponseTypes
+import org.axonframework.extensions.kotlin.queryMany
+import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.web.bind.annotation.*
 
 /**
- * REST API where creation only returns id of created resource. Single Endpoints for every command, which only returns
- * whether it was successful or not.
+ * REST API where creation only returns id of created resource. Single Endpoints for every command,
+ * which only returns whether it was successful or not.
  */
 @RequestMapping("/v2/projects")
 @RestController
@@ -23,15 +24,13 @@ class ProjectControllerV2(
 ) {
   @GetMapping
   fun getAllProjects(): CompletableFuture<List<ProjectEntity>> =
-      queryGateway.query(
-          AllProjectsQuery(), ResponseTypes.multipleInstancesOf(ProjectEntity::class.java))
+      queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping("/{projectId}")
   fun getProjectById(
       @PathVariable("projectId") projectId: String
   ): CompletableFuture<Optional<ProjectEntity>> =
-      queryGateway.query(
-          ProjectQuery(projectId), ResponseTypes.optionalInstanceOf(ProjectEntity::class.java))
+      queryGateway.queryOptional(ProjectQuery(projectId))
 
   @PostMapping
   fun createProject(@RequestBody project: ProjectCreateUpdateDto): CompletableFuture<String> =
