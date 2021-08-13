@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.web
 
 import com.novatecgmbh.eventsourcing.axon.coreapi.*
 import com.novatecgmbh.eventsourcing.axon.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreateUpdateDto
+import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreationDto
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -33,13 +33,13 @@ class ProjectControllerV2(
       queryGateway.queryOptional(ProjectQuery(projectId))
 
   @PostMapping
-  fun createProject(@RequestBody project: ProjectCreateUpdateDto): CompletableFuture<String> =
+  fun createProject(@RequestBody project: ProjectCreationDto): CompletableFuture<String> =
       createProjectWithId(UUID.randomUUID().toString(), project)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: String,
-      @RequestBody project: ProjectCreateUpdateDto,
+      @RequestBody project: ProjectCreationDto,
   ): CompletableFuture<String> =
       commandGateway.send(
           CreateProjectCommand(
@@ -56,6 +56,7 @@ class ProjectControllerV2(
   ): CompletableFuture<Unit> =
       commandGateway.send(
           RenameProjectCommand(
+              dto.aggregateVersion,
               projectId,
               dto.name,
           ))
@@ -67,12 +68,17 @@ class ProjectControllerV2(
   ): CompletableFuture<Unit> =
       commandGateway.send(
           RescheduleProjectCommand(
+              dto.aggregateVersion,
               projectId,
               dto.newStartDate,
               dto.newDeadline,
           ))
 }
 
-data class ProjectNameDto(val name: String)
+data class ProjectNameDto(val aggregateVersion: Long, val name: String)
 
-data class ProjectDatesDto(val newStartDate: LocalDate, val newDeadline: LocalDate)
+data class ProjectDatesDto(
+    val aggregateVersion: Long,
+    val newStartDate: LocalDate,
+    val newDeadline: LocalDate
+)

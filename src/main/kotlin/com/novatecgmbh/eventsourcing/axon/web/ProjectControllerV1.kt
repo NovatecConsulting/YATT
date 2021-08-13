@@ -1,19 +1,18 @@
 package com.novatecgmbh.eventsourcing.axon.web
 
-import com.novatecgmbh.eventsourcing.axon.command.Project
 import com.novatecgmbh.eventsourcing.axon.coreapi.*
 import com.novatecgmbh.eventsourcing.axon.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreateUpdateDto
+import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreationDto
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.messaging.responsetypes.ResponseTypes
-import org.axonframework.modelling.command.Repository
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 /** REST API where creation and update of a resource also return the changed resource */
 @RequestMapping("/v1/projects")
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*
 class ProjectControllerV1(
     private val commandGateway: CommandGateway,
     private val queryGateway: QueryGateway,
-    private val projectRepository: Repository<Project>,
 ) {
   @GetMapping
   fun getAllProjects(): CompletableFuture<List<ProjectEntity>> =
@@ -34,13 +32,13 @@ class ProjectControllerV1(
       queryGateway.queryOptional(ProjectQuery(projectId))
 
   @PostMapping
-  fun createProject(@RequestBody project: ProjectCreateUpdateDto): ResponseEntity<ProjectEntity> =
+  fun createProject(@RequestBody project: ProjectCreationDto): ResponseEntity<ProjectEntity> =
       createProjectWithId(UUID.randomUUID().toString(), project)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: String,
-      @RequestBody project: ProjectCreateUpdateDto,
+      @RequestBody project: ProjectCreationDto,
   ): ResponseEntity<ProjectEntity> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
@@ -59,59 +57,10 @@ class ProjectControllerV1(
             return ResponseEntity.ok(projectEntity)
           }
 
-  /* Very bad, because aggregates should not be queried. Also not working because fields of aggregate are private.
-     Could also cause problems because of other concurrent requests on same aggregate.
-    @PutMapping("/{projectId}")
-    fun updateProjectV1(
-        @PathVariable("projectId") projectId: String,
-        @RequestBody project: ProjectCreateUpdateDto,
-    ): ResponseEntity<ProjectEntity> =
-        projectRepository.load(projectId).invoke { projectAggregate ->
-          queryGateway.subscriptionQuery(
-                  ProjectQuery(projectId),
-                  ResponseTypes.instanceOf(ProjectEntity::class.java),
-                  ResponseTypes.instanceOf(ProjectEntity::class.java),
-              )
-              .use {
-                var commandCount = 0
-                if (projectAggregate.projectName != project.projectName) {
-                  commandGateway.sendAndWait<Unit>(
-                      RenameProjectCommand(
-                          projectId,
-                          project.projectName,
-                      ))
-                  commandCount++
-                }
-                if (projectAggregate.plannedStartDate != project.plannedStartDate ||
-                    projectAggregate.deadline != project.deadline) {
-                  commandGateway.sendAndWait<Unit>(
-                      RescheduleProjectCommand(
-                          projectId,
-                          project.plannedStartDate,
-                          project.deadline,
-                      ))
-                  commandCount++
-                }
-
-                if (0 == commandCount) {
-                  return@invoke ResponseEntity.ok(it.initialResult().block())
-                }
-
-                val projectEntity = it.updates().skip(commandCount - 1L).blockFirst()
-                return@invoke ResponseEntity.ok(projectEntity)
-              }
-        }
-  */
-
-  /**
-   * Works, but always sends commands to change all attributes, which will trigger events, even if
-   * nothing changed. Could also cause problems because of other concurrent requests on same
-   * aggregate.
-   */
   @PutMapping("/{projectId}")
-  fun updateProjectV2(
+  fun updateProject(
       @PathVariable("projectId") projectId: String,
-      @RequestBody project: ProjectCreateUpdateDto,
+      @RequestBody project: ProjectUpdateDto,
   ): ResponseEntity<ProjectEntity> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
@@ -119,20 +68,26 @@ class ProjectControllerV1(
               ResponseTypes.instanceOf(ProjectEntity::class.java),
           )
           .use {
-            commandGateway.sendAndWait<Unit>(
-                RenameProjectCommand(
-                    projectId,
-                    project.projectName,
-                ))
-            commandGateway.sendAndWait<Unit>(
-                RescheduleProjectCommand(
-                    projectId,
-                    project.plannedStartDate,
-                    project.deadline,
-                ))
-
-            val commandCount = 2
-            val projectEntity = it.updates().skip(commandCount - 1L).blockFirst()
+            val expectedAggregateVersion =
+                commandGateway.sendAndWait<Long>(
+                    UpdateProjectCommand(
+                        project.aggregateVersion,
+                        projectId,
+                        project.projectName,
+                        project.plannedStartDate,
+                        project.deadline,
+                    ))
+            val projectEntity =
+                it.updates()
+                    .skipUntil { entity -> entity.aggregateVersion == expectedAggregateVersion }
+                    .blockFirst()
             return ResponseEntity.ok(projectEntity)
           }
 }
+
+data class ProjectUpdateDto(
+    val aggregateVersion: Long,
+    val projectName: String,
+    val plannedStartDate: LocalDate,
+    val deadline: LocalDate,
+)
