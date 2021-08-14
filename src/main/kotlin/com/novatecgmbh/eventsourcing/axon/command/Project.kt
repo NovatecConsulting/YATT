@@ -1,13 +1,14 @@
 package com.novatecgmbh.eventsourcing.axon.command
 
 import com.novatecgmbh.eventsourcing.axon.coreapi.*
-import java.lang.IllegalArgumentException
+import java.lang.RuntimeException
 import java.time.LocalDate
+import org.axonframework.commandhandling.CommandExecutionException
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateLifecycle
+import org.axonframework.messaging.interceptors.ExceptionHandler
+import org.axonframework.modelling.command.*
 import org.axonframework.spring.stereotype.Aggregate
 
 @Aggregate
@@ -17,21 +18,22 @@ class Project {
   private lateinit var plannedStartDate: LocalDate
   private lateinit var deadline: LocalDate
 
-  constructor() // required by axon
-
   @CommandHandler
-  constructor(command: CreateProjectCommand) {
+  @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
+  fun handle(command: CreateProjectCommand) {
+    if (::projectId.isInitialized) {
+      throw AlreadyExistsException()
+    }
     if (command.plannedStartDate.isAfter(command.deadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
-    } else {
-      AggregateLifecycle.apply(
-          ProjectCreatedEvent(
-              projectId = command.projectId,
-              projectName = command.projectName,
-              plannedStartDate = command.plannedStartDate,
-              deadline = command.deadline,
-          ))
     }
+    AggregateLifecycle.apply(
+        ProjectCreatedEvent(
+            projectId = command.projectId,
+            projectName = command.projectName,
+            plannedStartDate = command.plannedStartDate,
+            deadline = command.deadline,
+        ))
   }
 
   @CommandHandler
@@ -124,4 +126,30 @@ class Project {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
   }
+
+  @ExceptionHandler(resultType = ConflictingAggregateVersionException::class)
+  fun handle(exception: ConflictingAggregateVersionException): Unit =
+      throw CommandExecutionException(
+          exception.message,
+          exception,
+          ExceptionStatusCode.CONCURRENT_MODIFICATION,
+      )
+
+  @ExceptionHandler(resultType = IllegalArgumentException::class)
+  fun handle(exception: IllegalArgumentException): Unit =
+      throw CommandExecutionException(
+          exception.message,
+          exception,
+          ExceptionStatusCode.ILLEGAL_ARGUMENT,
+      )
+
+  @ExceptionHandler(resultType = AlreadyExistsException::class)
+  fun handle(exception: AlreadyExistsException): Unit =
+      throw CommandExecutionException(
+          exception.message,
+          exception,
+          ExceptionStatusCode.ALREADY_EXISTS,
+      )
 }
+
+class AlreadyExistsException : RuntimeException()

@@ -16,7 +16,7 @@ repositories {
 	mavenCentral()
 }
 
-val axonVersion by extra("4.5.2")
+val axonVersion by extra("4.5.3")
 val reactorVersion by extra("3.4.8")
 
 dependencies {

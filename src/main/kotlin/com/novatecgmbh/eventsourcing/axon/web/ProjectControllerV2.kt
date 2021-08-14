@@ -10,6 +10,8 @@ import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.queryhandling.QueryGateway
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -27,10 +29,12 @@ class ProjectControllerV2(
       queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping("/{projectId}")
-  fun getProjectById(
-      @PathVariable("projectId") projectId: String
-  ): CompletableFuture<Optional<ProjectEntity>> =
-      queryGateway.queryOptional(ProjectQuery(projectId))
+  fun getProjectById(@PathVariable("projectId") projectId: String): ResponseEntity<ProjectEntity> =
+      queryGateway
+          .queryOptional<ProjectEntity, ProjectQuery>(ProjectQuery(projectId))
+          .join()
+          .map { ResponseEntity(it, HttpStatus.OK) }
+          .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
 
   @PostMapping
   fun createProject(@RequestBody project: ProjectCreationDto): CompletableFuture<String> =
