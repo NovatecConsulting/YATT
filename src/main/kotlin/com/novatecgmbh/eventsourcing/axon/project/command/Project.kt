@@ -1,6 +1,7 @@
-package com.novatecgmbh.eventsourcing.axon.command
+package com.novatecgmbh.eventsourcing.axon.project.project
 
-import com.novatecgmbh.eventsourcing.axon.coreapi.*
+import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode
+import com.novatecgmbh.eventsourcing.axon.project.api.*
 import java.lang.RuntimeException
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandExecutionException
@@ -33,7 +34,8 @@ class Project {
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
-        ))
+        )
+    )
   }
 
   @CommandHandler
@@ -55,7 +57,8 @@ class Project {
           ProjectRenamedEvent(
               projectId = command.projectId,
               newName = command.newName,
-          ))
+          )
+      )
     }
     return AggregateLifecycle.getVersion()
   }
@@ -84,7 +87,8 @@ class Project {
                 projectId = command.projectId,
                 newStartDate = command.newStartDate,
                 newDeadline = command.newDeadline,
-            ))
+            )
+        )
       }
       return AggregateLifecycle.getVersion()
     }

@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.coreapi
+package com.novatecgmbh.eventsourcing.axon.project.api
 
 import java.time.LocalDate
 

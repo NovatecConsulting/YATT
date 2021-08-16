@@ -1,8 +1,8 @@
-package com.novatecgmbh.eventsourcing.axon.web
+package com.novatecgmbh.eventsourcing.axon.project.web
 
-import com.novatecgmbh.eventsourcing.axon.coreapi.*
-import com.novatecgmbh.eventsourcing.axon.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.query.ProjectEntity
+import com.novatecgmbh.eventsourcing.axon.project.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.api.*
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -51,7 +51,8 @@ class ProjectControllerV2(
               project.projectName,
               project.plannedStartDate,
               project.deadline,
-          ))
+          )
+      )
 
   @PostMapping("/{projectId}/rename")
   fun renameProject(
@@ -63,7 +64,8 @@ class ProjectControllerV2(
               dto.aggregateVersion,
               projectId,
               dto.name,
-          ))
+          )
+      )
 
   @PostMapping("/{projectId}/reschedule")
   fun renameProject(
@@ -76,7 +78,8 @@ class ProjectControllerV2(
               projectId,
               dto.newStartDate,
               dto.newDeadline,
-          ))
+          )
+      )
 }
 
 data class ProjectNameDto(val aggregateVersion: Long, val name: String)
