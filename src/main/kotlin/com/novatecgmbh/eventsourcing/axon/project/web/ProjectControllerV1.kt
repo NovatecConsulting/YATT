@@ -1,8 +1,11 @@
-package com.novatecgmbh.eventsourcing.axon.web
+package com.novatecgmbh.eventsourcing.axon.project.web
 
-import com.novatecgmbh.eventsourcing.axon.coreapi.*
-import com.novatecgmbh.eventsourcing.axon.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.api.AllProjectsQuery
+import com.novatecgmbh.eventsourcing.axon.project.api.CreateProjectCommand
+import com.novatecgmbh.eventsourcing.axon.project.api.ProjectQuery
+import com.novatecgmbh.eventsourcing.axon.project.api.UpdateProjectCommand
+import com.novatecgmbh.eventsourcing.axon.project.query.ProjectEntity
+import com.novatecgmbh.eventsourcing.axon.project.web.dto.ProjectCreationDto
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -55,7 +58,8 @@ class ProjectControllerV1(
                     project.projectName,
                     project.plannedStartDate,
                     project.deadline,
-                ))
+                )
+            )
             val projectEntity = it.updates().blockFirst()
             return ResponseEntity.ok(projectEntity)
           }
@@ -79,7 +83,8 @@ class ProjectControllerV1(
                         project.projectName,
                         project.plannedStartDate,
                         project.deadline,
-                    ))
+                    )
+                )
             val projectEntity =
                 it.updates()
                     .startWith(it.initialResult().block())

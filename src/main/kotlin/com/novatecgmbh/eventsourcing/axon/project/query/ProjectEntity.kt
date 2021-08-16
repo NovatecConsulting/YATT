@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.query
+package com.novatecgmbh.eventsourcing.axon.project.query
 
 import java.time.LocalDate
 import javax.persistence.Entity

@@ -1,6 +1,6 @@
-package com.novatecgmbh.eventsourcing.axon.query
+package com.novatecgmbh.eventsourcing.axon.project.query
 
-import com.novatecgmbh.eventsourcing.axon.coreapi.*
+import com.novatecgmbh.eventsourcing.axon.project.api.*
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
@@ -23,7 +23,8 @@ class ProjectProjection(
                 projectName = event.projectName,
                 plannedStartDate = event.plannedStartDate,
                 deadline = event.deadline,
-            ))
+            )
+        )
 
     queryUpdateEmitter.emit<ProjectQuery, ProjectEntity>(savedEntity) { query ->
       query.projectId == event.projectId

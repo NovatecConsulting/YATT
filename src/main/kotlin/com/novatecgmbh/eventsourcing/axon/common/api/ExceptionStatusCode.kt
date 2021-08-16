@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.coreapi
+package com.novatecgmbh.eventsourcing.axon.common.api
 
 enum class ExceptionStatusCode {
     CONCURRENT_MODIFICATION,
