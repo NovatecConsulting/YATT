@@ -21,11 +21,12 @@ class WebExceptionHandler : ResponseEntityExceptionHandler() {
         when {
           it.isPresent ->
               when (it.get()) {
+                ExceptionStatusCode.ALREADY_EXISTS -> ResponseEntity(HttpStatus.CONFLICT)
                 ExceptionStatusCode.CONCURRENT_MODIFICATION -> ResponseEntity(HttpStatus.CONFLICT)
                 ExceptionStatusCode.ILLEGAL_ARGUMENT -> ResponseEntity(HttpStatus.BAD_REQUEST)
-                ExceptionStatusCode.ALREADY_EXISTS -> ResponseEntity(HttpStatus.CONFLICT)
+                ExceptionStatusCode.NOT_FOUND -> ResponseEntity(HttpStatus.NOT_FOUND)
+                ExceptionStatusCode.UNKNOWN -> ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
               }
-          ex.message?.contains("not found") == true -> ResponseEntity(HttpStatus.NOT_FOUND)
           else -> ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
         }
       }

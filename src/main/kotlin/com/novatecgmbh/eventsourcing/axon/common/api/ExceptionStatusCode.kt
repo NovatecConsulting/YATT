@@ -1,7 +1,9 @@
 package com.novatecgmbh.eventsourcing.axon.common.api
 
 enum class ExceptionStatusCode {
-    CONCURRENT_MODIFICATION,
-    ILLEGAL_ARGUMENT,
-    ALREADY_EXISTS,
+  ALREADY_EXISTS,
+  CONCURRENT_MODIFICATION,
+  ILLEGAL_ARGUMENT,
+  NOT_FOUND,
+  UNKNOWN,
 }

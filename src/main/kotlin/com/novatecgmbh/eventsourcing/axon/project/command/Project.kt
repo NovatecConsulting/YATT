@@ -1,14 +1,11 @@
-package com.novatecgmbh.eventsourcing.axon.project.project
+package com.novatecgmbh.eventsourcing.axon.project.command
 
-import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode
+import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.api.*
-import java.lang.RuntimeException
 import java.time.LocalDate
-import org.axonframework.commandhandling.CommandExecutionException
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.messaging.interceptors.ExceptionHandler
 import org.axonframework.modelling.command.*
 import org.axonframework.spring.stereotype.Aggregate
 
@@ -34,8 +31,7 @@ class Project {
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
-        )
-    )
+        ))
   }
 
   @CommandHandler
@@ -57,8 +53,7 @@ class Project {
           ProjectRenamedEvent(
               projectId = command.projectId,
               newName = command.newName,
-          )
-      )
+          ))
     }
     return AggregateLifecycle.getVersion()
   }
@@ -87,8 +82,7 @@ class Project {
                 projectId = command.projectId,
                 newStartDate = command.newStartDate,
                 newDeadline = command.newDeadline,
-            )
-        )
+            ))
       }
       return AggregateLifecycle.getVersion()
     }
@@ -130,30 +124,4 @@ class Project {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
   }
-
-  @ExceptionHandler(resultType = ConflictingAggregateVersionException::class)
-  fun handle(exception: ConflictingAggregateVersionException): Unit =
-      throw CommandExecutionException(
-          exception.message,
-          exception,
-          ExceptionStatusCode.CONCURRENT_MODIFICATION,
-      )
-
-  @ExceptionHandler(resultType = IllegalArgumentException::class)
-  fun handle(exception: IllegalArgumentException): Unit =
-      throw CommandExecutionException(
-          exception.message,
-          exception,
-          ExceptionStatusCode.ILLEGAL_ARGUMENT,
-      )
-
-  @ExceptionHandler(resultType = AlreadyExistsException::class)
-  fun handle(exception: AlreadyExistsException): Unit =
-      throw CommandExecutionException(
-          exception.message,
-          exception,
-          ExceptionStatusCode.ALREADY_EXISTS,
-      )
 }
-
-class AlreadyExistsException : RuntimeException()
