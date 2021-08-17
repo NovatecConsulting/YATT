@@ -1,0 +1,83 @@
+### v1 ###
+###
+POST http://localhost:8080/v1/projects
+Content-Type: application/json
+
+{
+  "projectName": "My Project",
+  "plannedStartDate": "2021-08-01",
+  "deadline": "2021-09-30"
+}
+
+###
+POST http://localhost:8080/v1/projects/test1
+Content-Type: application/json
+
+{
+  "projectName": "My Project 2",
+  "plannedStartDate": "2021-08-01",
+  "deadline": "2021-09-30"
+}
+
+###
+GET http://localhost:8080/v1/projects
+
+###
+GET http://localhost:8080/v1/projects/test1
+
+###
+PUT http://localhost:8080/v1/projects/test1
+Content-Type: application/json
+
+{
+  "aggregateVersion": 0,
+  "projectName": "Renamed Project 2",
+  "plannedStartDate": "2020-08-01",
+  "deadline": "2021-08-31"
+}
+
+### v2 ###
+###
+POST http://localhost:8080/v2/projects
+Content-Type: application/json
+
+{
+  "projectName": "My Project 3",
+  "plannedStartDate": "2021-08-01",
+  "deadline": "2021-09-30"
+}
+
+###
+POST http://localhost:8080/v2/projects/test2
+Content-Type: application/json
+
+{
+  "projectName": "My Project 4",
+  "plannedStartDate": "2021-08-01",
+  "deadline": "2021-09-30"
+}
+
+###
+GET http://localhost:8080/v2/projects
+
+###
+GET http://localhost:8080/v2/projects/test2
+
+###
+POST http://localhost:8080/v2/projects/test2/rename
+Content-Type: application/json
+
+{
+  "aggregateVersion": 0,
+  "name": "New name"
+}
+
+###
+POST http://localhost:8080/v2/projects/test2/reschedule
+Content-Type: application/json
+
+{
+  "aggregateVersion": 1,
+  "newStartDate": "2020-08-15",
+  "newDeadline": "2021-08-30"
+}
