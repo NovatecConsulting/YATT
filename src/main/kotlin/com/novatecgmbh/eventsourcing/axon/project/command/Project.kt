@@ -18,7 +18,7 @@ class Project {
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
-  fun handle(command: CreateProjectCommand) {
+  fun handle(command: CreateProjectCommand): String {
     if (::projectId.isInitialized) {
       throw AlreadyExistsException()
     }
@@ -32,6 +32,7 @@ class Project {
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
         ))
+    return command.projectId
   }
 
   @CommandHandler
