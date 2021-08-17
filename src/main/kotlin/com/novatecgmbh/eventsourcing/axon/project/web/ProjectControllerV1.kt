@@ -6,6 +6,7 @@ import com.novatecgmbh.eventsourcing.axon.project.api.ProjectQuery
 import com.novatecgmbh.eventsourcing.axon.project.api.UpdateProjectCommand
 import com.novatecgmbh.eventsourcing.axon.project.query.ProjectEntity
 import com.novatecgmbh.eventsourcing.axon.project.web.dto.ProjectCreationDto
+import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -17,6 +18,7 @@ import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 /** REST API where creation and update of a resource also return the changed resource */
 @RequestMapping("/v1/projects")
@@ -38,59 +40,71 @@ class ProjectControllerV1(
           .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
 
   @PostMapping
-  fun createProject(@RequestBody project: ProjectCreationDto): ResponseEntity<ProjectEntity> =
+  fun createProject(@RequestBody project: ProjectCreationDto): Mono<ResponseEntity<ProjectEntity>> =
       createProjectWithId(UUID.randomUUID().toString(), project)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: String,
       @RequestBody project: ProjectCreationDto,
-  ): ResponseEntity<ProjectEntity> =
+  ): Mono<ResponseEntity<ProjectEntity>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
               ResponseTypes.instanceOf(ProjectEntity::class.java),
               ResponseTypes.instanceOf(ProjectEntity::class.java),
           )
-          .use {
-            commandGateway.sendAndWait<Unit>(
-                CreateProjectCommand(
-                    projectId,
-                    project.projectName,
-                    project.plannedStartDate,
-                    project.deadline,
-                )
-            )
-            val projectEntity = it.updates().blockFirst()
-            return ResponseEntity.ok(projectEntity)
+          .let { queryResult ->
+            Mono.`when`(queryResult.initialResult())
+                .then(
+                    Mono.fromCompletionStage {
+                      commandGateway.send<Unit>(
+                          CreateProjectCommand(
+                              projectId,
+                              project.projectName,
+                              project.plannedStartDate,
+                              project.deadline,
+                          ))
+                    })
+                .thenMany(queryResult.updates())
+                .next()
+                .map { entity -> ResponseEntity.ok(entity) }
+                .timeout(Duration.ofSeconds(5))
+                .doFinally { queryResult.cancel() }
           }
 
   @PutMapping("/{projectId}")
   fun updateProject(
       @PathVariable("projectId") projectId: String,
       @RequestBody project: ProjectUpdateDto,
-  ): ResponseEntity<ProjectEntity> =
+  ): Mono<ResponseEntity<ProjectEntity>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
               ResponseTypes.instanceOf(ProjectEntity::class.java),
               ResponseTypes.instanceOf(ProjectEntity::class.java),
           )
-          .use {
-            val expectedAggregateVersion =
-                commandGateway.sendAndWait<Long>(
-                    UpdateProjectCommand(
-                        project.aggregateVersion,
-                        projectId,
-                        project.projectName,
-                        project.plannedStartDate,
-                        project.deadline,
-                    )
-                )
-            val projectEntity =
-                it.updates()
-                    .startWith(it.initialResult().block())
-                    .skipUntil { entity -> entity.aggregateVersion == expectedAggregateVersion }
-                    .blockFirst()
-            return ResponseEntity.ok(projectEntity)
+          .let { queryResult ->
+            Mono.`when`(queryResult.initialResult())
+                .then(
+                    Mono.fromCompletionStage {
+                      commandGateway.send<Long>(
+                          UpdateProjectCommand(
+                              project.aggregateVersion,
+                              projectId,
+                              project.projectName,
+                              project.plannedStartDate,
+                              project.deadline,
+                          ))
+                    })
+                .flatMap { expectedAggregateVersion ->
+                  queryResult
+                      .updates()
+                      .startWith(queryResult.initialResult())
+                      .skipUntil { entity -> entity.aggregateVersion == expectedAggregateVersion }
+                      .next()
+                }
+                .map { entity -> ResponseEntity.ok(entity) }
+                .timeout(Duration.ofSeconds(5))
+                .doFinally { queryResult.cancel() }
           }
 }
 
