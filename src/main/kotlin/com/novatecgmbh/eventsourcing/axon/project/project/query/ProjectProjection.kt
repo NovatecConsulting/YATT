@@ -1,6 +1,6 @@
-package com.novatecgmbh.eventsourcing.axon.project.query
+package com.novatecgmbh.eventsourcing.axon.project.project.query
 
-import com.novatecgmbh.eventsourcing.axon.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit

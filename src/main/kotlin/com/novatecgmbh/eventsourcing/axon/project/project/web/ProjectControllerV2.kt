@@ -1,8 +1,8 @@
-package com.novatecgmbh.eventsourcing.axon.project.web
+package com.novatecgmbh.eventsourcing.axon.project.project.web
 
-import com.novatecgmbh.eventsourcing.axon.project.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.project.web.dto.ProjectCreationDto
-import com.novatecgmbh.eventsourcing.axon.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectEntity
+import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.CompletableFuture

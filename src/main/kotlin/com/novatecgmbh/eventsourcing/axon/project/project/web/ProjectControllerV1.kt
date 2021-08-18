@@ -1,11 +1,11 @@
-package com.novatecgmbh.eventsourcing.axon.project.web
+package com.novatecgmbh.eventsourcing.axon.project.project.web
 
-import com.novatecgmbh.eventsourcing.axon.project.api.AllProjectsQuery
-import com.novatecgmbh.eventsourcing.axon.project.api.CreateProjectCommand
-import com.novatecgmbh.eventsourcing.axon.project.api.ProjectQuery
-import com.novatecgmbh.eventsourcing.axon.project.api.UpdateProjectCommand
-import com.novatecgmbh.eventsourcing.axon.project.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.project.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.project.api.AllProjectsQuery
+import com.novatecgmbh.eventsourcing.axon.project.project.api.CreateProjectCommand
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQuery
+import com.novatecgmbh.eventsourcing.axon.project.project.api.UpdateProjectCommand
+import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectEntity
+import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.ProjectCreationDto
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
