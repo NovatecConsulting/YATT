@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.web.dto
+package com.novatecgmbh.eventsourcing.axon.project.project.web.dto
 
 import java.time.LocalDate
 

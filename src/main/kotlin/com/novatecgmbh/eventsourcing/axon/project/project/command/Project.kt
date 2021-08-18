@@ -1,7 +1,7 @@
-package com.novatecgmbh.eventsourcing.axon.project.command
+package com.novatecgmbh.eventsourcing.axon.project.project.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
-import com.novatecgmbh.eventsourcing.axon.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
