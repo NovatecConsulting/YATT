@@ -5,7 +5,7 @@ import com.novatecgmbh.eventsourcing.axon.project.project.api.CreateProjectComma
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQuery
 import com.novatecgmbh.eventsourcing.axon.project.project.api.UpdateProjectCommand
 import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectProjection
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectProjection
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
 import java.time.Duration
 import java.time.LocalDate
