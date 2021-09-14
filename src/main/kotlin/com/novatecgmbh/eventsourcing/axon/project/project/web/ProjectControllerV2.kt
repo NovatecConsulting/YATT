@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.web
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectProjection
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectProjection
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.RenameProjectDto
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.RescheduleProjectDto

@@ -32,6 +32,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
 	testImplementation("com.h2database:h2")
+	testImplementation ("com.tngtech.archunit:archunit-junit5:0.21.0")
 	testImplementation("org.apache.commons:commons-lang3:3.11")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
