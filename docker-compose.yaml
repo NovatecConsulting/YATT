@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.3'
 services:
   db:
     image: postgres:13.3-alpine
@@ -15,8 +15,7 @@ services:
       - db
     ports:
       - "8090:8080"
-    profiles:
-      - "dev"
+
 
   axonserver:
     image: axoniq/axonserver:4.5.6

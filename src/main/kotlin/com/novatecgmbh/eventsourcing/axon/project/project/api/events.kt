@@ -1,21 +1,24 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
+import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
 import java.time.LocalDate
 
+abstract class ProjectEvent(open val aggregateIdentifier: ProjectId)
+
 data class ProjectCreatedEvent(
-    val projectId: String,
+    override val aggregateIdentifier: ProjectId,
     val projectName: String,
     val plannedStartDate: LocalDate,
     val deadline: LocalDate,
-)
+) : ProjectEvent(aggregateIdentifier)
 
 data class ProjectRenamedEvent(
-    val projectId: String,
+    override val aggregateIdentifier: ProjectId,
     val newName: String,
-)
+) : ProjectEvent(aggregateIdentifier)
 
 data class ProjectRescheduledEvent(
-    val projectId: String,
+    override val aggregateIdentifier: ProjectId,
     val newStartDate: LocalDate,
     val newDeadline: LocalDate,
-)
+) : ProjectEvent(aggregateIdentifier)

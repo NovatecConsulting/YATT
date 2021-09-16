@@ -4,11 +4,11 @@ import com.novatecgmbh.eventsourcing.axon.project.project.api.AllProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.project.api.CreateProjectCommand
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQuery
 import com.novatecgmbh.eventsourcing.axon.project.project.api.UpdateProjectCommand
-import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectEntity
-import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.ProjectCreationDto
+import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.project.query.ProjectProjection
+import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
 import java.time.Duration
 import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
@@ -28,30 +28,33 @@ class ProjectControllerV1(
     private val queryGateway: QueryGateway,
 ) {
   @GetMapping
-  fun getAllProjects(): CompletableFuture<List<ProjectEntity>> =
+  fun getAllProjects(): CompletableFuture<List<ProjectProjection>> =
       queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping("/{projectId}")
-  fun getProjectById(@PathVariable("projectId") projectId: String): ResponseEntity<ProjectEntity> =
+  fun getProjectById(
+      @PathVariable("projectId") projectId: ProjectId
+  ): ResponseEntity<ProjectProjection> =
       queryGateway
-          .queryOptional<ProjectEntity, ProjectQuery>(ProjectQuery(projectId))
+          .queryOptional<ProjectProjection, ProjectQuery>(ProjectQuery(projectId))
           .join()
           .map { ResponseEntity(it, HttpStatus.OK) }
           .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
 
   @PostMapping
-  fun createProject(@RequestBody project: ProjectCreationDto): Mono<ResponseEntity<ProjectEntity>> =
-      createProjectWithId(UUID.randomUUID().toString(), project)
+  fun createProject(
+      @RequestBody project: CreateProjectDto
+  ): Mono<ResponseEntity<ProjectProjection>> = createProjectWithId(ProjectId(), project)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
-      @PathVariable("projectId") projectId: String,
-      @RequestBody project: ProjectCreationDto,
-  ): Mono<ResponseEntity<ProjectEntity>> =
+      @PathVariable("projectId") projectId: ProjectId,
+      @RequestBody project: CreateProjectDto,
+  ): Mono<ResponseEntity<ProjectProjection>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
-              ResponseTypes.instanceOf(ProjectEntity::class.java),
-              ResponseTypes.instanceOf(ProjectEntity::class.java),
+              ResponseTypes.instanceOf(ProjectProjection::class.java),
+              ResponseTypes.instanceOf(ProjectProjection::class.java),
           )
           .let { queryResult ->
             Mono.`when`(queryResult.initialResult())
@@ -60,7 +63,7 @@ class ProjectControllerV1(
                       commandGateway.send<Unit>(
                           CreateProjectCommand(
                               projectId,
-                              project.projectName,
+                              project.name,
                               project.plannedStartDate,
                               project.deadline,
                           ))
@@ -74,13 +77,13 @@ class ProjectControllerV1(
 
   @PutMapping("/{projectId}")
   fun updateProject(
-      @PathVariable("projectId") projectId: String,
+      @PathVariable("projectId") projectId: ProjectId,
       @RequestBody project: ProjectUpdateDto,
-  ): Mono<ResponseEntity<ProjectEntity>> =
+  ): Mono<ResponseEntity<ProjectProjection>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
-              ResponseTypes.instanceOf(ProjectEntity::class.java),
-              ResponseTypes.instanceOf(ProjectEntity::class.java),
+              ResponseTypes.instanceOf(ProjectProjection::class.java),
+              ResponseTypes.instanceOf(ProjectProjection::class.java),
           )
           .let { queryResult ->
             Mono.`when`(queryResult.initialResult())
@@ -88,9 +91,9 @@ class ProjectControllerV1(
                     Mono.fromCompletionStage {
                       commandGateway.send<Long>(
                           UpdateProjectCommand(
-                              project.aggregateVersion,
                               projectId,
-                              project.projectName,
+                              project.version,
+                              project.name,
                               project.plannedStartDate,
                               project.deadline,
                           ))
@@ -99,7 +102,7 @@ class ProjectControllerV1(
                   queryResult
                       .updates()
                       .startWith(queryResult.initialResult())
-                      .skipUntil { entity -> entity.aggregateVersion == expectedAggregateVersion }
+                      .skipUntil { entity -> entity.version == expectedAggregateVersion }
                       .next()
                 }
                 .map { entity -> ResponseEntity.ok(entity) }
@@ -109,8 +112,8 @@ class ProjectControllerV1(
 }
 
 data class ProjectUpdateDto(
-    val aggregateVersion: Long,
-    val projectName: String,
+    val version: Long,
+    val name: String,
     val plannedStartDate: LocalDate,
     val deadline: LocalDate,
 )

@@ -4,17 +4,17 @@ POST http://localhost:8080/v1/projects
 Content-Type: application/json
 
 {
-  "projectName": "My Project",
+  "name": "My Project",
   "plannedStartDate": "2021-08-01",
   "deadline": "2021-09-30"
 }
 
 ###
-POST http://localhost:8080/v1/projects/test1
+POST http://localhost:8080/v1/projects/2a4837be-978d-41a2-b175-657118c583b0
 Content-Type: application/json
 
 {
-  "projectName": "My Project 2",
+  "name": "My Project 2",
   "plannedStartDate": "2021-08-01",
   "deadline": "2021-09-30"
 }
@@ -23,15 +23,15 @@ Content-Type: application/json
 GET http://localhost:8080/v1/projects
 
 ###
-GET http://localhost:8080/v1/projects/test1
+GET http://localhost:8080/v1/projects/2a4837be-978d-41a2-b175-657118c583b0
 
 ###
-PUT http://localhost:8080/v1/projects/test1
+PUT http://localhost:8080/v1/projects/2a4837be-978d-41a2-b175-657118c583b0
 Content-Type: application/json
 
 {
-  "aggregateVersion": 0,
-  "projectName": "Renamed Project 2",
+  "version": 0,
+  "name": "Renamed Project 2",
   "plannedStartDate": "2020-08-01",
   "deadline": "2021-08-31"
 }
@@ -42,17 +42,17 @@ POST http://localhost:8080/v2/projects
 Content-Type: application/json
 
 {
-  "projectName": "My Project 3",
+  "name": "My Project 3",
   "plannedStartDate": "2021-08-01",
   "deadline": "2021-09-30"
 }
 
 ###
-POST http://localhost:8080/v2/projects/test2
+POST http://localhost:8080/v2/projects/325ac26a-fde9-43ae-abf1-7fc651d52c52
 Content-Type: application/json
 
 {
-  "projectName": "My Project 4",
+  "name": "My Project 4",
   "plannedStartDate": "2021-08-01",
   "deadline": "2021-09-30"
 }
@@ -61,10 +61,10 @@ Content-Type: application/json
 GET http://localhost:8080/v2/projects
 
 ###
-GET http://localhost:8080/v2/projects/test2
+GET http://localhost:8080/v2/projects/325ac26a-fde9-43ae-abf1-7fc651d52c52
 
 ###
-POST http://localhost:8080/v2/projects/test2/rename
+POST http://localhost:8080/v2/projects/325ac26a-fde9-43ae-abf1-7fc651d52c52/rename
 Content-Type: application/json
 
 {
@@ -73,7 +73,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/v2/projects/test2/reschedule
+POST http://localhost:8080/v2/projects/325ac26a-fde9-43ae-abf1-7fc651d52c52/reschedule
 Content-Type: application/json
 
 {
@@ -81,3 +81,77 @@ Content-Type: application/json
   "newStartDate": "2020-08-15",
   "newDeadline": "2021-08-30"
 }
+
+###
+POST http://localhost:8080/v2/tasks
+Content-Type: application/json
+
+{
+  "projectId": {
+    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
+  },
+  "name": "Task without predefined identifier",
+  "startDate": "2020-08-01",
+  "endDate": "2020-08-05"
+}
+
+###
+POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f
+Content-Type: application/json
+
+{
+  "projectId": {
+    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
+  },
+  "name": "Task 1",
+  "description": "What an easy task to do",
+  "startDate": "2020-08-01",
+  "endDate": "2020-08-05"
+}
+
+###
+POST http://localhost:8080/v2/tasks/0056bc1e-9d42-40a3-992e-06c76251a59a
+Content-Type: application/json
+
+{
+  "projectId": {
+    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
+  },
+  "name": "Task 2",
+  "description": "What an easy task to do",
+  "startDate": "2020-09-01",
+  "endDate": "2020-09-05"
+}
+
+###
+GET http://localhost:8080/v2/projects/2a4837be-978d-41a2-b175-657118c583b0/tasks
+
+###
+GET http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f
+
+###
+POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f/reschedule
+Content-Type: application/json
+
+{
+  "startDate": "2022-08-01",
+  "endDate": "2022-08-05"
+}
+
+###
+POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f/start
+
+###
+POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f/complete
+
+###
+GET http://localhost:8080/admin/eventprocessors
+
+###
+GET http://localhost:8080/admin/eventprocessors/task-projection
+
+###
+GET http://localhost:8080/admin/eventprocessors/task-projection/status
+
+###
+POST http://localhost:8080/admin/eventprocessors/task-projection/replay

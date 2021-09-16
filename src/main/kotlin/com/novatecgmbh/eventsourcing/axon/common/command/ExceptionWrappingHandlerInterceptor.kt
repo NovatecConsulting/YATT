@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.common.command
 
-import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode
+import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode.*
 import org.axonframework.commandhandling.CommandExecutionException
 import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.messaging.InterceptorChain
@@ -28,11 +28,12 @@ class ExceptionWrappingHandlerInterceptor : MessageHandlerInterceptor<CommandMes
 
   private fun exceptionDetails(throwable: Throwable) =
       when (throwable) {
-        is AggregateNotFoundException -> ExceptionStatusCode.NOT_FOUND
-        is AlreadyExistsException -> ExceptionStatusCode.ALREADY_EXISTS
-        is ConflictingAggregateVersionException -> ExceptionStatusCode.CONCURRENT_MODIFICATION
-        is IllegalArgumentException -> ExceptionStatusCode.ILLEGAL_ARGUMENT
-        else -> ExceptionStatusCode.UNKNOWN
+        is AggregateNotFoundException -> NOT_FOUND
+        is AlreadyExistsException -> ALREADY_EXISTS
+        is ConflictingAggregateVersionException -> CONCURRENT_MODIFICATION
+        is IllegalArgumentException -> ILLEGAL_ARGUMENT
+        is IllegalStateException -> ILLEGAL_STATE
+        else -> UNKNOWN
       }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
 
   companion object {

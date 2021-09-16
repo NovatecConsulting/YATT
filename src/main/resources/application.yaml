@@ -3,13 +3,20 @@ spring:
     url: jdbc:postgresql://localhost:5432/axon_db
     username: admin
     password: 1234
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
   sql:
     init:
       mode: always
       platform: postgres
+
+logging:
+  level:
+    ROOT: info

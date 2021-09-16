@@ -2,24 +2,30 @@ package com.novatecgmbh.eventsourcing.axon.project.project.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import java.io.Serializable
 import java.time.LocalDate
+import java.util.*
+import javax.persistence.Embeddable
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.modelling.command.*
+import org.axonframework.modelling.command.AggregateCreationPolicy
+import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateLifecycle
+import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
 
 @Aggregate
 class Project {
-  @AggregateIdentifier private lateinit var projectId: String
+  @AggregateIdentifier private lateinit var aggregateIdentifier: ProjectId
   private lateinit var projectName: String
   private lateinit var plannedStartDate: LocalDate
   private lateinit var deadline: LocalDate
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
-  fun handle(command: CreateProjectCommand): String {
-    if (::projectId.isInitialized) {
+  fun handle(command: CreateProjectCommand): ProjectId {
+    if (::aggregateIdentifier.isInitialized) {
       throw AlreadyExistsException()
     }
     if (command.plannedStartDate.isAfter(command.deadline)) {
@@ -27,12 +33,12 @@ class Project {
     }
     AggregateLifecycle.apply(
         ProjectCreatedEvent(
-            projectId = command.projectId,
+            aggregateIdentifier = command.aggregateIdentifier,
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
         ))
-    return command.projectId
+    return command.aggregateIdentifier
   }
 
   @CommandHandler
@@ -52,7 +58,7 @@ class Project {
     if (command.newName != projectName) {
       AggregateLifecycle.apply(
           ProjectRenamedEvent(
-              projectId = command.projectId,
+              aggregateIdentifier = command.aggregateIdentifier,
               newName = command.newName,
           ))
     }
@@ -80,7 +86,7 @@ class Project {
       if (command.newStartDate != plannedStartDate || command.newDeadline != deadline) {
         AggregateLifecycle.apply(
             ProjectRescheduledEvent(
-                projectId = command.projectId,
+                aggregateIdentifier = command.aggregateIdentifier,
                 newStartDate = command.newStartDate,
                 newDeadline = command.newDeadline,
             ))
@@ -92,13 +98,14 @@ class Project {
   @CommandHandler
   fun handle(command: UpdateProjectCommand, conflictResolver: ConflictResolver): Long {
     handle(
-        RenameProjectCommand(command.aggregateVersion, command.projectId, command.projectName),
+        RenameProjectCommand(
+            command.aggregateIdentifier, command.aggregateVersion, command.projectName),
         conflictResolver,
     )
     handle(
         RescheduleProjectCommand(
+            command.aggregateIdentifier,
             command.aggregateVersion,
-            command.projectId,
             command.plannedStartDate,
             command.deadline,
         ),
@@ -109,7 +116,7 @@ class Project {
 
   @EventSourcingHandler
   fun on(event: ProjectCreatedEvent) {
-    projectId = event.projectId
+    aggregateIdentifier = event.aggregateIdentifier
     projectName = event.projectName
     plannedStartDate = event.plannedStartDate
     deadline = event.deadline
@@ -125,4 +132,11 @@ class Project {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
   }
+}
+
+@Embeddable
+data class ProjectId(val identifier: String) : Serializable {
+  constructor() : this(UUID.randomUUID().toString())
+
+  override fun toString(): String = identifier
 }
