@@ -1,1 +1,2 @@
-ALTER TABLE projects ADD aggregate_version bigint NOT NULL;
+ALTER TABLE projects
+    ADD aggregate_version bigint NOT NULL;

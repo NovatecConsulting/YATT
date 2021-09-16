@@ -27,12 +27,12 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
-	runtimeOnly("org.postgresql:postgresql")
-
 	testImplementation("com.h2database:h2")
+	testImplementation("org.apache.commons:commons-lang3:3.11")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
