@@ -35,6 +35,7 @@ dependencies {
 	testImplementation ("com.tngtech.archunit:archunit-junit5:0.21.0")
 	testImplementation("org.apache.commons:commons-lang3:3.11")
 	testImplementation ("org.axonframework:axon-test")
+	testImplementation("org.mockito:mockito-all:1.10.19")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
