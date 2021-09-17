@@ -41,16 +41,9 @@ class Project {
   @CommandHandler
   fun handle(command: RenameProjectCommand, conflictResolver: ConflictResolver): Long {
     conflictResolver.detectConflicts {
-      it.stream().anyMatch { event ->
-        val hasDifferentAttributes =
-            if (event.payload is ProjectRenamedEvent) {
-              val eventPayload = event.payload as ProjectRenamedEvent
-              eventPayload.newName != command.newName
-            } else {
-              false
-            }
-        event.payload is ProjectRenamedEvent && hasDifferentAttributes
-      }
+      val anyRelevantEventsInPastOccured =
+          it.stream().anyMatch { event -> event.payload is ProjectRenamedEvent }
+      anyRelevantEventsInPastOccured && command.newName != projectName
     }
     if (command.newName != projectName) {
       AggregateLifecycle.apply(
@@ -65,17 +58,10 @@ class Project {
   @CommandHandler
   fun handle(command: RescheduleProjectCommand, conflictResolver: ConflictResolver): Long {
     conflictResolver.detectConflicts {
-      it.stream().anyMatch { event ->
-        val hasDifferentAttributes =
-            if (event.payload is ProjectRescheduledEvent) {
-              val eventPayload = event.payload as ProjectRescheduledEvent
-              eventPayload.newStartDate != command.newStartDate ||
-                  eventPayload.newDeadline != command.newDeadline
-            } else {
-              false
-            }
-        event.payload is ProjectRescheduledEvent && hasDifferentAttributes
-      }
+      val anyRelevantEventsInPastOccured =
+          it.stream().anyMatch { event -> event.payload is ProjectRescheduledEvent }
+      anyRelevantEventsInPastOccured &&
+          (command.newStartDate != plannedStartDate || command.newDeadline != deadline)
     }
     if (command.newStartDate.isAfter(command.newDeadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
