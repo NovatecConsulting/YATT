@@ -1,6 +1,5 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
 import java.time.LocalDate
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 import org.axonframework.modelling.command.TargetAggregateVersion

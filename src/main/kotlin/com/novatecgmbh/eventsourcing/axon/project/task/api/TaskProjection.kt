@@ -1,12 +1,8 @@
-package com.novatecgmbh.eventsourcing.axon.project.task.query
+package com.novatecgmbh.eventsourcing.axon.project.task.api
 
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskStatusEnum
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.time.LocalDate
 import javax.persistence.*
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
 
 @Entity
 @Table(name = "tasks")

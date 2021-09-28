@@ -1,6 +1,5 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
 import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.EmbeddedId

@@ -1,24 +1,11 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.command
 
-import ChangeTaskDescriptionCommand
-import CompleteTaskCommand
-import CreateTaskCommand
-import RescheduleTaskCommand
-import StartTaskCommand
-import TaskCompletedEvent
-import TaskCreatedEvent
-import TaskDescriptionUpdatedEvent
-import TaskRescheduledEvent
-import TaskStartedEvent
-import com.fasterxml.jackson.annotation.JsonValue
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskStatusEnum.*
-import java.io.Serializable
+import com.novatecgmbh.eventsourcing.axon.project.task.api.*
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.time.LocalDate
-import java.util.*
-import javax.persistence.Embeddable
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
@@ -161,17 +148,4 @@ class Task {
   fun on(event: TaskCompletedEvent) {
     status = COMPLETED
   }
-}
-
-@Embeddable
-data class TaskId(@get:JsonValue val identifier: String) : Serializable {
-  constructor() : this(UUID.randomUUID().toString())
-
-  override fun toString(): String = identifier
-}
-
-enum class TaskStatusEnum {
-  PLANNED,
-  STARTED,
-  COMPLETED
 }

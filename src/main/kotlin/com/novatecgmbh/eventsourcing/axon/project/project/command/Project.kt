@@ -1,12 +1,8 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
-import com.fasterxml.jackson.annotation.JsonValue
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
-import java.io.Serializable
 import java.time.LocalDate
-import java.util.*
-import javax.persistence.Embeddable
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
@@ -133,11 +129,4 @@ class Project {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
   }
-}
-
-@Embeddable
-data class ProjectId(@get:JsonValue val identifier: String) : Serializable {
-  constructor() : this(UUID.randomUUID().toString())
-
-  override fun toString(): String = identifier
 }

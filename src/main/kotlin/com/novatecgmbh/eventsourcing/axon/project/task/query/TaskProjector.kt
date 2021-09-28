@@ -1,14 +1,15 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.query
 
-import TaskCompletedEvent
-import TaskCreatedEvent
-import TaskDescriptionUpdatedEvent
-import TaskRescheduledEvent
-import TaskStartedEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCompletedEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCreatedEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskDescriptionUpdatedEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskRescheduledEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStartedEvent
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskProjection
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByProjectQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskStatusEnum.*
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -36,7 +37,8 @@ class TaskProjector(
             description = event.description,
             startDate = event.startDate,
             endDate = event.endDate,
-            status = PLANNED))
+            status = PLANNED)
+    )
   }
 
   @EventHandler
