@@ -1,12 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.web
 
-import CompleteTaskCommand
-import StartTaskCommand
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByProjectQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskId
-import com.novatecgmbh.eventsourcing.axon.project.task.query.TaskProjection
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.CreateTaskDto
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RescheduleTaskDto
 import java.util.concurrent.CompletableFuture

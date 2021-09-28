@@ -1,8 +1,8 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.web.dto
 
-import CreateTaskCommand
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskId
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.CreateTaskCommand
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
 import java.time.LocalDate
 
 data class CreateTaskDto(

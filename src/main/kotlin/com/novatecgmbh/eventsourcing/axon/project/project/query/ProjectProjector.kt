@@ -1,7 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.query
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler

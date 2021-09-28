@@ -1,6 +1,5 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
 import java.time.LocalDate
 
 abstract class ProjectEvent(open val aggregateIdentifier: ProjectId)

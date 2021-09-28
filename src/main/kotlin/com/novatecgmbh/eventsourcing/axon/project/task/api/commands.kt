@@ -1,5 +1,6 @@
-import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.task.command.TaskId
+package com.novatecgmbh.eventsourcing.axon.project.task.api
+
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.time.LocalDate
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 
