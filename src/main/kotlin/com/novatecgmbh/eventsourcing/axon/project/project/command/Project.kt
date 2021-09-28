@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
+import com.fasterxml.jackson.annotation.JsonValue
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.io.Serializable
@@ -135,7 +136,7 @@ class Project {
 }
 
 @Embeddable
-data class ProjectId(val identifier: String) : Serializable {
+data class ProjectId(@get:JsonValue val identifier: String) : Serializable {
   constructor() : this(UUID.randomUUID().toString())
 
   override fun toString(): String = identifier

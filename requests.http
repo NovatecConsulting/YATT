@@ -87,9 +87,7 @@ POST http://localhost:8080/v2/tasks
 Content-Type: application/json
 
 {
-  "projectId": {
-    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
-  },
+  "projectId": "2a4837be-978d-41a2-b175-657118c583b0",
   "name": "Task without predefined identifier",
   "startDate": "2020-08-01",
   "endDate": "2020-08-05"
@@ -100,9 +98,7 @@ POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f
 Content-Type: application/json
 
 {
-  "projectId": {
-    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
-  },
+  "projectId": "2a4837be-978d-41a2-b175-657118c583b0",
   "name": "Task 1",
   "description": "What an easy task to do",
   "startDate": "2020-08-01",
@@ -114,9 +110,7 @@ POST http://localhost:8080/v2/tasks/0056bc1e-9d42-40a3-992e-06c76251a59a
 Content-Type: application/json
 
 {
-  "projectId": {
-    "identifier": "2a4837be-978d-41a2-b175-657118c583b0"
-  },
+  "projectId": "2a4837be-978d-41a2-b175-657118c583b0",
   "name": "Task 2",
   "description": "What an easy task to do",
   "startDate": "2020-09-01",

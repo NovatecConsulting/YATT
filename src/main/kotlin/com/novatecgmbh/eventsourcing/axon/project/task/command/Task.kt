@@ -10,6 +10,7 @@ import TaskCreatedEvent
 import TaskDescriptionUpdatedEvent
 import TaskRescheduledEvent
 import TaskStartedEvent
+import com.fasterxml.jackson.annotation.JsonValue
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
 import com.novatecgmbh.eventsourcing.axon.project.project.command.ProjectId
@@ -163,7 +164,7 @@ class Task {
 }
 
 @Embeddable
-data class TaskId(val identifier: String) : Serializable {
+data class TaskId(@get:JsonValue val identifier: String) : Serializable {
   constructor() : this(UUID.randomUUID().toString())
 
   override fun toString(): String = identifier
