@@ -10,12 +10,11 @@ data class CreateTaskDto(
     val name: String,
     val description: String?,
     val startDate: LocalDate,
-    val endDate: LocalDate,
+    val endDate: LocalDate
 ) {
-
-  fun toCommand(identifier: TaskId? = null) =
+  fun toCommand(identifier: TaskId) =
       CreateTaskCommand(
-          identifier = identifier ?: TaskId(),
+          identifier = identifier,
           projectId = projectId,
           name = name,
           description = description,
