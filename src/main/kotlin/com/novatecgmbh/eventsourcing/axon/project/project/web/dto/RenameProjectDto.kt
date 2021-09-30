@@ -1,3 +1,8 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.web.dto
 
-data class RenameProjectDto(val aggregateVersion: Long, val name: String)
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.project.api.RenameProjectCommand
+
+data class RenameProjectDto(val aggregateVersion: Long, val name: String) {
+  fun toCommand(projectId: ProjectId) = RenameProjectCommand(projectId, aggregateVersion, name)
+}

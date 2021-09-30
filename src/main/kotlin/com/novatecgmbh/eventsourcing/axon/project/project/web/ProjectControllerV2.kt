@@ -65,44 +65,24 @@ class ProjectControllerV2(
   }
 
   @PostMapping
-  fun createProject(@RequestBody project: CreateProjectDto): CompletableFuture<String> =
-      createProjectWithId(ProjectId(), project)
+  fun createProject(@RequestBody body: CreateProjectDto): CompletableFuture<String> =
+      createProjectWithId(ProjectId(), body)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: ProjectId,
-      @RequestBody project: CreateProjectDto,
-  ): CompletableFuture<String> =
-      commandGateway.send(
-          CreateProjectCommand(
-              projectId,
-              project.name,
-              project.plannedStartDate,
-              project.deadline,
-          ))
+      @RequestBody body: CreateProjectDto,
+  ): CompletableFuture<String> = commandGateway.send(body.toCommand(projectId))
 
   @PostMapping("/{projectId}/rename")
   fun renameProject(
       @PathVariable("projectId") projectId: ProjectId,
-      @RequestBody dto: RenameProjectDto,
-  ): CompletableFuture<Unit> =
-      commandGateway.send(
-          RenameProjectCommand(
-              projectId,
-              dto.aggregateVersion,
-              dto.name,
-          ))
+      @RequestBody body: RenameProjectDto,
+  ): CompletableFuture<Unit> = commandGateway.send(body.toCommand(projectId))
 
   @PostMapping("/{projectId}/reschedule")
   fun renameProject(
       @PathVariable("projectId") projectId: ProjectId,
-      @RequestBody dto: RescheduleProjectDto,
-  ): CompletableFuture<Unit> =
-      commandGateway.send(
-          RescheduleProjectCommand(
-              projectId,
-              dto.aggregateVersion,
-              dto.newStartDate,
-              dto.newDeadline,
-          ))
+      @RequestBody body: RescheduleProjectDto,
+  ): CompletableFuture<Unit> = commandGateway.send(body.toCommand(projectId))
 }

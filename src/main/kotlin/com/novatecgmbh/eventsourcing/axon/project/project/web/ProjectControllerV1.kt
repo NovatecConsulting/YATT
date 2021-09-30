@@ -2,8 +2,8 @@ package com.novatecgmbh.eventsourcing.axon.project.project.web
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
+import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.UpdateProjectDto
 import java.time.Duration
-import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
@@ -37,9 +37,8 @@ class ProjectControllerV1(
           .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
 
   @PostMapping
-  fun createProject(
-      @RequestBody project: CreateProjectDto
-  ): Mono<ResponseEntity<ProjectQueryResult>> = createProjectWithId(ProjectId(), project)
+  fun createProject(@RequestBody body: CreateProjectDto): Mono<ResponseEntity<ProjectQueryResult>> =
+      createProjectWithId(ProjectId(), body)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
@@ -55,13 +54,7 @@ class ProjectControllerV1(
             Mono.`when`(queryResult.initialResult())
                 .then(
                     Mono.fromCompletionStage {
-                      commandGateway.send<Unit>(
-                          CreateProjectCommand(
-                              projectId,
-                              project.name,
-                              project.plannedStartDate,
-                              project.deadline,
-                          ))
+                      commandGateway.send<Unit>(project.toCommand(projectId))
                     })
                 .thenMany(queryResult.updates())
                 .next()
@@ -73,7 +66,7 @@ class ProjectControllerV1(
   @PutMapping("/{projectId}")
   fun updateProject(
       @PathVariable("projectId") projectId: ProjectId,
-      @RequestBody project: ProjectUpdateDto,
+      @RequestBody body: UpdateProjectDto,
   ): Mono<ResponseEntity<ProjectQueryResult>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
@@ -84,14 +77,7 @@ class ProjectControllerV1(
             Mono.`when`(queryResult.initialResult())
                 .then(
                     Mono.fromCompletionStage {
-                      commandGateway.send<Long>(
-                          UpdateProjectCommand(
-                              projectId,
-                              project.version,
-                              project.name,
-                              project.plannedStartDate,
-                              project.deadline,
-                          ))
+                      commandGateway.send<Long>(body.toCommand(projectId))
                     })
                 .flatMap { expectedAggregateVersion ->
                   queryResult
@@ -105,10 +91,3 @@ class ProjectControllerV1(
                 .doFinally { queryResult.cancel() }
           }
 }
-
-data class ProjectUpdateDto(
-    val version: Long,
-    val name: String,
-    val plannedStartDate: LocalDate,
-    val deadline: LocalDate,
-)

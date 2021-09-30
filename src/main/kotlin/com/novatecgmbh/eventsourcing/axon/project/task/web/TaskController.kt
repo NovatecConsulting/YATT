@@ -25,7 +25,7 @@ class TaskController(
 
   @PostMapping("/v2/tasks")
   fun createTask(@RequestBody body: CreateTaskDto): CompletableFuture<String> =
-      commandGateway.send(body.toCommand())
+      createTaskWithId(TaskId(), body)
 
   @PostMapping("/v2/tasks/{taskId}")
   fun createTaskWithId(
