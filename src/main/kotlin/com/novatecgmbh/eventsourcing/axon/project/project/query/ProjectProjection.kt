@@ -1,5 +1,7 @@
-package com.novatecgmbh.eventsourcing.axon.project.project.api
+package com.novatecgmbh.eventsourcing.axon.project.project.query
 
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
 import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.EmbeddedId
@@ -14,4 +16,6 @@ class ProjectProjection(
     @Column(nullable = false) var name: String,
     @Column(nullable = false) var plannedStartDate: LocalDate,
     @Column(nullable = false) var deadline: LocalDate,
-)
+) {
+  fun toQueryResult() = ProjectQueryResult(identifier, version, name, plannedStartDate, deadline)
+}

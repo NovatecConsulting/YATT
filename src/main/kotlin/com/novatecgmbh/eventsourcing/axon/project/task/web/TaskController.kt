@@ -34,20 +34,20 @@ class TaskController(
   ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
 
   @GetMapping("/v2/tasks/{taskId}")
-  fun getTaskById(@PathVariable("taskId") taskId: TaskId): ResponseEntity<TaskProjection> =
+  fun getTaskById(@PathVariable("taskId") taskId: TaskId): ResponseEntity<TaskQueryResult> =
       queryGateway
-          .queryOptional<TaskProjection, TaskQuery>(TaskQuery(taskId))
+          .queryOptional<TaskQueryResult, TaskQuery>(TaskQuery(taskId))
           .get()
           .map { ResponseEntity(it, OK) }
           .orElse(ResponseEntity(NOT_FOUND))
 
   @GetMapping("/v2/tasks/{taskId}", produces = [MediaType.APPLICATION_NDJSON_VALUE])
-  fun getTaskByIdAndUpdates(@PathVariable("taskId") taskId: TaskId): Flux<TaskProjection> {
+  fun getTaskByIdAndUpdates(@PathVariable("taskId") taskId: TaskId): Flux<TaskQueryResult> {
     val query =
         queryGateway.subscriptionQuery(
             TaskQuery(taskId),
-            ResponseTypes.instanceOf(TaskProjection::class.java),
-            ResponseTypes.instanceOf(TaskProjection::class.java))
+            ResponseTypes.instanceOf(TaskQueryResult::class.java),
+            ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
     return query.initialResult().concatWith(query.updates())
   }
@@ -55,22 +55,22 @@ class TaskController(
   @GetMapping("/v2/projects/{projectId}/tasks")
   fun getTasksByProject(
       @PathVariable("projectId") projectId: ProjectId
-  ): ResponseEntity<List<TaskProjection>> =
+  ): ResponseEntity<List<TaskQueryResult>> =
       ResponseEntity(
           queryGateway
-              .queryMany<TaskProjection, TasksByProjectQuery>(TasksByProjectQuery(projectId))
+              .queryMany<TaskQueryResult, TasksByProjectQuery>(TasksByProjectQuery(projectId))
               .get(),
           OK)
 
   @GetMapping("/v2/projects/{projectId}/tasks", produces = [MediaType.APPLICATION_NDJSON_VALUE])
   fun getTasksByProjectAndUpdates(
       @PathVariable("projectId") projectId: ProjectId
-  ): Flux<TaskProjection> {
+  ): Flux<TaskQueryResult> {
     val query =
         queryGateway.subscriptionQuery(
             TasksByProjectQuery(projectId),
-            ResponseTypes.multipleInstancesOf(TaskProjection::class.java),
-            ResponseTypes.instanceOf(TaskProjection::class.java))
+            ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
+            ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
     return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates())
   }

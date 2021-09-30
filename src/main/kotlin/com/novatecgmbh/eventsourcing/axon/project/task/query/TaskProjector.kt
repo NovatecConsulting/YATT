@@ -1,14 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.query
 
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCompletedEvent
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCreatedEvent
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskDescriptionUpdatedEvent
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskRescheduledEvent
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStartedEvent
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskProjection
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByProjectQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.util.*
 import org.axonframework.config.ProcessingGroup
@@ -37,8 +29,7 @@ class TaskProjector(
             description = event.description,
             startDate = event.startDate,
             endDate = event.endDate,
-            status = PLANNED)
-    )
+            status = PLANNED))
   }
 
   @EventHandler
@@ -79,11 +70,11 @@ class TaskProjector(
   }
 
   private fun updateQuerySubscribers(task: TaskProjection) {
-    queryUpdateEmitter.emit<TaskQuery, TaskProjection>(task) { query ->
+    queryUpdateEmitter.emit<TaskQuery, TaskQueryResult>(task.toQueryResult()) { query ->
       query.taskId == task.identifier
     }
 
-    queryUpdateEmitter.emit<TasksByProjectQuery, TaskProjection>(task) { query ->
+    queryUpdateEmitter.emit<TasksByProjectQuery, TaskQueryResult>(task.toQueryResult()) { query ->
       query.projectId == task.projectId
     }
   }
@@ -91,9 +82,10 @@ class TaskProjector(
   @ResetHandler fun reset() = repository.deleteAll()
 
   @QueryHandler
-  fun handle(query: TasksByProjectQuery): MutableIterable<TaskProjection> =
-      repository.findAllByProjectId(query.projectId)
+  fun handle(query: TasksByProjectQuery): Iterable<TaskQueryResult> =
+      repository.findAllByProjectId(query.projectId).map { it.toQueryResult() }
 
   @QueryHandler
-  fun handle(query: TaskQuery): Optional<TaskProjection> = repository.findById(query.taskId)
+  fun handle(query: TaskQuery): Optional<TaskQueryResult> =
+      repository.findById(query.taskId).map { it.toQueryResult() }
 }

@@ -27,16 +27,16 @@ class ProjectControllerV2(
     private val queryGateway: QueryGateway,
 ) {
   @GetMapping
-  fun getAllProjects(): CompletableFuture<List<ProjectProjection>> =
+  fun getAllProjects(): CompletableFuture<List<ProjectQueryResult>> =
       queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping(produces = [APPLICATION_NDJSON_VALUE])
-  fun getAllProjectsAndUpdates(): Flux<ProjectProjection> {
+  fun getAllProjectsAndUpdates(): Flux<ProjectQueryResult> {
     val query =
         queryGateway.subscriptionQuery(
             AllProjectsQuery(),
-            ResponseTypes.multipleInstancesOf(ProjectProjection::class.java),
-            ResponseTypes.instanceOf(ProjectProjection::class.java))
+            ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java),
+            ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
     return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates())
   }
@@ -44,9 +44,9 @@ class ProjectControllerV2(
   @GetMapping("/{projectId}")
   fun getProjectById(
       @PathVariable("projectId") projectId: ProjectId
-  ): ResponseEntity<ProjectProjection> =
+  ): ResponseEntity<ProjectQueryResult> =
       queryGateway
-          .queryOptional<ProjectProjection, ProjectQuery>(ProjectQuery(projectId))
+          .queryOptional<ProjectQueryResult, ProjectQuery>(ProjectQuery(projectId))
           .join()
           .map { ResponseEntity(it, HttpStatus.OK) }
           .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
@@ -54,12 +54,12 @@ class ProjectControllerV2(
   @GetMapping(path = ["/{projectId}"], produces = [APPLICATION_NDJSON_VALUE])
   fun getProjectByIdAndUpdates(
       @PathVariable("projectId") projectId: ProjectId
-  ): Flux<ProjectProjection> {
+  ): Flux<ProjectQueryResult> {
     val query =
         queryGateway.subscriptionQuery(
             ProjectQuery(projectId),
-            ResponseTypes.instanceOf(ProjectProjection::class.java),
-            ResponseTypes.instanceOf(ProjectProjection::class.java))
+            ResponseTypes.instanceOf(ProjectQueryResult::class.java),
+            ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
     return query.initialResult().concatWith(query.updates())
   }
