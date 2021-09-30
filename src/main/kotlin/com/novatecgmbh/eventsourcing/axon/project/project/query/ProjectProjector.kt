@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.query
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
@@ -55,17 +56,20 @@ class ProjectProjector(
   }
 
   private fun updateQuerySubscribers(project: ProjectProjection) {
-    queryUpdateEmitter.emit<ProjectQuery, ProjectProjection>(project) { query ->
+    queryUpdateEmitter.emit<ProjectQuery, ProjectQueryResult>(project.toQueryResult()) { query ->
       query.projectId == project.identifier
     }
 
-    queryUpdateEmitter.emit<AllProjectsQuery, ProjectProjection>(project) { true }
+    queryUpdateEmitter.emit<AllProjectsQuery, ProjectQueryResult>(project.toQueryResult()) { true }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
 
-  @QueryHandler fun handle(query: ProjectQuery) = repository.findById(query.projectId)
+  @QueryHandler
+  fun handle(query: ProjectQuery): Optional<ProjectQueryResult> =
+      repository.findById(query.projectId).map { it.toQueryResult() }
 
   @QueryHandler
-  fun handle(query: AllProjectsQuery): MutableList<ProjectProjection> = repository.findAll()
+  fun handle(query: AllProjectsQuery): Iterable<ProjectQueryResult> =
+      repository.findAll().map { it.toQueryResult() }
 }

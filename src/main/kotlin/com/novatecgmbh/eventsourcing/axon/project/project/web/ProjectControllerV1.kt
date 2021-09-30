@@ -23,15 +23,15 @@ class ProjectControllerV1(
     private val queryGateway: QueryGateway,
 ) {
   @GetMapping
-  fun getAllProjects(): CompletableFuture<List<ProjectProjection>> =
+  fun getAllProjects(): CompletableFuture<List<ProjectQueryResult>> =
       queryGateway.queryMany(AllProjectsQuery())
 
   @GetMapping("/{projectId}")
   fun getProjectById(
       @PathVariable("projectId") projectId: ProjectId
-  ): ResponseEntity<ProjectProjection> =
+  ): ResponseEntity<ProjectQueryResult> =
       queryGateway
-          .queryOptional<ProjectProjection, ProjectQuery>(ProjectQuery(projectId))
+          .queryOptional<ProjectQueryResult, ProjectQuery>(ProjectQuery(projectId))
           .join()
           .map { ResponseEntity(it, HttpStatus.OK) }
           .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
@@ -39,17 +39,17 @@ class ProjectControllerV1(
   @PostMapping
   fun createProject(
       @RequestBody project: CreateProjectDto
-  ): Mono<ResponseEntity<ProjectProjection>> = createProjectWithId(ProjectId(), project)
+  ): Mono<ResponseEntity<ProjectQueryResult>> = createProjectWithId(ProjectId(), project)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: ProjectId,
       @RequestBody project: CreateProjectDto,
-  ): Mono<ResponseEntity<ProjectProjection>> =
+  ): Mono<ResponseEntity<ProjectQueryResult>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
-              ResponseTypes.instanceOf(ProjectProjection::class.java),
-              ResponseTypes.instanceOf(ProjectProjection::class.java),
+              ResponseTypes.instanceOf(ProjectQueryResult::class.java),
+              ResponseTypes.instanceOf(ProjectQueryResult::class.java),
           )
           .let { queryResult ->
             Mono.`when`(queryResult.initialResult())
@@ -74,11 +74,11 @@ class ProjectControllerV1(
   fun updateProject(
       @PathVariable("projectId") projectId: ProjectId,
       @RequestBody project: ProjectUpdateDto,
-  ): Mono<ResponseEntity<ProjectProjection>> =
+  ): Mono<ResponseEntity<ProjectQueryResult>> =
       queryGateway.subscriptionQuery(
               ProjectQuery(projectId),
-              ResponseTypes.instanceOf(ProjectProjection::class.java),
-              ResponseTypes.instanceOf(ProjectProjection::class.java),
+              ResponseTypes.instanceOf(ProjectQueryResult::class.java),
+              ResponseTypes.instanceOf(ProjectQueryResult::class.java),
           )
           .let { queryResult ->
             Mono.`when`(queryResult.initialResult())

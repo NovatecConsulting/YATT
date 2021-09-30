@@ -1,7 +1,18 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.api
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import java.time.LocalDate
 
 data class TasksByProjectQuery(val projectId: ProjectId)
 
 data class TaskQuery(val taskId: TaskId)
+
+data class TaskQueryResult(
+    val identifier: TaskId,
+    val projectId: ProjectId,
+    val name: String,
+    val description: String?,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+    val status: TaskStatusEnum
+)

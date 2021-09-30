@@ -1,6 +1,9 @@
-package com.novatecgmbh.eventsourcing.axon.project.task.api
+package com.novatecgmbh.eventsourcing.axon.project.task.query
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -17,4 +20,7 @@ class TaskProjection(
     @Column(nullable = false) var startDate: LocalDate,
     @Column(nullable = false) var endDate: LocalDate,
     @Column(nullable = false) var status: TaskStatusEnum
-)
+) {
+  fun toQueryResult() =
+      TaskQueryResult(identifier, projectId, name, description, startDate, endDate, status)
+}
