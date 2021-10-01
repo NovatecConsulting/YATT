@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="AxonApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="axon.main" />
+  <configuration default="false" name="Backend" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="backend.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.AxonApplication" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="SHORTEN_COMMAND_LINE" value="NONE" />
