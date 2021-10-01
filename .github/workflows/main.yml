@@ -5,8 +5,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    name: Build with gradle
+  backend:
+    name: Build backend with gradle
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
@@ -17,6 +17,26 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - name: Grant execute permission for gradlew
+        working-directory: ./backend
         run: chmod +x gradlew
       - name: Build with Gradle
+        working-directory: ./backend
         run: ./gradlew build
+  frontend:
+    name: Build frontend with npm
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Execute tests
+        working-directory: ./frontend
+        run: npm test
+      - name: Bundle application
+        working-directory: ./frontend
+        run: npm build
