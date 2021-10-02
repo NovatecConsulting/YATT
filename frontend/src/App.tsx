@@ -4,20 +4,24 @@ import {AppBar, Box, Toolbar, Typography} from "@mui/material";
 
 function App() {
     return (
-        <React.Fragment>
-            <Box sx={{flexGrow: 1}}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                            Projects
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-            <Box component="main">
-                <ProjectsList/>
-            </Box>
-        </React.Fragment>
+        <Box style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            width: "100vw",
+            alignItems: "center",
+            justifyContent: "center"
+        }}>
+            <AppBar>
+                <Toolbar>
+                    <Typography variant="h6" component="div">
+                        Projects
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <Toolbar style={{flex: 0}}/>
+            <ProjectsList/>
+        </Box>
     );
 }
 
