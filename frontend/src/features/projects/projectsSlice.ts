@@ -1,6 +1,6 @@
 import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import ndjsonStream from "can-ndjson-stream";
+import {subscriptionQuery} from "../../app/api";
 
 export interface Project {
     identifier: string;
@@ -16,29 +16,11 @@ const projectsAdapter = createEntityAdapter<Project>({
 
 const initialState = projectsAdapter.getInitialState();
 
-export const fetchAllProjects = createAsyncThunk<Project[], void, { state: RootState }>(
-    'projects/fetchAllProjects',
-    async (_, thunkAPI) => {
-        const response = await fetch('http://localhost:8080/v2/projects', {
-            headers: new Headers({
-                'Accept': 'application/x-ndjson',
-            })
-        });
-        if (response.body) {
-            const reader = ndjsonStream(response.body).getReader();
-            while (true) {
-                const {value, done} = await reader.read();
-                if (done) break;
-                console.log('Received', value);
-                thunkAPI.dispatch(projectsSlice.actions.upsertOne(value));
-                // not working:
-                // projectsAdapter.setOne(thunkAPI.getState().projects, value as Project);
-            }
-        }
-
-        // const response = await fetch('http://localhost:8080/v1/projects');
-        // return (await response.json()) as Array<Project>;
-        return [] as Array<Project>;
+export const subscribeAllProjects = createAsyncThunk<void, void, { state: RootState }>(
+    'projects/subscribeAllProjects',
+    (_, thunkAPI) => {
+        const dispatchUpdateAction = (project: Project) => thunkAPI.dispatch(projectsSlice.actions.upsertOne(project));
+        return subscriptionQuery('projects', dispatchUpdateAction, dispatchUpdateAction);
     }
 );
 
@@ -50,11 +32,6 @@ export const projectsSlice = createSlice({
                 projectsAdapter.upsertOne(state, action.payload as Project);
             }
         },
-        extraReducers(builder) {
-            // builder.addCase(fetchAllProjects.fulfilled, (state, action) => {
-            //     projectsAdapter.setAll(state, action.payload);
-            // });
-        }
     }
 );
 
