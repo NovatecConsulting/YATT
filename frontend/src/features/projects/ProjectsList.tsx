@@ -1,6 +1,6 @@
 import {useAppSelector} from "../../app/hooks";
 
-import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar} from "@mui/material";
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {projectSelectors} from "./projectsSlice";
 import {EntityId} from "@reduxjs/toolkit";
 
