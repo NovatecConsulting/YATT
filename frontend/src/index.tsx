@@ -5,9 +5,9 @@ import App from './App';
 import {store} from './app/store';
 import {Provider} from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import {fetchAllProjects} from "./features/projects/projectsSlice";
+import {subscribeAllProjects} from "./features/projects/projectsSlice";
 
-store.dispatch(fetchAllProjects());
+store.dispatch(subscribeAllProjects());
 
 ReactDOM.render(
     <React.StrictMode>
