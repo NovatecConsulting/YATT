@@ -35,3 +35,37 @@ services:
       - "8024:8024"
       - "8124:8124"
       - "8224:8224"
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    depends_on:
+      - keycloak-db
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: 1234
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-db
+      DB_PORT: 5432
+      DB_DATABASE: keycloak_db
+      DB_USER: admin
+      DB_PASSWORD: 1234
+    command:
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=singleFile"
+      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - "-Dkeycloak.migration.file=/tmp/realm.json"
+    volumes:
+      - type: bind
+        source: ./keycloak/realm.json
+        target: /tmp/realm.json
+        read_only: true
+    ports:
+      - "8081:8080"
+
+  keycloak-db:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
