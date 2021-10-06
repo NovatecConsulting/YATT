@@ -1,12 +1,14 @@
 import {baseUrl} from "../features/api/apiSlice";
 import ndjsonStream, {CancelCallback, Result} from "can-ndjson-stream";
+import {store} from "./store";
+import {selectToken} from "../features/auth/authSlice";
 
 export async function subscribe<UpdateType>(
     path: string,
-    onUpdate: (update: UpdateType) => void,
-    token?: string
+    onUpdate: (update: UpdateType) => void
 ): Promise<CancelCallback> {
     // TODO try resubscribe if lost connection to server
+    const token = selectToken(store.getState());
     const response = await fetch(`${baseUrl}${path}`, {
         headers: new Headers({
             'Accept': 'application/x-ndjson',

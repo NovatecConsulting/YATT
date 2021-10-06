@@ -2,7 +2,6 @@ import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
-import {selectToken} from "../auth/authSlice";
 import {CancelCallback} from "can-ndjson-stream";
 
 export interface Project {
@@ -38,7 +37,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                                 projectsAdapter.upsertOne(draft, update);
                             }
                         });
-                    }, selectToken(api.getState() as unknown as RootState));
+                    });
                 } catch {
                     // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
                     // in which case `cacheDataLoaded` will throw

@@ -1,25 +1,19 @@
 import React from 'react';
-import {
-    BrowserRouter as Router, Route,
-    Switch
-} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {ReactKeycloakProvider} from '@react-keycloak/web'
 import {ProjectsList} from "./features/projects/ProjectsList";
 import {Box, CircularProgress} from "@mui/material";
 import keycloak from "./keycloak";
 import PrivateRoute from "./components/PrivateRoute";
 import {AuthClientError, AuthClientEvent, AuthClientTokens} from "@react-keycloak/core/lib/types";
-import {
-    authenticated, authLoading, registered,
-    selectIsAuthLoading,
-    tokenUpdated
-} from "./features/auth/authSlice";
+import {authenticated, authLoading, registered, selectIsAuthLoading, tokenUpdated} from "./features/auth/authSlice";
 import {Login} from "./features/auth/Login";
 import {Home} from "./components/Home";
 import {Registration} from "./features/auth/Registration";
 import {useAppDispatch} from "./app/hooks";
 import {loadCurrentUser} from "./features/auth/currentUserSlice";
 import {useStore} from "react-redux";
+import {TaskList} from "./features/tasks/TaskList";
 
 function App() {
     const store = useStore();
@@ -73,6 +67,7 @@ function App() {
                         <PrivateRoute exact path={"/registration"} component={Registration}
                                       allowUnregistered={true}/>
                         <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
+                        <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
                     </Switch>
                 </Router>
             </ReactKeycloakProvider>
