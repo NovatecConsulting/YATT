@@ -1,10 +1,12 @@
 import {CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import {Project, useGetProjectsQuery} from "./projectsSlice";
+import {selectProjectById, useGetProjectsQuery} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
+import {useAppSelector} from "../../app/hooks";
+import {EntityId} from "@reduxjs/toolkit";
 
 export function ProjectsList() {
     const {
-        data: projects = [],
+        data: projectsEntityState,
         isLoading,
         isSuccess,
         isError,
@@ -14,7 +16,7 @@ export function ProjectsList() {
     let content: ReactJSXElement;
     if (isLoading) {
         content = <CircularProgress/>;
-    } else if (isSuccess) {
+    } else if (isSuccess && projectsEntityState) {
         content = (
             <TableContainer sx={{flex: 1, maxWidth: 900}}>
                 <Table stickyHeader>
@@ -27,7 +29,11 @@ export function ProjectsList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {projects.map(project => <ProjectRow key={project.identifier} project={project}/>)}
+                        {
+                            projectsEntityState.ids.map(
+                                (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
+                            )
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -41,13 +47,18 @@ export function ProjectsList() {
     return content;
 }
 
-function ProjectRow({project}: { project: Project }) {
-    return (
-        <TableRow hover>
-            <TableCell>{project.identifier}</TableCell>
-            <TableCell>{project.name}</TableCell>
-            <TableCell>{project.plannedStartDate}</TableCell>
-            <TableCell>{project.deadline}</TableCell>
-        </TableRow>
-    );
+function ProjectRow({projectId}: { projectId: EntityId }) {
+    const project = useAppSelector(state => selectProjectById(state, projectId))
+
+    if (project) {
+        return (
+            <TableRow hover>
+                <TableCell>{project.identifier}</TableCell>
+                <TableCell>{project.name}</TableCell>
+                <TableCell>{project.plannedStartDate}</TableCell>
+                <TableCell>{project.deadline}</TableCell>
+            </TableRow>
+        );
+    }
+    return null;
 }

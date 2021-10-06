@@ -1,9 +1,9 @@
 declare module 'can-ndjson-stream' {
-    export default function ndjsonStream(data: unknown): {
+    export default function ndjsonStream<T>(data: unknown): {
         getReader: () => {
             read: () => Promise<{
                 done: boolean;
-                value: any;
+                value: T;
             }>;
         };
         cancel: () => void;
