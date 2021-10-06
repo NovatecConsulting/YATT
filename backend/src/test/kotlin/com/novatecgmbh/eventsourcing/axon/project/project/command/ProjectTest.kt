@@ -18,25 +18,51 @@ class ProjectTest {
     fixture = AggregateTestFixture(Project::class.java)
   }
 
+  companion object {
+    val createProjectCommand =
+        CreateProjectCommand(
+            aggregateIdentifier = ProjectId("1"),
+            projectName = "test",
+            plannedStartDate = LocalDate.of(2021, 1, 1),
+            deadline = LocalDate.of(2022, 1, 1),
+        )
+    val projectCreatedEvent =
+        ProjectCreatedEvent(
+            aggregateIdentifier = ProjectId("1"),
+            projectName = "test",
+            plannedStartDate = LocalDate.of(2021, 1, 1),
+            deadline = LocalDate.of(2022, 1, 1),
+        )
+    val renameProjectCommand =
+        RenameProjectCommand(
+            aggregateIdentifier = ProjectId("1"),
+            aggregateVersion = 0,
+            newName = "new name",
+        )
+    val projectRenamedEvent =
+        ProjectRenamedEvent(
+            aggregateIdentifier = ProjectId("1"),
+            newName = "new name",
+        )
+    val rescheduleProjectCommand =
+        RescheduleProjectCommand(
+            aggregateIdentifier = ProjectId("1"),
+            aggregateVersion = 0,
+            newStartDate = LocalDate.of(2021, 1, 1),
+            newDeadline = LocalDate.of(2022, 1, 1),
+        )
+    val projectRescheduledEvent =
+        ProjectRescheduledEvent(
+            aggregateIdentifier = ProjectId("1"),
+            newStartDate = LocalDate.of(2021, 1, 1),
+            newDeadline = LocalDate.of(2022, 1, 1),
+        )
+  }
+
   @Nested
   inner class CreateProjectCommandTests {
     @Test
     fun `should create project if project does not exist`() {
-      val createProjectCommand =
-          CreateProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-
       fixture
           .givenNoPriorActivity()
           .`when`(createProjectCommand)
@@ -47,21 +73,6 @@ class ProjectTest {
 
     @Test
     fun `should throw exception if project already exists`() {
-      val createProjectCommand =
-          CreateProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-
       fixture
           .given(projectCreatedEvent)
           .`when`(createProjectCommand)
@@ -70,17 +81,13 @@ class ProjectTest {
 
     @Test
     fun `should throw exception if start date is after deadline`() {
-      val createProjectCommand =
-          CreateProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2022, 1, 1),
-              deadline = LocalDate.of(2021, 1, 1),
-          )
-
       fixture
           .givenNoPriorActivity()
-          .`when`(createProjectCommand)
+          .`when`(
+              createProjectCommand.copy(
+                  plannedStartDate = LocalDate.of(2022, 1, 1),
+                  deadline = LocalDate.of(2021, 1, 1),
+              ))
           .expectException(IllegalArgumentException::class.java)
     }
   }
@@ -89,25 +96,6 @@ class ProjectTest {
   inner class RenameProjectCommandTests {
     @Test
     fun `should rename project if new name is different to current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val renameProjectCommand =
-          RenameProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newName = "new name",
-          )
-      val projectRenamedEvent =
-          ProjectRenamedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newName = "new name",
-          )
-
       fixture
           .given(projectCreatedEvent)
           .`when`(renameProjectCommand)
@@ -118,23 +106,9 @@ class ProjectTest {
 
     @Test
     fun `should not rename project if new name is same as current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val renameProjectCommand =
-          RenameProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newName = "test",
-          )
-
       fixture
           .given(projectCreatedEvent)
-          .`when`(renameProjectCommand)
+          .`when`(renameProjectCommand.copy(newName = projectCreatedEvent.projectName))
           .expectResultMessagePayload(0L)
           .expectSuccessfulHandlerExecution()
           .expectNoEvents()
@@ -142,60 +116,21 @@ class ProjectTest {
 
     @Test
     fun `should throw exception if renaming is based on wrong version`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectRenamedEvent =
-          ProjectRenamedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newName = "test2",
-          )
-      val renameProjectCommand =
-          RenameProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newName = "test3",
-          )
-
       fixture
           .given(projectCreatedEvent, projectRenamedEvent)
-          .`when`(renameProjectCommand)
+          .`when`(renameProjectCommand.copy(newName = projectRenamedEvent.newName + "new"))
           .expectException(ConflictingAggregateVersionException::class.java)
     }
 
     @Test
     fun `should not throw or rename if renaming is based on wrong version but new name is same as current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectRenamedEvent =
-          ProjectRenamedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newName = "test2",
-          )
-      val projectRenamedEvent2 =
-          ProjectRenamedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newName = "test3",
-          )
-      val renameProjectCommand =
-          RenameProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newName = "test3",
-          )
-
       fixture
-          .given(projectCreatedEvent, projectRenamedEvent, projectRenamedEvent2)
-          .`when`(renameProjectCommand)
+          .given(
+              projectCreatedEvent,
+              projectRenamedEvent.copy(newName = "test2"),
+              projectRenamedEvent.copy(newName = "test3"),
+          )
+          .`when`(renameProjectCommand.copy(newName = "test3"))
           .expectResultMessagePayload(2L)
           .expectSuccessfulHandlerExecution()
           .expectNoEvents()
@@ -206,83 +141,30 @@ class ProjectTest {
   inner class RescheduleProjectCommandTests {
     @Test
     fun `should reschedule project if start date is different from current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val rescheduleProjectCommand =
-          RescheduleProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newStartDate = LocalDate.of(2020, 1, 1),
-              newDeadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectRescheduledEvent =
-          ProjectRescheduledEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newStartDate = LocalDate.of(2020, 1, 1),
-              newDeadline = LocalDate.of(2022, 1, 1),
-          )
+      val newStartDate = projectCreatedEvent.plannedStartDate.minusDays(1)
 
       fixture
           .given(projectCreatedEvent)
-          .`when`(rescheduleProjectCommand)
+          .`when`(rescheduleProjectCommand.copy(newStartDate = newStartDate))
           .expectResultMessagePayload(1L)
           .expectSuccessfulHandlerExecution()
-          .expectEvents(projectRescheduledEvent)
+          .expectEvents(projectRescheduledEvent.copy(newStartDate = newStartDate))
     }
 
     @Test
     fun `should reschedule project if deadline is different from current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val rescheduleProjectCommand =
-          RescheduleProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2023, 1, 1),
-          )
-      val projectRescheduledEvent =
-          ProjectRescheduledEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2023, 1, 1),
-          )
+      val newDeadline = projectCreatedEvent.deadline.plusDays(1)
 
       fixture
           .given(projectCreatedEvent)
-          .`when`(rescheduleProjectCommand)
+          .`when`(rescheduleProjectCommand.copy(newDeadline = newDeadline))
           .expectResultMessagePayload(1L)
           .expectSuccessfulHandlerExecution()
-          .expectEvents(projectRescheduledEvent)
+          .expectEvents(projectRescheduledEvent.copy(newDeadline = newDeadline))
     }
 
     @Test
     fun `should not reschedule project if new start date and deadline is same as current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val rescheduleProjectCommand =
-          RescheduleProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2022, 1, 1),
-          )
-
       fixture
           .given(projectCreatedEvent)
           .`when`(rescheduleProjectCommand)
@@ -293,65 +175,27 @@ class ProjectTest {
 
     @Test
     fun `should throw exception if rescheduling is based on wrong version`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectRescheduledEvent =
-          ProjectRescheduledEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2023, 1, 1),
-          )
-      val rescheduleProjectCommand =
-          RescheduleProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2024, 1, 1),
-          )
+      val newDeadline1 = projectCreatedEvent.deadline.plusDays(1)
+      val newDeadline2 = projectCreatedEvent.deadline.plusDays(2)
 
       fixture
-          .given(projectCreatedEvent, projectRescheduledEvent)
-          .`when`(rescheduleProjectCommand)
+          .given(projectCreatedEvent, projectRescheduledEvent.copy(newDeadline = newDeadline1))
+          .`when`(rescheduleProjectCommand.copy(newDeadline = newDeadline2))
           .expectException(ConflictingAggregateVersionException::class.java)
     }
 
     @Test
     fun `should not throw or reschedule if renaming is based on wrong version but new dates are same as current`() {
-      val projectCreatedEvent =
-          ProjectCreatedEvent(
-              aggregateIdentifier = ProjectId("1"),
-              projectName = "test",
-              plannedStartDate = LocalDate.of(2021, 1, 1),
-              deadline = LocalDate.of(2022, 1, 1),
-          )
-      val projectRescheduledEvent =
-          ProjectRescheduledEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2023, 1, 1),
-          )
-      val projectRescheduledEvent2 =
-          ProjectRescheduledEvent(
-              aggregateIdentifier = ProjectId("1"),
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2024, 1, 1),
-          )
-      val rescheduleProjectCommand =
-          RescheduleProjectCommand(
-              aggregateIdentifier = ProjectId("1"),
-              aggregateVersion = 0,
-              newStartDate = LocalDate.of(2021, 1, 1),
-              newDeadline = LocalDate.of(2024, 1, 1),
-          )
+      val newDeadline1 = projectCreatedEvent.deadline.plusDays(1)
+      val newDeadline2 = projectCreatedEvent.deadline.plusDays(2)
 
       fixture
-          .given(projectCreatedEvent, projectRescheduledEvent, projectRescheduledEvent2)
-          .`when`(rescheduleProjectCommand)
+          .given(
+              projectCreatedEvent,
+              projectRescheduledEvent.copy(newDeadline = newDeadline1),
+              projectRescheduledEvent.copy(newDeadline = newDeadline2),
+          )
+          .`when`(rescheduleProjectCommand.copy(newDeadline = newDeadline2))
           .expectResultMessagePayload(2L)
           .expectSuccessfulHandlerExecution()
           .expectNoEvents()
