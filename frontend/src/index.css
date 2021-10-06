@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: lightgrey;
 }
 
 code {
@@ -17,9 +18,9 @@ code {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
+  padding: 20px;
 }
 
 .fullViewPort {
-  height: 100vh;
-  width: 100vw;
 }

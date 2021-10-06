@@ -1,4 +1,4 @@
-import {CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {selectProjectById, useGetProjectsQuery} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
@@ -6,6 +6,7 @@ import {EntityId} from "@reduxjs/toolkit";
 import {Scaffold} from "../../components/Scaffold";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
+import {useHistory} from "react-router-dom";
 
 export function ProjectsList() {
     const {
@@ -21,11 +22,10 @@ export function ProjectsList() {
         content = <CircularProgress/>;
     } else if (isSuccess && projectIds) {
         content = (
-            <TableContainer sx={{flex: 1, maxWidth: 900}}>
+            <TableContainer sx={{minWidth: 1000, borderRadius: '10px'}} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Id</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Planned Start Date</TableCell>
                             <TableCell>Deadline</TableCell>
@@ -60,11 +60,11 @@ interface ProjectRowProps {
 
 function ProjectRow(props: ProjectRowProps) {
     const project = useAppSelector(state => selectProjectById(state, props.projectId))
+    const history = useHistory()
 
     if (project) {
         return (
-            <TableRow hover>
-                <TableCell>{project.identifier}</TableCell>
+            <TableRow hover onClick={() => history.push(`/projects/${project.identifier}/tasks`)}>
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{project.plannedStartDate}</TableCell>
                 <TableCell>{project.deadline}</TableCell>

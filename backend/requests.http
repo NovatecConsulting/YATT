@@ -4,7 +4,7 @@ POST http://localhost:8080/v1/projects
 Content-Type: application/json
 
 {
-  "name": "My Project",
+  "name": "Lars Project",
   "plannedStartDate": "2021-08-01",
   "deadline": "2021-09-30"
 }
@@ -87,18 +87,18 @@ POST http://localhost:8080/v2/tasks
 Content-Type: application/json
 
 {
-  "projectId": "2a4837be-978d-41a2-b175-657118c583b0",
-  "name": "Task without predefined identifier",
+  "projectId": "61fa0433-60f3-44c9-868b-e8049d6d95ad",
+  "name": "Another task",
   "startDate": "2020-08-01",
   "endDate": "2020-08-05"
 }
 
 ###
-POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f4130b7f
+POST http://localhost:8080/v2/tasks/5d39366f-6bbf-4297-b42e-5229f413cb7f
 Content-Type: application/json
 
 {
-  "projectId": "2a4837be-978d-41a2-b175-657118c583b0",
+  "projectId": "61fa0433-60f3-44c9-868b-e8049d6d95ad",
   "name": "Task 1",
   "description": "What an easy task to do",
   "startDate": "2020-08-01",

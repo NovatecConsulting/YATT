@@ -34,7 +34,6 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <Toolbar style={{flex: 0}}/>
             {props.children}
         </Box>
     );
