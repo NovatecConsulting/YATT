@@ -31,6 +31,7 @@ class ProjectProjectorTest {
                     plannedStartDate = LocalDate.of(2021, 1, 1),
                     deadline = LocalDate.of(2022, 1, 1),
                 )))
+    `when`(repository.save(any())).then { it.arguments.first() }
   }
 
   @Test
@@ -50,20 +51,13 @@ class ProjectProjectorTest {
         )
     testSubject.on(testEvent, expectedVersion)
 
-    val projectEntityCaptor = ArgumentCaptor.forClass(ProjectProjection::class.java)
-    verify(repository).save(projectEntityCaptor.capture())
-    verify(updateEmitter)
-        .emit<ProjectQuery, ProjectProjection>(any(), any(), projectEntityCaptor.capture())
-
-    val capturedResults = projectEntityCaptor.allValues
-    for (capturedResult in capturedResults) {
-      assertNotNull(capturedResult)
-      assertEquals(expectedIdentifier, capturedResult.identifier)
-      assertEquals(expectedName, capturedResult.name)
-      assertEquals(expectedStartDate, capturedResult.plannedStartDate)
-      assertEquals(expectedDeadline, capturedResult.deadline)
-      assertEquals(expectedVersion, capturedResult.version)
-    }
+    `verify that save and emit are called with correct arguments`(
+        expectedIdentifier,
+        expectedName,
+        expectedStartDate,
+        expectedDeadline,
+        expectedVersion,
+    )
   }
 
   @Test
@@ -79,18 +73,13 @@ class ProjectProjectorTest {
         )
     testSubject.on(testEvent, expectedVersion)
 
-    val projectProjectionCaptor = ArgumentCaptor.forClass(ProjectProjection::class.java)
-    verify(repository).findById(ProjectId("1"))
-    verify(updateEmitter)
-        .emit<ProjectQuery, ProjectProjection>(any(), any(), projectProjectionCaptor.capture())
-
-    val capturedResults = projectProjectionCaptor.allValues
-    for (capturedResult in capturedResults) {
-      assertNotNull(capturedResult)
-      assertEquals(expectedIdentifier, capturedResult.identifier)
-      assertEquals(expectedName, capturedResult.name)
-      assertEquals(expectedVersion, capturedResult.version)
-    }
+    `verify that save and emit are called with correct arguments`(
+        expectedIdentifier,
+        expectedName,
+        null,
+        null,
+        expectedVersion,
+    )
   }
 
   @Test
@@ -108,19 +97,13 @@ class ProjectProjectorTest {
         )
     testSubject.on(testEvent, expectedVersion)
 
-    val projectProjectionCaptor = ArgumentCaptor.forClass(ProjectProjection::class.java)
-    verify(repository).findById(ProjectId("1"))
-    verify(updateEmitter)
-        .emit<ProjectQuery, ProjectProjection>(any(), any(), projectProjectionCaptor.capture())
-
-    val capturedResults = projectProjectionCaptor.allValues
-    for (capturedResult in capturedResults) {
-      assertNotNull(capturedResult)
-      assertEquals(expectedIdentifier, capturedResult.identifier)
-      assertEquals(expectedStartDate, capturedResult.plannedStartDate)
-      assertEquals(expectedDeadline, capturedResult.deadline)
-      assertEquals(expectedVersion, capturedResult.version)
-    }
+    `verify that save and emit are called with correct arguments`(
+        expectedIdentifier,
+        null,
+        expectedStartDate,
+        expectedDeadline,
+        expectedVersion,
+    )
   }
 
   @Test
@@ -137,5 +120,41 @@ class ProjectProjectorTest {
     testSubject.handle(testQuery)
 
     verify(repository).findAll()
+  }
+
+  private fun `verify that save and emit are called with correct arguments`(
+      expectedIdentifier: ProjectId,
+      expectedName: String?,
+      expectedStartDate: LocalDate?,
+      expectedDeadline: LocalDate?,
+      expectedVersion: Long,
+  ) {
+    val projectProjectionCaptor = ArgumentCaptor.forClass(ProjectProjection::class.java)
+    val projectQueryResultCaptor = ArgumentCaptor.forClass(ProjectQueryResult::class.java)
+
+    verify(repository).save(projectProjectionCaptor.capture())
+    verify(updateEmitter)
+        .emit(eq(ProjectQuery::class.java), any(), projectQueryResultCaptor.capture())
+    verify(updateEmitter)
+        .emit(eq(AllProjectsQuery::class.java), any(), projectQueryResultCaptor.capture())
+
+    for (capturedResult in projectProjectionCaptor.allValues) {
+      assertNotNull(capturedResult)
+      assertEquals(expectedIdentifier, capturedResult.identifier)
+      if (expectedName != null) assertEquals(expectedName, capturedResult.name)
+      if (expectedStartDate != null)
+          assertEquals(expectedStartDate, capturedResult.plannedStartDate)
+      if (expectedDeadline != null) assertEquals(expectedDeadline, capturedResult.deadline)
+      assertEquals(expectedVersion, capturedResult.version)
+    }
+    for (capturedResult in projectQueryResultCaptor.allValues) {
+      assertNotNull(capturedResult)
+      assertEquals(expectedIdentifier, capturedResult.identifier)
+      if (expectedName != null) assertEquals(expectedName, capturedResult.name)
+      if (expectedStartDate != null)
+          assertEquals(expectedStartDate, capturedResult.plannedStartDate)
+      if (expectedDeadline != null) assertEquals(expectedDeadline, capturedResult.deadline)
+      assertEquals(expectedVersion, capturedResult.version)
+    }
   }
 }
