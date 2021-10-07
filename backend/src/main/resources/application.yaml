@@ -17,6 +17,13 @@ spring:
       mode: always
       platform: postgres
 
+keycloak:
+  auth-server-url: http://localhost:8081/auth
+  realm: eventsourcing-with-axon
+  resource: my-backend
+  public-client: true
+  principal-attribute: preferred_username
+
 logging:
   level:
     ROOT: info
