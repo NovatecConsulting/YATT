@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono
 /** REST API where creation and update of a resource also return the changed resource */
 @RequestMapping("/v1/projects")
 @RestController
-@CrossOrigin
 class ProjectControllerV1(
     private val commandGateway: CommandGateway,
     private val queryGateway: QueryGateway,

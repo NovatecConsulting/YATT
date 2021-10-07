@@ -17,12 +17,17 @@ spring:
       mode: always
       platform: postgres
 
+app:
+  cors:
+    allowed-origins: http://localhost:3000
+
 keycloak:
   auth-server-url: http://localhost:8081/auth
   realm: eventsourcing-with-axon
   resource: my-backend
   public-client: true
   principal-attribute: preferred_username
+  bearer-only: true
 
 logging:
   level:
