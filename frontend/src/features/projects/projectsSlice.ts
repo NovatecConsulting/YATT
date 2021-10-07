@@ -2,6 +2,7 @@ import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
+import keycloak from "../../keycloak";
 
 export interface Project {
     identifier: string;
@@ -34,7 +35,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                         api.updateCachedData(draft => {
                             projectsAdapter.upsertOne(draft, update);
                         });
-                    })
+                    }, keycloak.token);
                 } catch {
                     // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
                     // in which case `cacheDataLoaded` will throw

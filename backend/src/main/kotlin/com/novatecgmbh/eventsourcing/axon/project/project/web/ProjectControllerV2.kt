@@ -22,7 +22,6 @@ import reactor.core.publisher.Flux
  */
 @RequestMapping("/v2/projects")
 @RestController
-@CrossOrigin
 class ProjectControllerV2(
     private val commandGateway: CommandGateway,
     private val queryGateway: QueryGateway,

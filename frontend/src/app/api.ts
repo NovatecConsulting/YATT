@@ -3,11 +3,13 @@ import ndjsonStream from "can-ndjson-stream";
 
 export async function subscribe<UpdateType>(
     path: string,
-    onUpdate: (update: UpdateType) => void
+    onUpdate: (update: UpdateType) => void,
+    token?: string
 ): Promise<() => void> {
     const response = await fetch(`${baseUrl}/projects`, {
         headers: new Headers({
             'Accept': 'application/x-ndjson',
+            ...(token && {'Authorization': `Bearer ${token}`})
         })
     });
     if (response.body) {
