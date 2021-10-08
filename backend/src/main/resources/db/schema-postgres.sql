@@ -74,6 +74,14 @@ create sequence hibernate_sequence start 1 increment 1;
         token_type varchar(255),
         primary key (processor_name, segment)
     );
+
+    create table users (
+       identifier varchar(255) not null,
+        external_user_id varchar(255) not null,
+        firstname varchar(255) not null,
+        lastname varchar(255) not null,
+        primary key (identifier)
+    );
 create index IDXk45eqnxkgd8hpdn6xixn8sgft on association_value_entry (saga_type, association_key, association_value);
 create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, saga_type);
 

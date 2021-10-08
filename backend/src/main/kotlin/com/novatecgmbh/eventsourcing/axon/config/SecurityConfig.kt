@@ -1,42 +1,49 @@
 package com.novatecgmbh.eventsourcing.axon.config
 
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter
-import org.springframework.beans.factory.annotation.Autowired
+import com.novatecgmbh.eventsourcing.axon.security.CustomUserAuthenticationConverter
 import org.springframework.context.annotation.Bean
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
-import org.springframework.security.core.session.SessionRegistryImpl
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+import org.springframework.security.core.userdetails.UserDetailsService
 
-@KeycloakConfiguration
-internal class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
-  @Autowired
-  @Throws(Exception::class)
-  fun configureGlobal(auth: AuthenticationManagerBuilder) {
-    auth.authenticationProvider(
-        keycloakAuthenticationProvider().apply {
-          this.setGrantedAuthoritiesMapper(SimpleAuthorityMapper())
-        })
-  }
-
-  @Bean
-  fun keycloakConfigResolver(): KeycloakSpringBootConfigResolver =
-      KeycloakSpringBootConfigResolver()
-
-  @Bean
-  override fun sessionAuthenticationStrategy(): SessionAuthenticationStrategy =
-      RegisterSessionAuthenticationStrategy(SessionRegistryImpl())
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+class SecurityConfig(val userDetailsService: UserDetailsService) : WebSecurityConfigurerAdapter() {
 
   @Throws(Exception::class)
   override fun configure(http: HttpSecurity) {
-    super.configure(http)
-    http.authorizeRequests().anyRequest().authenticated()
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    http.cors().and().csrf().disable()
+    http.cors()
+        .and()
+        .headers()
+        .httpStrictTransportSecurity()
+        .disable()
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(STATELESS)
+        .and()
+        .csrf()
+        .disable()
+        .formLogin()
+        .disable()
+        .httpBasic()
+        .disable()
+        .exceptionHandling()
+        .and()
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .oauth2ResourceServer()
+        .jwt()
+        .jwtAuthenticationConverter(customUserAuthenticationConverter())
   }
+
+  @Bean
+  fun customUserAuthenticationConverter(): CustomUserAuthenticationConverter =
+      CustomUserAuthenticationConverter(userDetailsService)
 }

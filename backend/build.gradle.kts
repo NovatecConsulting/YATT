@@ -18,7 +18,6 @@ repositories {
 
 val axonVersion by extra("4.5.3")
 val reactorVersion by extra("3.4.8")
-val keycloakVersion by extra("15.0.2")
 
 dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -28,11 +27,11 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("org.keycloak:keycloak-spring-boot-starter")
 	implementation("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
 	testImplementation("com.h2database:h2")
 	testImplementation ("com.tngtech.archunit:archunit-junit5:0.21.0")
@@ -45,7 +44,6 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom("org.axonframework:axon-bom:$axonVersion")
-		mavenBom("org.keycloak.bom:keycloak-adapter-bom:$keycloakVersion")
 	}
 }
 

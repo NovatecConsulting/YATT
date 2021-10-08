@@ -16,18 +16,16 @@ spring:
     init:
       mode: always
       platform: postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/auth/realms/eventsourcing-with-axon
+          jwk-set-uri: http://localhost:8081/auth/realms/eventsourcing-with-axon/protocol/openid-connect/certs
 
 app:
   cors:
     allowed-origins: http://localhost:3000
-
-keycloak:
-  auth-server-url: http://localhost:8081/auth
-  realm: eventsourcing-with-axon
-  resource: my-backend
-  public-client: true
-  principal-attribute: preferred_username
-  bearer-only: true
 
 logging:
   level:
