@@ -8,11 +8,20 @@ import {ProjectsList} from "./features/projects/ProjectsList";
 import {AppBar, Box, CircularProgress, Toolbar, Typography} from "@mui/material";
 import keycloak from "./keycloak";
 import PrivateRoute from "./components/PrivateRoute";
+import {AuthClientError, AuthClientEvent} from "@react-keycloak/core/lib/types";
+import {useAppDispatch} from "./app/hooks";
+import {tokenUpdated} from "./features/api/tokenSlice";
 
 function App() {
+    const dispatch = useAppDispatch();
+
     const initOptions = {
         pkceMethod: 'S256',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
+    }
+
+    const handleOnEvent = async (event: AuthClientEvent, error?: AuthClientError) => {
+        dispatch(tokenUpdated(keycloak.token));
     }
 
     return (
@@ -20,6 +29,7 @@ function App() {
             authClient={keycloak}
             initOptions={initOptions}
             LoadingComponent={<CircularProgress/>}
+            onEvent={handleOnEvent}
         >
             <Router>
                 <Box style={{

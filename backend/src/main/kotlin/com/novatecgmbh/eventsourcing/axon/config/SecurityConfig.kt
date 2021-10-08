@@ -37,6 +37,6 @@ internal class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     super.configure(http)
     http.authorizeRequests().anyRequest().authenticated()
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    http.cors().disable()
+    http.cors().and().csrf().disable()
   }
 }
