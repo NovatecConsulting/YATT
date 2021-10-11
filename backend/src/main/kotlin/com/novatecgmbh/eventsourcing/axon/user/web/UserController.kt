@@ -2,18 +2,19 @@ package com.novatecgmbh.eventsourcing.axon.user.web
 
 import com.novatecgmbh.eventsourcing.axon.security.UnregisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
-import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
 import com.novatecgmbh.eventsourcing.axon.user.web.dto.RegisterUserDto
-import java.util.concurrent.CompletableFuture
+import java.time.Duration
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryOptional
+import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 @RequestMapping("/v2/users")
 @RestController
@@ -37,5 +38,22 @@ class UserController(
   fun registerUser(
       @RequestBody body: RegisterUserDto,
       @AuthenticationPrincipal principal: UnregisteredUserPrincipal
-  ): CompletableFuture<UserId> = commandGateway.send(body.toCommand(principal.username))
+  ): Mono<ResponseEntity<UserQueryResult>> =
+      queryGateway.subscriptionQuery(
+              FindUserByExternalUserIdQuery(principal.username),
+              ResponseTypes.instanceOf(UserQueryResult::class.java),
+              ResponseTypes.instanceOf(UserQueryResult::class.java),
+          )
+          .let { queryResult ->
+            Mono.`when`(queryResult.initialResult())
+                .then(
+                    Mono.fromCompletionStage {
+                      commandGateway.send<Unit>(body.toCommand(principal.username))
+                    })
+                .thenMany(queryResult.updates())
+                .next()
+                .map { entity -> ResponseEntity.ok(entity) }
+                .timeout(Duration.ofSeconds(5))
+                .doFinally { queryResult.cancel() }
+          }
 }
