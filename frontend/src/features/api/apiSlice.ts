@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {selectToken} from "./tokenSlice";
+import {selectToken} from "../auth/authSlice";
 import {RootState} from "../../app/store";
 
 export const baseUrl = 'http://localhost:8080/v2';

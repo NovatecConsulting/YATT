@@ -1,59 +1,80 @@
 import React from 'react';
 import {
-    BrowserRouter as Router,
+    BrowserRouter as Router, Route,
     Switch
 } from "react-router-dom";
 import {ReactKeycloakProvider} from '@react-keycloak/web'
 import {ProjectsList} from "./features/projects/ProjectsList";
-import {AppBar, Box, CircularProgress, Toolbar, Typography} from "@mui/material";
+import {Box, CircularProgress} from "@mui/material";
 import keycloak from "./keycloak";
 import PrivateRoute from "./components/PrivateRoute";
-import {AuthClientError, AuthClientEvent} from "@react-keycloak/core/lib/types";
+import {AuthClientError, AuthClientEvent, AuthClientTokens} from "@react-keycloak/core/lib/types";
+import {
+    authenticated, authLoading, registered,
+    selectIsAuthLoading,
+    tokenUpdated
+} from "./features/auth/authSlice";
+import {Login} from "./features/auth/Login";
+import {Home} from "./components/Home";
+import {Registration} from "./features/auth/Registration";
+import {store} from "./app/store";
 import {useAppDispatch} from "./app/hooks";
-import {tokenUpdated} from "./features/api/tokenSlice";
+import {loadCurrentUser} from "./features/auth/currentUserSlice";
 
 function App() {
     const dispatch = useAppDispatch();
 
     const initOptions = {
+        onLoad: 'check-sso',
         pkceMethod: 'S256',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     }
 
     const handleOnEvent = async (event: AuthClientEvent, error?: AuthClientError) => {
-        dispatch(tokenUpdated(keycloak.token));
+        if (event === 'onAuthSuccess') {
+            if (keycloak.authenticated) {
+                dispatch(tokenUpdated(keycloak.token));
+                dispatch(authenticated(true));
+                const {data: currentUser} = await dispatch(loadCurrentUser());
+                if (currentUser) {
+                    dispatch(registered(true));
+                }
+                dispatch(authLoading(false));
+                keycloak.onAuthRefreshSuccess?.call(undefined);// workaround to trigger isLoadingCheck
+            }
+        } else if (event === 'onReady') {
+            if (!keycloak.authenticated) {
+                dispatch(authLoading(false));
+                keycloak.onAuthRefreshSuccess?.call(undefined);// workaround to trigger isLoadingCheck
+            }
+        }
     }
 
+    const isLoadingCheck = () => selectIsAuthLoading(store.getState());
+
+    const handleOnTokens = (tokens: AuthClientTokens) => dispatch(tokenUpdated(tokens.token))
+
     return (
-        <ReactKeycloakProvider
-            authClient={keycloak}
-            initOptions={initOptions}
-            LoadingComponent={<CircularProgress/>}
-            onEvent={handleOnEvent}
-        >
-            <Router>
-                <Box style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100vh",
-                    width: "100vw",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}>
-                    <AppBar>
-                        <Toolbar>
-                            <Typography variant="h6" component="div">
-                                Projects
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Toolbar style={{flex: 0}}/>
+        <Box className={"centerColumn fullViewPort"}>
+            <ReactKeycloakProvider
+                authClient={keycloak}
+                initOptions={initOptions}
+                isLoadingCheck={isLoadingCheck}
+                LoadingComponent={<CircularProgress/>}
+                onEvent={handleOnEvent}
+                onTokens={handleOnTokens}
+            >
+                <Router>
                     <Switch>
-                        <PrivateRoute exact path={"/"} component={ProjectsList}/>
+                        <Route exact path={"/"} component={Home}/>
+                        <Route exact path={"/login"} component={Login}/>
+                        <PrivateRoute exact path={"/registration"} component={Registration}
+                                      allowUnregistered={true}/>
+                        <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
                     </Switch>
-                </Box>
-            </Router>
-        </ReactKeycloakProvider>
+                </Router>
+            </ReactKeycloakProvider>
+        </Box>
     );
 }
 
