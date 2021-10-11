@@ -4,20 +4,22 @@ import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
 import {Scaffold} from "../../components/Scaffold";
+import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
+import React from "react";
 
 export function ProjectsList() {
     const {
-        data: projectsEntityState,
+        data: projectIds,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetProjectsQuery();
+    } = useGetProjectsQuery(undefined, {selectFromResult: selectIdsFromResult});
 
     let content: ReactJSXElement;
     if (isLoading) {
         content = <CircularProgress/>;
-    } else if (isSuccess && projectsEntityState) {
+    } else if (isSuccess && projectIds) {
         content = (
             <TableContainer sx={{flex: 1, maxWidth: 900}}>
                 <Table stickyHeader>
@@ -31,7 +33,7 @@ export function ProjectsList() {
                     </TableHead>
                     <TableBody>
                         {
-                            projectsEntityState.ids.map(
+                            projectIds.map(
                                 (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
                             )
                         }
@@ -52,8 +54,12 @@ export function ProjectsList() {
     );
 }
 
-function ProjectRow({projectId}: { projectId: EntityId }) {
-    const project = useAppSelector(state => selectProjectById(state, projectId))
+interface ProjectRowProps {
+    projectId: EntityId;
+}
+
+function ProjectRow(props: ProjectRowProps) {
+    const project = useAppSelector(state => selectProjectById(state, props.projectId))
 
     if (project) {
         return (
@@ -64,6 +70,7 @@ function ProjectRow({projectId}: { projectId: EntityId }) {
                 <TableCell>{project.deadline}</TableCell>
             </TableRow>
         );
+    } else {
+        return null;
     }
-    return null;
 }
