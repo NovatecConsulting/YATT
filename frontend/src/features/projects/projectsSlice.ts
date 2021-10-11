@@ -2,7 +2,7 @@ import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
-import {selectToken} from "../api/tokenSlice";
+import {selectToken} from "../auth/authSlice";
 
 export interface Project {
     identifier: string;

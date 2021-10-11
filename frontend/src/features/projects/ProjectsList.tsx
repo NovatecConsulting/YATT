@@ -3,6 +3,7 @@ import {selectProjectById, useGetProjectsQuery} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
+import {Scaffold} from "../../components/Scaffold";
 
 export function ProjectsList() {
     const {
@@ -44,7 +45,11 @@ export function ProjectsList() {
         return null;
     }
 
-    return content;
+    return (
+        <Scaffold title={"Projects"}>
+            {content}
+        </Scaffold>
+    );
 }
 
 function ProjectRow({projectId}: { projectId: EntityId }) {
