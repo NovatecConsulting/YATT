@@ -7,13 +7,29 @@ export interface User {
     lastname: string;
 }
 
+export interface RegisterUserDto {
+    firstname: string;
+    lastname: string;
+}
+
 export const extendedApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getCurrentUser: builder.query<User, void>({
             query: () => '/users/current'
+        }),
+        registerUser: builder.mutation<User, RegisterUserDto>({
+            query: (userDto: RegisterUserDto) => ({
+                url: '/users/current',
+                method: 'POST',
+                body: userDto
+            })
         })
     })
 })
+
+export const {
+    useRegisterUserMutation,
+} = extendedApiSlice;
 
 export const loadCurrentUser = extendedApiSlice.endpoints.getCurrentUser.initiate;
 
