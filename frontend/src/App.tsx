@@ -17,11 +17,12 @@ import {
 import {Login} from "./features/auth/Login";
 import {Home} from "./components/Home";
 import {Registration} from "./features/auth/Registration";
-import {store} from "./app/store";
 import {useAppDispatch} from "./app/hooks";
 import {loadCurrentUser} from "./features/auth/currentUserSlice";
+import {useStore} from "react-redux";
 
 function App() {
+    const store = useStore();
     const dispatch = useAppDispatch();
 
     const initOptions = {

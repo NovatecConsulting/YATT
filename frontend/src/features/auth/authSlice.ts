@@ -29,6 +29,12 @@ const authSlice = createSlice({
         },
         authLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
+        },
+        logout(state) {
+            state.isLoading = false;
+            state.isAuthenticated = false;
+            state.isRegistered = false;
+            state.token = undefined;
         }
     }
 })
@@ -38,6 +44,6 @@ export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenti
 export const selectIsRegistered = (state: RootState) => state.auth.isRegistered;
 export const selectIsAuthLoading = (state: RootState) => state.auth.isLoading;
 
-export const {tokenUpdated, registered, authenticated, authLoading} = authSlice.actions
+export const {tokenUpdated, registered, authenticated, authLoading, logout} = authSlice.actions
 
 export default authSlice.reducer;
