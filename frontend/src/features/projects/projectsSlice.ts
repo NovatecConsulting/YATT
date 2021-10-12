@@ -3,6 +3,7 @@ import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
 import {selectToken} from "../auth/authSlice";
+import {CancelCallback} from "can-ndjson-stream";
 
 export interface Project {
     identifier: string;
@@ -27,13 +28,15 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let cancel: (() => void) | undefined = undefined;
+                let cancel: CancelCallback | undefined;
                 try {
                     await api.cacheDataLoaded;
 
                     cancel = await subscribe<Project>('/projects', update => {
                         api.updateCachedData(draft => {
-                            projectsAdapter.upsertOne(draft, update);
+                            if (draft) {
+                                projectsAdapter.upsertOne(draft, update);
+                            }
                         });
                     }, selectToken(api.getState() as unknown as RootState));
                 } catch {
@@ -42,7 +45,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 }
                 await api.cacheEntryRemoved;
                 if (cancel) {
-                    cancel();
+                    await cancel("cacheEntryRemoved");
                 }
             }
         })

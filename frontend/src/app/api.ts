@@ -1,34 +1,38 @@
 import {baseUrl} from "../features/api/apiSlice";
-import ndjsonStream from "can-ndjson-stream";
+import ndjsonStream, {CancelCallback, Result} from "can-ndjson-stream";
 
 export async function subscribe<UpdateType>(
     path: string,
     onUpdate: (update: UpdateType) => void,
     token?: string
-): Promise<() => void> {
-    const response = await fetch(`${baseUrl}/projects`, {
+): Promise<CancelCallback> {
+    // TODO try resubscribe if lost connection to server
+    const response = await fetch(`${baseUrl}${path}`, {
         headers: new Headers({
             'Accept': 'application/x-ndjson',
             ...(token && {'Authorization': `Bearer ${token}`})
         })
     });
+
     if (response.body) {
         const stream = ndjsonStream<UpdateType>(response.body);
         const reader = stream.getReader();
-        let read: (result: {
-            done: boolean;
-            value: UpdateType;
-        }) => void;
-        reader.read().then(read = (result) => {
+
+        let processResult: (result: Result<UpdateType>) => void;
+        reader.read().then(processResult = (result) => {
             if (result.done) {
                 return;
             }
 
-            onUpdate(result.value);
-            reader.read().then(read);
+            if (result.value) {
+                onUpdate(result.value);
+            }
+            reader.read().then(processResult);
         });
 
-        return stream.cancel;
+        return (reason?: string) => {
+            return reader.cancel(reason);
+        };
     } else {
         throw 'no response body';
     }
