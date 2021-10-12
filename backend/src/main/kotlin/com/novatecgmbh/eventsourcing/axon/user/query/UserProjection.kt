@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.user.query
 
-import com.novatecgmbh.eventsourcing.axon.security.RegisteredUserPrincipal
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
 import javax.persistence.Column

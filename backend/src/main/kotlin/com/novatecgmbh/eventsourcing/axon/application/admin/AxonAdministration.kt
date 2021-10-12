@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.admin
+package com.novatecgmbh.eventsourcing.axon.application.admin
 
 import java.util.*
 import org.axonframework.config.EventProcessingConfiguration

@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.config
+package com.novatecgmbh.eventsourcing.axon.application.config
 
 import java.util.*
 import org.springframework.beans.factory.annotation.Value

@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.user.web
 
-import com.novatecgmbh.eventsourcing.axon.security.UnregisteredUserPrincipal
+import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
 import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
 import com.novatecgmbh.eventsourcing.axon.user.web.dto.RegisterUserDto

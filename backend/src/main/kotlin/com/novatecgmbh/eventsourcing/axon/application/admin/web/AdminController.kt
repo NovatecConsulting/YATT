@@ -1,6 +1,6 @@
-package com.novatecgmbh.eventsourcing.axon.admin.web
+package com.novatecgmbh.eventsourcing.axon.application.admin.web
 
-import com.novatecgmbh.eventsourcing.axon.admin.AxonAdministration
+import com.novatecgmbh.eventsourcing.axon.application.admin.AxonAdministration
 import java.util.*
 import org.axonframework.eventhandling.EventProcessor
 import org.axonframework.eventhandling.EventTrackerStatus

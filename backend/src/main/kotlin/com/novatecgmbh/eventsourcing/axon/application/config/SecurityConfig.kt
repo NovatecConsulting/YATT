@@ -1,6 +1,6 @@
-package com.novatecgmbh.eventsourcing.axon.config
+package com.novatecgmbh.eventsourcing.axon.application.config
 
-import com.novatecgmbh.eventsourcing.axon.security.CustomUserAuthenticationConverter
+import com.novatecgmbh.eventsourcing.axon.application.security.CustomUserAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
