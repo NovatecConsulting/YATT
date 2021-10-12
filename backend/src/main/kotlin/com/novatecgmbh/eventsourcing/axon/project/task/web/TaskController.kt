@@ -49,7 +49,9 @@ class TaskController(
             ResponseTypes.instanceOf(TaskQueryResult::class.java),
             ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
-    return query.initialResult().concatWith(query.updates())
+    return query.initialResult().concatWith(query.updates()).doFinally {
+        query.cancel()
+    }
   }
 
   @GetMapping("/v2/projects/{projectId}/tasks")
@@ -72,7 +74,9 @@ class TaskController(
             ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
             ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
-    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates())
+    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates()).doFinally {
+        query.cancel()
+    }
   }
 
   @PostMapping("/v2/tasks/{taskId}/reschedule")

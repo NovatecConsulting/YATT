@@ -37,6 +37,7 @@ function App() {
                 dispatch(tokenUpdated(keycloak.token));
                 dispatch(authenticated(true));
                 const {data: currentUser} = await dispatch(loadCurrentUser());
+                // TODO error handling if server not reachable
                 if (currentUser) {
                     dispatch(registered(true));
                 }

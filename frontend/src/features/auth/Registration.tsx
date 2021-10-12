@@ -21,6 +21,7 @@ export function Registration() {
                 dispatch(registered(true));
                 history.replace("/");
             } catch (e) {
+                // TODO error handling
                 console.log("registration failed");
             }
         },

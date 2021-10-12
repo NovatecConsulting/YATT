@@ -38,7 +38,9 @@ class ProjectControllerV2(
             ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java),
             ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
-    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates())
+    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates()).doFinally {
+        query.cancel()
+    }
   }
 
   @GetMapping("/{projectId}")
@@ -61,7 +63,9 @@ class ProjectControllerV2(
             ResponseTypes.instanceOf(ProjectQueryResult::class.java),
             ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
-    return query.initialResult().concatWith(query.updates())
+    return query.initialResult().concatWith(query.updates()).doFinally {
+        query.cancel()
+    }
   }
 
   @PostMapping

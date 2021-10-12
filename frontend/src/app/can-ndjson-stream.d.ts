@@ -1,11 +1,16 @@
 declare module 'can-ndjson-stream' {
-    export default function ndjsonStream<T>(data: unknown): {
+    export type CancelCallback = (reason?: string) => Promise<string | undefined>
+    export type  Result<T> = {
+        done: boolean;
+        value: T | undefined;
+    };
+
+    export default function ndjsonStream<T>(data: ReadableStream<Uint8Array>): {
         getReader: () => {
-            read: () => Promise<{
-                done: boolean;
-                value: T;
-            }>;
+            read: () => Promise<Result<T>>;
+            releaseLock: () => void;
+            cancel: CancelCallback;
         };
-        cancel: () => void;
+        cancel: CancelCallback;
     }
 }
