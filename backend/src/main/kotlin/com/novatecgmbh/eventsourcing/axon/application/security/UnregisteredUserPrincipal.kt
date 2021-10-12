@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.security
+package com.novatecgmbh.eventsourcing.axon.application.security
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

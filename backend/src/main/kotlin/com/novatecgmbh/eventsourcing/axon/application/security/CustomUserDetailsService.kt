@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.security
+package com.novatecgmbh.eventsourcing.axon.application.security
 
 import com.novatecgmbh.eventsourcing.axon.user.query.UserProjectionRepository
 import kotlin.jvm.Throws
