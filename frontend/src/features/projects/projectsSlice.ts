@@ -19,6 +19,13 @@ export interface CreateProjectDto {
     deadline: string;
 }
 
+export interface RescheduleProjectDto {
+    identifier: string;
+    aggregateVersion: number;
+    newStartDate: string;
+    newDeadline: string;
+}
+
 const projectsAdapter = createEntityAdapter<Project>({
     selectId: model => model.identifier
 });
@@ -61,11 +68,22 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: projectDto
             }),
-        })
+        }),
+        rescheduleProject: builder.mutation<number, RescheduleProjectDto>({
+            query: rescheduleDto => ({
+                url: `/projects/${rescheduleDto.identifier}/reschedule`,
+                method: 'POST',
+                body: rescheduleDto
+            }),
+        }),
     })
 });
 
-export const {useGetProjectsQuery, useCreateProjectMutation} = extendedApiSlice;
+export const {
+    useGetProjectsQuery,
+    useCreateProjectMutation,
+    useRescheduleProjectMutation,
+} = extendedApiSlice;
 
 const selectProjectsResult = extendedApiSlice.endpoints.getProjects.select();
 

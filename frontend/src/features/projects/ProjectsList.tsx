@@ -1,4 +1,5 @@
 import {
+    Button,
     CircularProgress, IconButton,
     Paper,
     Table,
@@ -10,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import {selectProjectById, useGetProjectsQuery} from "./projectsSlice";
+import {selectProjectById, useGetProjectsQuery, useRescheduleProjectMutation} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
@@ -42,6 +43,7 @@ export function ProjectsList() {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Planned Start Date</TableCell>
                                 <TableCell>Deadline</TableCell>
+                                <TableCell/>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -75,6 +77,7 @@ interface ProjectRowProps {
 function ProjectRow(props: ProjectRowProps) {
     const project = useAppSelector(state => selectProjectById(state, props.projectId))
     const history = useHistory()
+    const [rescheduleProject, {isLoading}] = useRescheduleProjectMutation();
 
     if (project) {
         return (
@@ -82,6 +85,22 @@ function ProjectRow(props: ProjectRowProps) {
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{project.plannedStartDate}</TableCell>
                 <TableCell>{project.deadline}</TableCell>
+                <TableCell align="right">
+                    <Button
+                        disabled={isLoading}
+                        onClick={event => {
+                            event.stopPropagation();
+                            const date = new Date(project.deadline);
+                            date.setDate(date.getDate() + 1);
+                            rescheduleProject({
+                               identifier: project.identifier,
+                               aggregateVersion: project.version,
+                                newStartDate: project.plannedStartDate,
+                                newDeadline: date.toISOString(),
+                            });
+                        }}
+                    >Postpone Deadline</Button>
+                </TableCell>
             </TableRow>
         );
     } else {
