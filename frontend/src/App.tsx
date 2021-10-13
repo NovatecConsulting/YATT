@@ -2,7 +2,7 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {ReactKeycloakProvider} from '@react-keycloak/web'
 import {ProjectsList} from "./features/projects/ProjectsList";
-import {Box, CircularProgress} from "@mui/material";
+import {Box, CircularProgress, ThemeProvider} from "@mui/material";
 import keycloak from "./keycloak";
 import PrivateRoute from "./components/PrivateRoute";
 import {AuthClientError, AuthClientEvent, AuthClientTokens} from "@react-keycloak/core/lib/types";
@@ -14,6 +14,11 @@ import {useAppDispatch} from "./app/hooks";
 import {loadCurrentUser} from "./features/auth/currentUserSlice";
 import {useStore} from "react-redux";
 import {TaskList} from "./features/tasks/TaskList";
+import {CreateProjectForm} from "./features/projects/CreateProjectForm";
+import {LocalizationProvider} from "@mui/lab";
+import DateAdapter from '@mui/lab/AdapterDayjs';
+import {theme} from "./theme";
+import {SnackbarProvider} from "notistack";
 
 function App() {
     const store = useStore();
@@ -51,27 +56,34 @@ function App() {
     const handleOnTokens = (tokens: AuthClientTokens) => dispatch(tokenUpdated(tokens.token))
 
     return (
-        <Box className={"centerColumn fullViewPort"}>
-            <ReactKeycloakProvider
-                authClient={keycloak}
-                initOptions={initOptions}
-                isLoadingCheck={isLoadingCheck}
-                LoadingComponent={<CircularProgress/>}
-                onEvent={handleOnEvent}
-                onTokens={handleOnTokens}
-            >
-                <Router>
-                    <Switch>
-                        <Route exact path={"/"} component={Home}/>
-                        <Route exact path={"/login"} component={Login}/>
-                        <PrivateRoute exact path={"/registration"} component={Registration}
-                                      allowUnregistered={true}/>
-                        <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
-                        <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
-                    </Switch>
-                </Router>
-            </ReactKeycloakProvider>
-        </Box>
+        <ThemeProvider theme={theme}>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+                <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
+                    <Box className={"centerColumn fullViewPort"}>
+                        <ReactKeycloakProvider
+                            authClient={keycloak}
+                            initOptions={initOptions}
+                            isLoadingCheck={isLoadingCheck}
+                            LoadingComponent={<CircularProgress/>}
+                            onEvent={handleOnEvent}
+                            onTokens={handleOnTokens}
+                        >
+                            <Router>
+                                <Switch>
+                                    <Route exact path={"/"} component={Home}/>
+                                    <Route exact path={"/login"} component={Login}/>
+                                    <PrivateRoute exact path={"/registration"} component={Registration}
+                                                  allowUnregistered={true}/>
+                                    <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
+                                    <PrivateRoute exact path={"/projects/create"} component={CreateProjectForm}/>
+                                    <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
+                                </Switch>
+                            </Router>
+                        </ReactKeycloakProvider>
+                    </Box>
+                </SnackbarProvider>
+            </LocalizationProvider>
+        </ThemeProvider>
     );
 }
 

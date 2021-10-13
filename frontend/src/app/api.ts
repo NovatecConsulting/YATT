@@ -36,6 +36,6 @@ export async function subscribe<UpdateType>(
             return reader.cancel(reason);
         };
     } else {
-        throw 'no response body';
+        throw new Error('no response body');
     }
 }

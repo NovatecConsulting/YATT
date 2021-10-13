@@ -1,4 +1,15 @@
-import {CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {
+    CircularProgress, IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow, Toolbar, Tooltip,
+    Typography
+} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import {selectProjectById, useGetProjectsQuery} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
@@ -22,24 +33,27 @@ export function ProjectsList() {
         content = <CircularProgress/>;
     } else if (isSuccess && projectIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000, borderRadius: '10px'}} component={Paper}>
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Planned Start Date</TableCell>
-                            <TableCell>Deadline</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            projectIds.map(
-                                (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
-                            )
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Paper>
+                <TableToolbar/>
+                <TableContainer sx={{minWidth: 1000}}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Planned Start Date</TableCell>
+                                <TableCell>Deadline</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                projectIds.map(
+                                    (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
+                                )
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         );
     } else if (isError) {
         content = <div>{error}</div>;
@@ -74,3 +88,31 @@ function ProjectRow(props: ProjectRowProps) {
         return null;
     }
 }
+
+function TableToolbar() {
+    const history = useHistory();
+    return (
+        <Toolbar
+            sx={{
+                pl: {sm: 2},
+                pr: {xs: 1, sm: 1},
+            }}
+        >
+            <Typography
+                sx={{flex: '1 1 100%'}}
+                color="inherit"
+                variant="subtitle1"
+                component="div"
+            >
+                All Projects
+            </Typography>
+            <Tooltip title="Create Project">
+                <IconButton
+                    onClick={() => history.push('/projects/create')}
+                >
+                    <AddIcon fontSize={"large"}/>
+                </IconButton>
+            </Tooltip>
+        </Toolbar>
+    );
+};

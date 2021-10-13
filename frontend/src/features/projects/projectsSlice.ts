@@ -3,10 +3,17 @@ import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
 import {CancelCallback} from "can-ndjson-stream";
+import {RegisterUserDto} from "../auth/currentUserSlice";
 
 export interface Project {
     identifier: string;
     version: number;
+    name: string;
+    plannedStartDate: string;
+    deadline: string;
+}
+
+export interface CreateProjectDto {
     name: string;
     plannedStartDate: string;
     deadline: string;
@@ -47,11 +54,18 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     await cancel("cacheEntryRemoved");
                 }
             }
+        }),
+        createProject: builder.mutation<string, CreateProjectDto>({
+            query: (projectDto: CreateProjectDto) => ({
+                url: '/projects',
+                method: 'POST',
+                body: projectDto
+            }),
         })
     })
 });
 
-export const {useGetProjectsQuery} = extendedApiSlice;
+export const {useGetProjectsQuery, useCreateProjectMutation} = extendedApiSlice;
 
 const selectProjectsResult = extendedApiSlice.endpoints.getProjects.select();
 
