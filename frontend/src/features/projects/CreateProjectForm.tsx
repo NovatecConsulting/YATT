@@ -1,7 +1,7 @@
 import {useHistory} from "react-router-dom";
 import {useFormik} from "formik";
 import {Scaffold} from "../../components/Scaffold";
-import {Box, Button, Card, CardContent, Paper, Snackbar, TextField, TextFieldProps} from "@mui/material";
+import {Box, Button, Card, CardContent, TextField, TextFieldProps} from "@mui/material";
 import DatePicker from '@mui/lab/DatePicker';
 import {useCreateProjectMutation} from "./projectsSlice";
 import React from "react";
@@ -9,7 +9,7 @@ import {useSnackbar} from "notistack";
 
 interface Values {
     name: string;
-    plannedStartDate: Date;
+    startDate: Date;
     deadline: Date;
 }
 
@@ -21,12 +21,12 @@ export function CreateProjectForm() {
     const formik = useFormik({
         initialValues: {
             name: '',
-            plannedStartDate: new Date(),
+            startDate: new Date(),
             deadline: new Date(),
         } as Values,
         validateOnChange: true,
         validate: values => {
-            if (values.plannedStartDate > values.deadline) {
+            if (values.startDate > values.deadline) {
                 return {
                     deadline: `Can't be before Planned Start Date`
                 }
@@ -37,7 +37,7 @@ export function CreateProjectForm() {
                 await saveProject({
                     name: values.name,
                     deadline: values.deadline.toISOString(),
-                    plannedStartDate: values.plannedStartDate.toISOString(),
+                    startDate: values.startDate.toISOString(),
                 }).unwrap();
                 enqueueSnackbar(`Project "${values.name}" created successfully`)
                 history.goBack();
@@ -65,22 +65,22 @@ export function CreateProjectForm() {
                     />
                     <DatePicker
                         label="Planned Start Date"
-                        value={formik.values.plannedStartDate}
+                        value={formik.values.startDate}
                         onChange={(newValue) => {
-                            formik.getFieldHelpers('plannedStartDate').setValue(newValue, true)
+                            formik.getFieldHelpers('startDate').setValue(newValue, true)
                         }}
                         renderInput={(params: TextFieldProps) => <TextField
                             {...params}
                             required
                             fullWidth
-                            id="deadline"
-                            name="deadline"
-                            error={params.error || (formik.touched.plannedStartDate && Boolean(formik.errors.plannedStartDate))}
-                            helperText={formik.touched.plannedStartDate && formik.errors.plannedStartDate}
+                            id="startDate"
+                            name="startDate"
+                            error={params.error || (formik.touched.startDate && Boolean(formik.errors.startDate))}
+                            helperText={formik.touched.startDate && formik.errors.startDate}
                         />}
                     />
                     <DatePicker
-                        minDate={formik.values.plannedStartDate}
+                        minDate={formik.values.startDate}
                         label="Deadline"
                         value={formik.values.deadline}
                         onChange={(newValue) => {

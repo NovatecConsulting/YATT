@@ -3,27 +3,26 @@ import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
 import {CancelCallback} from "can-ndjson-stream";
-import {RegisterUserDto} from "../auth/currentUserSlice";
 
 export interface Project {
     identifier: string;
     version: number;
     name: string;
-    plannedStartDate: string;
+    startDate: string;
     deadline: string;
 }
 
 export interface CreateProjectDto {
     name: string;
-    plannedStartDate: string;
+    startDate: string;
     deadline: string;
 }
 
 export interface RescheduleProjectDto {
     identifier: string;
-    aggregateVersion: number;
-    newStartDate: string;
-    newDeadline: string;
+    version: number;
+    startDate: string;
+    deadline: string;
 }
 
 const projectsAdapter = createEntityAdapter<Project>({
@@ -70,11 +69,23 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
             }),
         }),
         rescheduleProject: builder.mutation<number, RescheduleProjectDto>({
-            query: rescheduleDto => ({
-                url: `/projects/${rescheduleDto.identifier}/reschedule`,
+            query: ({identifier, ...patch}) => ({
+                url: `/projects/${identifier}/reschedule`,
                 method: 'POST',
-                body: rescheduleDto
+                body: patch
             }),
+            onQueryStarted({identifier, version, ...patch}, api) {
+                const patchResult = api.dispatch(
+                    extendedApiSlice.util.updateQueryData('getProjects', undefined, draft => {
+                        projectsAdapter.updateOne(draft, {
+                            id: identifier,
+                            changes: {version: version+1, ...patch}
+                        });
+                    })
+                );
+
+                api.queryFulfilled.catch(patchResult.undo)
+            }
         }),
     })
 });

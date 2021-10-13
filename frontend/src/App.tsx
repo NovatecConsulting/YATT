@@ -19,6 +19,7 @@ import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterDayjs';
 import {theme} from "./theme";
 import {SnackbarProvider} from "notistack";
+import locale from "dayjs/locale/de.js";
 
 function App() {
     const store = useStore();
@@ -57,7 +58,7 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={DateAdapter}>
+            <LocalizationProvider dateAdapter={DateAdapter} locale={locale}>
                 <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
                     <Box className={"centerColumn fullViewPort"}>
                         <ReactKeycloakProvider

@@ -152,7 +152,7 @@ class ProjectProjectorTest {
       assertEquals(expectedIdentifier, capturedResult.identifier)
       if (expectedName != null) assertEquals(expectedName, capturedResult.name)
       if (expectedStartDate != null)
-          assertEquals(expectedStartDate, capturedResult.plannedStartDate)
+          assertEquals(expectedStartDate, capturedResult.startDate)
       if (expectedDeadline != null) assertEquals(expectedDeadline, capturedResult.deadline)
       assertEquals(expectedVersion, capturedResult.version)
     }

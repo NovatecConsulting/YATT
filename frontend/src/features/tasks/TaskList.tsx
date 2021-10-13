@@ -64,8 +64,8 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
         return (
             <TableRow hover>
                 <TableCell>{task.name}</TableCell>
-                <TableCell>{task.startDate}</TableCell>
-                <TableCell>{task.endDate}</TableCell>
+                <TableCell>{new Date(task.startDate).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(task.endDate).toLocaleDateString()}</TableCell>
                 <TableCell>{task.status}</TableCell>
             </TableRow>
         );

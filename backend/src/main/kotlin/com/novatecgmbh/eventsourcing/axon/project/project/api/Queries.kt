@@ -10,6 +10,6 @@ data class ProjectQueryResult(
     val identifier: ProjectId,
     val version: Long,
     val name: String,
-    val plannedStartDate: LocalDate,
+    val startDate: LocalDate,
     val deadline: LocalDate
 )
