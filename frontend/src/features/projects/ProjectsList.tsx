@@ -77,26 +77,25 @@ interface ProjectRowProps {
 function ProjectRow(props: ProjectRowProps) {
     const project = useAppSelector(state => selectProjectById(state, props.projectId))
     const history = useHistory()
-    const [rescheduleProject, {isLoading}] = useRescheduleProjectMutation();
+    const [rescheduleProject] = useRescheduleProjectMutation();
 
     if (project) {
         return (
             <TableRow hover onClick={() => history.push(`/projects/${project.identifier}/tasks`)}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell>{project.plannedStartDate}</TableCell>
-                <TableCell>{project.deadline}</TableCell>
+                <TableCell>{new Date(project.startDate).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
                 <TableCell align="right">
                     <Button
-                        disabled={isLoading}
                         onClick={event => {
                             event.stopPropagation();
                             const date = new Date(project.deadline);
                             date.setDate(date.getDate() + 1);
                             rescheduleProject({
-                               identifier: project.identifier,
-                               aggregateVersion: project.version,
-                                newStartDate: project.plannedStartDate,
-                                newDeadline: date.toISOString(),
+                                identifier: project.identifier,
+                                version: project.version,
+                                startDate: project.startDate,
+                                deadline: date.toISOString(),
                             });
                         }}
                     >Postpone Deadline</Button>

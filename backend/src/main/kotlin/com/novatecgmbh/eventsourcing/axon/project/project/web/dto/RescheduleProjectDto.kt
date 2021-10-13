@@ -5,10 +5,10 @@ import com.novatecgmbh.eventsourcing.axon.project.project.api.RescheduleProjectC
 import java.time.LocalDate
 
 data class RescheduleProjectDto(
-    val aggregateVersion: Long,
-    val newStartDate: LocalDate,
-    val newDeadline: LocalDate
+    val version: Long,
+    val startDate: LocalDate,
+    val deadline: LocalDate
 ) {
   fun toCommand(projectId: ProjectId) =
-      RescheduleProjectCommand(projectId, aggregateVersion, newStartDate, newDeadline)
+      RescheduleProjectCommand(projectId, version, startDate, deadline)
 }

@@ -7,9 +7,9 @@ import java.time.LocalDate
 data class UpdateProjectDto(
     val version: Long,
     val name: String,
-    val plannedStartDate: LocalDate,
+    val startDate: LocalDate,
     val deadline: LocalDate
 ) {
   fun toCommand(projectId: ProjectId) =
-      UpdateProjectCommand(projectId, version, name, plannedStartDate, deadline)
+      UpdateProjectCommand(projectId, version, name, startDate, deadline)
 }
