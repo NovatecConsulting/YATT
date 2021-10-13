@@ -25,7 +25,7 @@ export function TaskList() {
         content = <CircularProgress/>;
     } else if (isSuccess && taskIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000, borderRadius: '10px'}} component={Paper}>
+            <TableContainer sx={{minWidth: 1000}} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
