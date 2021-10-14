@@ -8,10 +8,14 @@ import {Scaffold} from "../../components/Scaffold";
 import React from "react";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
+import {selectProjectById} from "../projects/projectsSlice";
+import {useStore} from "react-redux";
 
 export function TaskList() {
     const history = useHistory();
-    const {id: projectId} = useParams<{ id: string }>()
+    const {id: projectId} = useParams<{ id: string }>();
+    const store = useStore();
+    const project = selectProjectById(store.getState(), projectId)
 
     const {
         data: taskIds,
@@ -28,7 +32,7 @@ export function TaskList() {
         content = (
             <TableContainer sx={{minWidth: 1000}} component={Paper}>
                 <TableToolbar
-                    title={''}
+                    title={`Task for Project "${project?.name}"`}
                     tooltip={'Create Task'}
                     onClick={() => history.push(`/projects/${projectId}/tasks/new`)}
                 />
