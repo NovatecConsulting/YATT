@@ -77,9 +77,9 @@ function App() {
                                     <PrivateRoute exact path={"/registration"} component={Registration}
                                                   allowUnregistered={true}/>
                                     <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
-                                    <PrivateRoute exact path={"/projects/create"} component={CreateProjectForm}/>
+                                    <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
                                     <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
-                                    <PrivateRoute exact path={"/projects/:id/tasks/create"} component={CreateTaskForm}/>
+                                    <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
                                 </Switch>
                             </Router>
                         </ReactKeycloakProvider>

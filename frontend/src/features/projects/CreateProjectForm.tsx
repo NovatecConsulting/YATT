@@ -49,7 +49,7 @@ export function CreateProjectForm() {
     });
 
     return (
-        <Scaffold title={"Create Project"}>
+        <Scaffold>
             <Card><CardContent>
                 <Box component="form" onSubmit={formik.handleSubmit}>
                     <TextField
