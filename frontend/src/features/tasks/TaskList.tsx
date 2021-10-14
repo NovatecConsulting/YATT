@@ -25,6 +25,8 @@ export function TaskList() {
         error
     } = useGetTasksByProjectQuery(projectId, {selectFromResult: selectIdsFromResult});
 
+    const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasks/new`)
+
     let content: ReactJSXElement;
     if (isLoading) {
         content = <CircularProgress/>;
@@ -34,7 +36,7 @@ export function TaskList() {
                 <TableToolbar
                     title={`Task for Project "${project?.name}"`}
                     tooltip={'Create Task'}
-                    onClick={() => history.push(`/projects/${projectId}/tasks/new`)}
+                    onClick={navigateToTaskCreateForm}
                 />
                 <Table stickyHeader>
                     <TableHead>
