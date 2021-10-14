@@ -20,6 +20,7 @@ import DateAdapter from '@mui/lab/AdapterDayjs';
 import {theme} from "./theme";
 import {SnackbarProvider} from "notistack";
 import locale from "dayjs/locale/de.js";
+import {CreateTaskForm} from "./features/tasks/CreateTaskForm";
 
 function App() {
     const store = useStore();
@@ -78,6 +79,7 @@ function App() {
                                     <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
                                     <PrivateRoute exact path={"/projects/create"} component={CreateProjectForm}/>
                                     <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
+                                    <PrivateRoute exact path={"/projects/:id/tasks/create"} component={CreateTaskForm}/>
                                 </Switch>
                             </Router>
                         </ReactKeycloakProvider>

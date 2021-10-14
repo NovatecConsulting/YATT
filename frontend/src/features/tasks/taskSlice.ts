@@ -13,8 +13,23 @@ export interface Task {
     status: string;
 }
 
+export interface CreateTaskDto {
+    projectId: string,
+    name: string;
+    startDate: string;
+    endDate: string;
+}
+
 export const taskAdapter = createEntityAdapter<Task>({
-    selectId: model => model.identifier
+    selectId: model => model.identifier,
+    sortComparer: (a, b) => {
+        const comparingName = a.name.localeCompare(b.name);
+        if (comparingName !== 0) {
+            return comparingName
+        } else {
+            return a.identifier.localeCompare(b.identifier);
+        }
+    }
 });
 
 export const taskApiSlice = apiSlice.injectEndpoints({
@@ -48,11 +63,18 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                     await cancel("cacheEntryRemoved");
                 }
             }
-        })
+        }),
+        createTask: builder.mutation<string, CreateTaskDto>({
+            query: (taskDto) => ({
+                url: `/tasks`,
+                method: 'POST',
+                body: taskDto
+            }),
+        }),
     })
 });
 
-export const {useGetTasksByProjectQuery} = taskApiSlice;
+export const {useGetTasksByProjectQuery, useCreateTaskMutation} = taskApiSlice;
 
 const selectGetTasksByProjectResult
     = (state: RootState, projectId: EntityId) => taskApiSlice.endpoints.getTasksByProject.select(projectId.toString())(state)

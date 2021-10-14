@@ -26,7 +26,15 @@ export interface RescheduleProjectDto {
 }
 
 const projectsAdapter = createEntityAdapter<Project>({
-    selectId: model => model.identifier
+    selectId: model => model.identifier,
+    sortComparer: (a, b) => {
+        const comparingName = a.name.localeCompare(b.name);
+        if (comparingName !== 0) {
+            return comparingName
+        } else {
+            return a.identifier.localeCompare(b.identifier);
+        }
+    }
 });
 
 export const extendedApiSlice = apiSlice.injectEndpoints({
@@ -79,7 +87,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     extendedApiSlice.util.updateQueryData('getProjects', undefined, draft => {
                         projectsAdapter.updateOne(draft, {
                             id: identifier,
-                            changes: {version: version+1, ...patch}
+                            changes: {version: version + 1, ...patch}
                         });
                     })
                 );

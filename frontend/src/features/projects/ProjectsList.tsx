@@ -1,16 +1,14 @@
 import {
     Button,
-    CircularProgress, IconButton,
+    CircularProgress,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Toolbar, Tooltip,
-    Typography
+    TableRow,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
 import {selectProjectById, useGetProjectsQuery, useRescheduleProjectMutation} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
@@ -19,8 +17,10 @@ import {Scaffold} from "../../components/Scaffold";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
 import {useHistory} from "react-router-dom";
+import {TableToolbar} from "../../components/TableToolbar";
 
 export function ProjectsList() {
+    const history = useHistory();
     const {
         data: projectIds,
         isLoading,
@@ -34,28 +34,30 @@ export function ProjectsList() {
         content = <CircularProgress/>;
     } else if (isSuccess && projectIds) {
         content = (
-            <Paper>
-                <TableToolbar/>
-                <TableContainer sx={{minWidth: 1000}}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Planned Start Date</TableCell>
-                                <TableCell>Deadline</TableCell>
-                                <TableCell/>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                projectIds.map(
-                                    (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
-                                )
-                            }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+            <TableContainer sx={{minWidth: 1000}} component={Paper}>
+                <TableToolbar
+                    title={'All Projects'}
+                    tooltip={'Create Project'}
+                    onClick={() => history.push(`/projects/create`)}
+                />
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Planned Start Date</TableCell>
+                            <TableCell>Deadline</TableCell>
+                            <TableCell/>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            projectIds.map(
+                                (projectId: EntityId) => <ProjectRow key={projectId} projectId={projectId}/>
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
         );
     } else if (isError) {
         content = <div>{error}</div>;
@@ -106,31 +108,3 @@ function ProjectRow(props: ProjectRowProps) {
         return null;
     }
 }
-
-function TableToolbar() {
-    const history = useHistory();
-    return (
-        <Toolbar
-            sx={{
-                pl: {sm: 2},
-                pr: {xs: 1, sm: 1},
-            }}
-        >
-            <Typography
-                sx={{flex: '1 1 100%'}}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-            >
-                All Projects
-            </Typography>
-            <Tooltip title="Create Project">
-                <IconButton
-                    onClick={() => history.push('/projects/create')}
-                >
-                    <AddIcon fontSize={"large"}/>
-                </IconButton>
-            </Tooltip>
-        </Toolbar>
-    );
-};
