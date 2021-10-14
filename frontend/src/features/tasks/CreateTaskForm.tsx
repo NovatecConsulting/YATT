@@ -52,7 +52,7 @@ export function CreateTaskForm() {
     });
 
     return (
-        <Scaffold title={`Create Task`}>
+        <Scaffold>
             <Card><CardContent>
                 <Box component="form" onSubmit={formik.handleSubmit}>
                     <TextField

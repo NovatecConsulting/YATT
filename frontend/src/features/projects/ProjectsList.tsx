@@ -38,7 +38,7 @@ export function ProjectsList() {
                 <TableToolbar
                     title={'All Projects'}
                     tooltip={'Create Project'}
-                    onClick={() => history.push(`/projects/create`)}
+                    onClick={() => history.push(`/projects/new`)}
                 />
                 <Table stickyHeader>
                     <TableHead>
@@ -66,7 +66,7 @@ export function ProjectsList() {
     }
 
     return (
-        <Scaffold title={"Projects"}>
+        <Scaffold>
             {content}
         </Scaffold>
     );

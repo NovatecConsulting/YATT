@@ -30,7 +30,7 @@ export function TaskList() {
                 <TableToolbar
                     title={''}
                     tooltip={'Create Task'}
-                    onClick={() => history.push(`/projects/${projectId}/tasks/create`)}
+                    onClick={() => history.push(`/projects/${projectId}/tasks/new`)}
                 />
                 <Table stickyHeader>
                     <TableHead>
@@ -58,7 +58,7 @@ export function TaskList() {
     }
 
     return (
-        <Scaffold title={"Projects / Tasks"}>
+        <Scaffold>
             {content}
         </Scaffold>
     );
