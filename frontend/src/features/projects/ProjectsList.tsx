@@ -9,7 +9,7 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import {selectProjectById, useGetProjectsQuery, useRescheduleProjectMutation} from "./projectsSlice";
+import {Project, selectProjectById, useGetProjectsQuery, useRescheduleProjectMutation} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
@@ -81,26 +81,28 @@ function ProjectRow(props: ProjectRowProps) {
     const history = useHistory()
     const [rescheduleProject] = useRescheduleProjectMutation();
 
+    const navigateToProjectList = (project: Project) => history.push(`/projects/${project.identifier}/tasks`)
+
+    const postponeProject = (event: React.MouseEvent, project: Project) => {
+        event.stopPropagation();
+        const date = new Date(project.deadline);
+        date.setDate(date.getDate() + 1);
+        rescheduleProject({
+            identifier: project.identifier,
+            version: project.version,
+            startDate: project.startDate,
+            deadline: date.toISOString(),
+        });
+    }
+
     if (project) {
         return (
-            <TableRow hover onClick={() => history.push(`/projects/${project.identifier}/tasks`)}>
+            <TableRow hover onClick={() => navigateToProjectList(project)}>
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{new Date(project.startDate).toLocaleDateString()}</TableCell>
                 <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
                 <TableCell align="right">
-                    <Button
-                        onClick={event => {
-                            event.stopPropagation();
-                            const date = new Date(project.deadline);
-                            date.setDate(date.getDate() + 1);
-                            rescheduleProject({
-                                identifier: project.identifier,
-                                version: project.version,
-                                startDate: project.startDate,
-                                deadline: date.toISOString(),
-                            });
-                        }}
-                    >Postpone Deadline</Button>
+                    <Button onClick={(event) => postponeProject(event, project)}>Postpone Deadline</Button>
                 </TableCell>
             </TableRow>
         );
