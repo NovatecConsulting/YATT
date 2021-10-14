@@ -6,11 +6,12 @@ import DatePicker from '@mui/lab/DatePicker';
 import {useCreateProjectMutation} from "./projectsSlice";
 import React from "react";
 import {useSnackbar} from "notistack";
+import dayjs, {Dayjs} from "dayjs";
 
 interface Values {
     name: string;
-    startDate: Date;
-    deadline: Date;
+    startDate: Dayjs;
+    deadline: Dayjs;
 }
 
 export function CreateProjectForm() {
@@ -21,12 +22,12 @@ export function CreateProjectForm() {
     const formik = useFormik({
         initialValues: {
             name: '',
-            startDate: new Date(),
-            deadline: new Date(),
+            startDate: dayjs(),
+            deadline: dayjs(),
         } as Values,
         validateOnChange: true,
         validate: values => {
-            if (values.startDate > values.deadline) {
+            if (values.startDate.isAfter(values.deadline)) {
                 return {
                     deadline: `Can't be before Planned Start Date`
                 }
@@ -43,6 +44,7 @@ export function CreateProjectForm() {
                 history.goBack();
             } catch (e) {
                 // TODO error handling
+                console.log(e)
                 console.log("project creation failed");
             }
         },
@@ -66,6 +68,8 @@ export function CreateProjectForm() {
                     <DatePicker
                         label="Planned Start Date"
                         value={formik.values.startDate}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
                         onChange={(newValue) => {
                             formik.getFieldHelpers('startDate').setValue(newValue, true)
                         }}
@@ -83,6 +87,8 @@ export function CreateProjectForm() {
                         minDate={formik.values.startDate}
                         label="Deadline"
                         value={formik.values.deadline}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
                         onChange={(newValue) => {
                             formik.getFieldHelpers('deadline').setValue(newValue, true)
                         }}
