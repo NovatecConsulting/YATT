@@ -6,11 +6,12 @@ import DatePicker from '@mui/lab/DatePicker';
 import React from "react";
 import {useSnackbar} from "notistack";
 import {useCreateTaskMutation} from "./taskSlice";
+import dayjs, {Dayjs} from "dayjs";
 
 interface Values {
     name: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: Dayjs;
+    endDate: Dayjs;
 }
 
 export function CreateTaskForm() {
@@ -23,8 +24,8 @@ export function CreateTaskForm() {
     const formik = useFormik({
         initialValues: {
             name: '',
-            startDate: new Date(),
-            endDate: new Date(),
+            startDate: dayjs(),
+            endDate: dayjs(),
         } as Values,
         validateOnChange: true,
         validate: values => {
@@ -69,6 +70,8 @@ export function CreateTaskForm() {
                     <DatePicker
                         label="Planned Start Date"
                         value={formik.values.startDate}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
                         onChange={(newValue) => {
                             formik.getFieldHelpers('startDate').setValue(newValue, true)
                         }}
@@ -86,6 +89,8 @@ export function CreateTaskForm() {
                         minDate={formik.values.startDate}
                         label="End Date"
                         value={formik.values.endDate}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
                         onChange={(newValue) => {
                             formik.getFieldHelpers('endDate').setValue(newValue, true)
                         }}

@@ -1,4 +1,5 @@
 import {createTheme} from "@mui/material";
+import {deDE} from "@mui/material/locale";
 
 export const theme = createTheme({
     shape: {
@@ -11,4 +12,4 @@ export const theme = createTheme({
             },
         },
     },
-});
+}, deDE);

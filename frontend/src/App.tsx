@@ -21,6 +21,9 @@ import {theme} from "./theme";
 import {SnackbarProvider} from "notistack";
 import locale from "dayjs/locale/de.js";
 import {CreateTaskForm} from "./features/tasks/CreateTaskForm";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
 
 function App() {
     const store = useStore();
@@ -31,6 +34,9 @@ function App() {
         pkceMethod: 'S256',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     }
+
+    dayjs.extend(localizedFormat);
+    dayjs.locale(locale);
 
     const handleOnEvent = async (event: AuthClientEvent, error?: AuthClientError) => {
         if (event === 'onAuthSuccess') {

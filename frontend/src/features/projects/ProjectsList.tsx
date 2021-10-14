@@ -18,6 +18,7 @@ import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
+import dayjs from "dayjs";
 
 export function ProjectsList() {
     const history = useHistory();
@@ -85,13 +86,12 @@ function ProjectRow(props: ProjectRowProps) {
 
     const postponeProject = (event: React.MouseEvent, project: Project) => {
         event.stopPropagation();
-        const date = new Date(project.deadline);
-        date.setDate(date.getDate() + 1);
+        const newDeadline = dayjs(project.deadline).add(1, 'day');
         rescheduleProject({
             identifier: project.identifier,
             version: project.version,
             startDate: project.startDate,
-            deadline: date.toISOString(),
+            deadline: newDeadline.toISOString(),
         });
     }
 
@@ -99,8 +99,8 @@ function ProjectRow(props: ProjectRowProps) {
         return (
             <TableRow hover onClick={() => navigateToProjectList(project)}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell>{new Date(project.startDate).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
+                <TableCell>{dayjs(project.startDate).format('L')}</TableCell>
+                <TableCell>{dayjs(project.deadline).format('L')}</TableCell>
                 <TableCell align="right">
                     <Button onClick={(event) => postponeProject(event, project)}>Postpone Deadline</Button>
                 </TableCell>

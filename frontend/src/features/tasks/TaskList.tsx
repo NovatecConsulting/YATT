@@ -10,6 +10,7 @@ import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {selectProjectById} from "../projects/projectsSlice";
 import {useStore} from "react-redux";
+import dayjs from "dayjs";
 
 export function TaskList() {
     const history = useHistory();
@@ -76,8 +77,8 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
         return (
             <TableRow hover>
                 <TableCell>{task.name}</TableCell>
-                <TableCell>{new Date(task.startDate).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(task.endDate).toLocaleDateString()}</TableCell>
+                <TableCell>{dayjs(task.startDate).format('L')}</TableCell>
+                <TableCell>{dayjs(task.endDate).format('L')}</TableCell>
                 <TableCell>{task.status}</TableCell>
             </TableRow>
         );
