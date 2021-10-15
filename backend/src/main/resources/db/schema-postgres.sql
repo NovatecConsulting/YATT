@@ -42,6 +42,14 @@ create sequence hibernate_sequence start 1 increment 1;
         primary key (identifier)
     );
 
+    create table participant (
+       identifier varchar(255) not null,
+        project_id varchar(255) not null,
+        user_id varchar(255) not null,
+        version int8 not null,
+        primary key (identifier)
+    );
+
     create table projects (
        identifier varchar(255) not null,
         deadline date not null,
