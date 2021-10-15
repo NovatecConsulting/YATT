@@ -23,12 +23,16 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: userDto
             })
-        })
+        }),
+        getAllUsers: builder.query<User[], void>({
+            query: () => '/users'
+        }),
     })
 })
 
 export const {
     useRegisterUserMutation,
+    useGetAllUsersQuery,
 } = extendedApiSlice;
 
 export const loadCurrentUser = extendedApiSlice.endpoints.getCurrentUser.initiate;

@@ -4,7 +4,7 @@ import {Redirect, useHistory} from "react-router-dom";
 import {Scaffold} from "../../components/Scaffold";
 import {useFormik} from "formik";
 import {Button, Card, CardContent, TextField} from "@mui/material";
-import {RegisterUserDto, useRegisterUserMutation} from "./currentUserSlice";
+import {RegisterUserDto, useRegisterUserMutation} from "./usersSlice";
 
 export function Registration() {
     const history = useHistory();

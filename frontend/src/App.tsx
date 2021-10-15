@@ -11,7 +11,7 @@ import {Login} from "./features/auth/Login";
 import {Home} from "./components/Home";
 import {Registration} from "./features/auth/Registration";
 import {useAppDispatch} from "./app/hooks";
-import {loadCurrentUser} from "./features/auth/currentUserSlice";
+import {loadCurrentUser} from "./features/auth/usersSlice";
 import {useStore} from "react-redux";
 import {TaskList} from "./features/tasks/TaskList";
 import {CreateProjectForm} from "./features/projects/CreateProjectForm";

@@ -14,6 +14,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
     '/companies': 'Companies',
     '/companies/new': 'New',
     '/companies/employees': 'Employees',
+    '/companies/employees/new': 'New',
 };
 
 interface LinkRouterProps extends LinkProps {
