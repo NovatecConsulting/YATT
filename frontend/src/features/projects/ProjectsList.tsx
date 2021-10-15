@@ -91,7 +91,7 @@ function ProjectRow(props: ProjectRowProps) {
             identifier: project.identifier,
             version: project.version,
             startDate: project.startDate,
-            deadline: newDeadline.toISOString(),
+            deadline: newDeadline.format("YYYY-MM-DD"),
         });
     }
 
