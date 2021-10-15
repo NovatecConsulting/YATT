@@ -9,6 +9,13 @@ create sequence hibernate_sequence start with 1 increment by 1;
         primary key (id)
     );
 
+    create table company (
+       identifier varchar(255) not null,
+        name varchar(255) not null,
+        version bigint not null,
+        primary key (identifier)
+    );
+
     create table domain_event_entry (
        global_index bigint not null,
         event_identifier varchar(255) not null,
@@ -21,6 +28,18 @@ create sequence hibernate_sequence start with 1 increment by 1;
         sequence_number bigint not null,
         type varchar(255),
         primary key (global_index)
+    );
+
+    create table employee (
+       identifier varchar(255) not null,
+        company_id varchar(255) not null,
+        is_admin boolean not null,
+        is_project_manager boolean not null,
+        user_first_name varchar(255),
+        user_id varchar(255) not null,
+        user_last_name varchar(255),
+        version bigint not null,
+        primary key (identifier)
     );
 
     create table projects (

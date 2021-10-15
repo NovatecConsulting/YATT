@@ -1,9 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.user.query
 
-import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
-import com.novatecgmbh.eventsourcing.axon.user.api.UserId
-import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
-import com.novatecgmbh.eventsourcing.axon.user.api.UserRegisteredEvent
+import com.novatecgmbh.eventsourcing.axon.user.api.*
 import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -52,4 +49,8 @@ class UserProjector(
   @QueryHandler
   fun handle(query: FindUserByExternalUserIdQuery): Optional<UserQueryResult> =
       repository.findByExternalUserId(query.externalUserId).map { it.toQueryResult() }
+
+  @QueryHandler
+  fun handle(query: UserQuery): Optional<UserQueryResult> =
+      repository.findById(query.userId).map { it.toQueryResult() }
 }
