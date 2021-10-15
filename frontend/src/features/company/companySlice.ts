@@ -1,7 +1,8 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
-import {Project} from "../projects/projectsSlice";
 import {RootState} from "../../app/store";
+import {CancelCallback} from "can-ndjson-stream";
+import {subscribe} from "../../app/api";
 
 export interface Company {
     identifier: string;
@@ -30,6 +31,27 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     response
                 );
             },
+            async onCacheEntryAdded(_, api): Promise<void> {
+                let cancel: CancelCallback | undefined;
+                try {
+                    await api.cacheDataLoaded;
+
+                    cancel = await subscribe<Company>('/companies', update => {
+                        api.updateCachedData(draft => {
+                            if (draft) {
+                                companiesAdapter.upsertOne(draft, update);
+                            }
+                        });
+                    });
+                } catch {
+                    // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
+                    // in which case `cacheDataLoaded` will throw
+                }
+                await api.cacheEntryRemoved;
+                if (cancel) {
+                    await cancel("cacheEntryRemoved");
+                }
+            }
         }),
         createCompany: builder.mutation<string,CreateCompanyDto>({
             query: (companyDto) => ({
