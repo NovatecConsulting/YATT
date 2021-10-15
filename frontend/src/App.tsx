@@ -23,6 +23,8 @@ import locale from "dayjs/locale/de.js";
 import {CreateTaskForm} from "./features/tasks/CreateTaskForm";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import {CompanyList} from "./features/company/CompanyList";
+import {CreateCompanyForm} from "./features/company/CreateCompanyForm";
 
 
 function App() {
@@ -86,6 +88,8 @@ function App() {
                                     <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
                                     <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
                                     <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
+                                    <PrivateRoute exact path={"/companies"} component={CompanyList}/>
+                                    <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>
                                 </Switch>
                             </Router>
                         </ReactKeycloakProvider>
