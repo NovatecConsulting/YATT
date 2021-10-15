@@ -53,7 +53,7 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
 
                                 if (value === projectId) return null;
                                 return last ? (
-                                    <Typography variant="h6" color="primary.contrastText" component="div">
+                                    <Typography variant="h6" color="primary.contrastText" component="div" key={to}>
                                         {text}
                                     </Typography>
                                 ) : (

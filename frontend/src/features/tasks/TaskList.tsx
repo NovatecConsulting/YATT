@@ -51,7 +51,7 @@ export function TaskList() {
                     <TableBody>
                         {
                             taskIds.map(
-                                (taskId: EntityId) => <TaskListRow projectId={projectId} taskId={taskId}/>
+                                (taskId: EntityId) => <TaskListRow key={taskId} projectId={projectId} taskId={taskId}/>
                             )
                         }
                     </TableBody>
