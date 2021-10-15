@@ -36,9 +36,9 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
         }),
-        createEmployee: builder.mutation<CreateEmployeeDto, string>({
+        createEmployee: builder.mutation<string, CreateEmployeeDto>({
             query: (dto) => ({
-                url: `/companies`,
+                url: `/employees`,
                 method: 'POST',
                 body: dto,
             })

@@ -1,14 +1,13 @@
 package com.novatecgmbh.eventsourcing.axon.user.web
 
 import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
-import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
-import com.novatecgmbh.eventsourcing.axon.user.api.RegisterUserCommand
-import com.novatecgmbh.eventsourcing.axon.user.api.UserQuery
-import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
+import com.novatecgmbh.eventsourcing.axon.user.api.*
 import com.novatecgmbh.eventsourcing.axon.user.web.dto.RegisterUserDto
 import com.novatecgmbh.eventsourcing.axon.user.web.dto.RenameUserDto
 import java.time.Duration
+import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
@@ -26,6 +25,10 @@ class UserController(
     private val commandGateway: CommandGateway,
     private val queryGateway: QueryGateway,
 ) {
+
+  @GetMapping
+  fun getAllUsers(): CompletableFuture<List<UserQueryResult>> =
+      queryGateway.queryMany(AllUsersQuery())
 
   @GetMapping("/current")
   fun getCurrentUser(

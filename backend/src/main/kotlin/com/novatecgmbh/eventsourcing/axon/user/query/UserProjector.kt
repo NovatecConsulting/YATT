@@ -61,4 +61,8 @@ class UserProjector(
   @QueryHandler
   fun handle(query: UserQuery): Optional<UserQueryResult> =
       repository.findById(query.userId).map { it.toQueryResult() }
+
+  @QueryHandler
+  fun handle(query: AllUsersQuery): Iterable<UserQueryResult> =
+      repository.findAll().map { it.toQueryResult() }
 }
