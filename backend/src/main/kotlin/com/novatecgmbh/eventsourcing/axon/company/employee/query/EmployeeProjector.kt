@@ -87,5 +87,5 @@ class EmployeeProjector(
 
   @QueryHandler
   fun handle(query: EmployeesByCompanyQuery): Iterable<EmployeeQueryResult> =
-      repository.findAll().map { it.toQueryResult() }
+      repository.findAllByCompanyId(query.companyId).map { it.toQueryResult() }
 }
