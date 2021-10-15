@@ -81,10 +81,7 @@ function CompanyRow(props: CompanyRowProps) {
 
     if (company) {
         return (
-            <TableRow hover onClick={() => {
-                console.log("hello");
-                navigateToEmployeeList(company);
-            }}>
+            <TableRow hover onClick={() => navigateToEmployeeList(company)}>
                 <TableCell>{company.name}</TableCell>
             </TableRow>
         );

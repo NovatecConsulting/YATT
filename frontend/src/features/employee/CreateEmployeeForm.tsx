@@ -14,7 +14,6 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField
 } from "@mui/material";
 import {useGetAllUsersQuery} from "../auth/usersSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
@@ -70,7 +69,7 @@ export function CreateEmployeeForm() {
                             onChange={formik.handleChange}
                         >
                             {usersResult.data.map(user => (
-                                <MenuItem value={user.identifier}>{user.firstname}</MenuItem>
+                                <MenuItem key={user.identifier} value={user.identifier}>{user.firstname}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
