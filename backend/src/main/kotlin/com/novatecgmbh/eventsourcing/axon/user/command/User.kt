@@ -1,9 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.user.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
-import com.novatecgmbh.eventsourcing.axon.user.api.RegisterUserCommand
-import com.novatecgmbh.eventsourcing.axon.user.api.UserId
-import com.novatecgmbh.eventsourcing.axon.user.api.UserRegisteredEvent
+import com.novatecgmbh.eventsourcing.axon.user.api.*
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy
@@ -31,8 +29,17 @@ class User {
             aggregateIdentifier = command.aggregateIdentifier,
             externalUserId = command.externalUserId,
             firstname = command.firstname,
-            lastname = command.lastname,
-        ))
+            lastname = command.lastname))
+    return command.aggregateIdentifier
+  }
+
+  @CommandHandler
+  fun handle(command: RenameUserCommand): UserId {
+    AggregateLifecycle.apply(
+        UserRenamedEvent(
+            aggregateIdentifier = command.aggregateIdentifier,
+            firstname = command.firstname,
+            lastname = command.lastname))
     return command.aggregateIdentifier
   }
 
@@ -40,6 +47,12 @@ class User {
   fun on(event: UserRegisteredEvent) {
     aggregateIdentifier = event.aggregateIdentifier
     externalUserId = event.externalUserId
+    firstname = event.firstname
+    lastname = event.lastname
+  }
+
+  @EventSourcingHandler
+  fun on(event: UserRenamedEvent) {
     firstname = event.firstname
     lastname = event.lastname
   }

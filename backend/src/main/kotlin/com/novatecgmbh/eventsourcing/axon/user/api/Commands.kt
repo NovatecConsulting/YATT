@@ -12,3 +12,9 @@ data class RegisterUserCommand(
     val firstname: String,
     val lastname: String,
 ) : UserCommand(aggregateIdentifier)
+
+data class RenameUserCommand(
+    @TargetAggregateIdentifier override val aggregateIdentifier: UserId,
+    val firstname: String,
+    val lastname: String
+) : UserCommand(aggregateIdentifier)

@@ -11,7 +11,7 @@ import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
 
 @Component
-@ProcessingGroup("task-projector")
+@ProcessingGroup("user-projector")
 class UserProjector(
     private val repository: UserProjectionRepository,
     private val queryUpdateEmitter: QueryUpdateEmitter
@@ -24,6 +24,14 @@ class UserProjector(
             externalUserId = event.externalUserId,
             firstname = event.firstname,
             lastname = event.lastname))
+  }
+
+  @EventHandler
+  fun on(event: UserRenamedEvent) {
+    updateProjection(event.aggregateIdentifier) {
+      it.firstname = event.firstname
+      it.lastname = event.lastname
+    }
   }
 
   private fun updateProjection(identifier: UserId, stateChanges: (UserProjection) -> Unit) {

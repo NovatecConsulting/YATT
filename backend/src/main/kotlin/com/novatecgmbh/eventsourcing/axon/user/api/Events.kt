@@ -10,3 +10,9 @@ data class UserRegisteredEvent(
     val firstname: String,
     val lastname: String,
 ) : UserEvent(aggregateIdentifier)
+
+data class UserRenamedEvent(
+    override val aggregateIdentifier: UserId,
+    val firstname: String,
+    val lastname: String,
+) : UserEvent(aggregateIdentifier)
