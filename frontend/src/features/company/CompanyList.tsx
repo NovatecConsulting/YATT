@@ -48,7 +48,7 @@ export function CompanyList() {
                     <TableBody>
                         {
                             companyIds.map((companyId) => (
-                                <CompanyRow companyId={companyId}/>
+                                <CompanyRow key={companyId} companyId={companyId}/>
                             ))
                         }
                     </TableBody>
@@ -74,10 +74,17 @@ interface CompanyRowProps {
 }
 
 function CompanyRow(props: CompanyRowProps) {
+    const history = useHistory();
     const company = useAppSelector(state => selectCompanyById(state, props.companyId))
+
+    const navigateToEmployeeList = (company: Company) => history.push(`/companies/${company.identifier}/employees`)
+
     if (company) {
         return (
-            <TableRow hover>
+            <TableRow hover onClick={() => {
+                console.log("hello");
+                navigateToEmployeeList(company);
+            }}>
                 <TableCell>{company.name}</TableCell>
             </TableRow>
         );

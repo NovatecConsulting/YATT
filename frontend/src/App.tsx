@@ -25,6 +25,8 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import {CompanyList} from "./features/company/CompanyList";
 import {CreateCompanyForm} from "./features/company/CreateCompanyForm";
+import {EmployeeList} from "./features/employee/EmployeeList";
+import {CreateEmployeeForm} from "./features/employee/CreateEmployeeForm";
 
 
 function App() {
@@ -90,6 +92,8 @@ function App() {
                                     <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
                                     <PrivateRoute exact path={"/companies"} component={CompanyList}/>
                                     <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>
+                                    <PrivateRoute exact path={"/companies/:id/employees"} component={EmployeeList}/>
+                                    <PrivateRoute exact path={"/companies/:id/employees/new"} component={CreateEmployeeForm}/>
                                 </Switch>
                             </Router>
                         </ReactKeycloakProvider>
