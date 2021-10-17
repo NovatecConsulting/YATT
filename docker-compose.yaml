@@ -69,3 +69,17 @@ services:
       POSTGRES_DB: keycloak_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 1234
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.27
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: 9411
