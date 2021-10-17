@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: axon-showcase-backend
   datasource:
     url: jdbc:postgresql://localhost:5432/axon_db
     username: admin
