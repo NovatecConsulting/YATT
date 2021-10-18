@@ -88,7 +88,9 @@ class EmployeeProjector(
     queryUpdateEmitter.emit<EmployeesByCompanyQuery, EmployeeQueryResult>(
         employee.toQueryResult()) { query -> query.companyId == employee.companyId }
 
-    queryUpdateEmitter.emit<EmployeeQuery, EmployeeQueryResult>(employee.toQueryResult()) { true }
+    queryUpdateEmitter.emit<EmployeeQuery, EmployeeQueryResult>(employee.toQueryResult()) { query ->
+      query.employeeId == employee.identifier
+    }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
