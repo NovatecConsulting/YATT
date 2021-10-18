@@ -32,3 +32,14 @@ app:
 logging:
   level:
     ROOT: info
+
+
+axon:
+  eventhandling:
+    processors:
+      user-unique-key-projector:
+        mode: subscribing
+      employee-unique-key-projector:
+        mode: subscribing
+      participant-unique-key-projector:
+        mode: subscribing
