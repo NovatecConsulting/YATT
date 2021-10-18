@@ -9,6 +9,7 @@ import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
+import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
 class User {
@@ -19,11 +20,14 @@ class User {
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
-  fun handle(command: RegisterUserCommand): UserId {
+  fun handle(
+      command: RegisterUserCommand,
+      @Autowired userUniqueKeyRepository: UserUniqueKeyRepository
+  ): UserId {
     if (::aggregateIdentifier.isInitialized) {
       throw AlreadyExistsException()
     }
-    // TODO check for unique externalUserId
+    assertNoUserExistsForExternalIdentifier(userUniqueKeyRepository, command.externalUserId)
     AggregateLifecycle.apply(
         UserRegisteredEvent(
             aggregateIdentifier = command.aggregateIdentifier,
@@ -31,6 +35,15 @@ class User {
             firstname = command.firstname,
             lastname = command.lastname))
     return command.aggregateIdentifier
+  }
+
+  private fun assertNoUserExistsForExternalIdentifier(
+      userUniqueKeyRepository: UserUniqueKeyRepository,
+      externalUserId: String
+  ) {
+    if (userUniqueKeyRepository.existsByExternalUserId(externalUserId)) {
+      throw IllegalArgumentException("A user already exists for this external identifier")
+    }
   }
 
   @CommandHandler

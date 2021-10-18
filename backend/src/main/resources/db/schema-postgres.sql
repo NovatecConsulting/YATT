@@ -42,6 +42,13 @@ create sequence hibernate_sequence start 1 increment 1;
         primary key (identifier)
     );
 
+    create table employee_unique_key (
+       identifier varchar(255) not null,
+        company_id varchar(255) not null,
+        user_id varchar(255) not null,
+        primary key (identifier)
+    );
+
     create table participant (
        identifier varchar(255) not null,
         company_id varchar(255) not null,
@@ -51,6 +58,14 @@ create sequence hibernate_sequence start 1 increment 1;
         user_id varchar(255) not null,
         user_last_name varchar(255),
         version int8 not null,
+        primary key (identifier)
+    );
+
+    create table participant_unique_key (
+       identifier varchar(255) not null,
+        company_id varchar(255) not null,
+        project_id varchar(255) not null,
+        user_id varchar(255) not null,
         primary key (identifier)
     );
 
@@ -106,6 +121,12 @@ create sequence hibernate_sequence start 1 increment 1;
         primary key (processor_name, segment)
     );
 
+    create table user_unique_key (
+       identifier varchar(255) not null,
+        external_user_id varchar(255) not null,
+        primary key (identifier)
+    );
+
     create table users (
        identifier varchar(255) not null,
         external_user_id varchar(255) not null,
@@ -122,5 +143,14 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
     alter table if exists domain_event_entry 
        add constraint UK_fwe6lsa8bfo6hyas6ud3m8c7x unique (event_identifier);
 
+    alter table if exists employee_unique_key 
+       add constraint UKikkx651fvk6yi9iymk7620mgp unique (company_id, user_id);
+
+    alter table if exists participant_unique_key 
+       add constraint UKlck0qqqdij8b3cchkj8u9tjis unique (company_id, user_id);
+
     alter table if exists snapshot_event_entry 
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
+
+    alter table if exists user_unique_key 
+       add constraint UK_hbn7ykwddd2spkc6buayh0lm1 unique (external_user_id);
