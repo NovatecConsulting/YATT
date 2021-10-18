@@ -23,7 +23,12 @@ export interface CreateEmployeeDto {
 const employeesAdapter = createEntityAdapter<Employee>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
-        return a.userLastName.localeCompare(b.userLastName);
+        const comparingName = a.userLastName.localeCompare(b.userLastName);
+        if (comparingName !== 0) {
+            return comparingName
+        } else {
+            return a.identifier.localeCompare(b.identifier);
+        }
     }
 });
 
@@ -65,11 +70,86 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: dto,
             })
+        }),
+        grantAdminPermission: builder.mutation<string, string>({
+            query: (id) => ({
+                url: `/employees/${id}/permission/admin/grant`,
+                method: 'POST',
+            }),
+            onQueryStarted(id, api) {
+                const patchResult = api.dispatch(
+                    extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
+                        employeesAdapter.updateOne(draft, {
+                            id: id,
+                            changes: {version: draft.entities[id]!.version + 1, isAdmin: true}
+                        });
+                    })
+                );
+                api.queryFulfilled.catch(patchResult.undo)
+            }
+        }),
+        removeAdminPermission: builder.mutation<string, string>({
+            query: (id) => ({
+                url: `/employees/${id}/permission/admin/remove`,
+                method: 'POST',
+            }),
+            onQueryStarted(id, api) {
+                const patchResult = api.dispatch(
+                    extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
+                        employeesAdapter.updateOne(draft, {
+                            id: id,
+                            changes: {version: draft.entities[id]!.version + 1, isAdmin: false}
+                        });
+                    })
+                );
+                api.queryFulfilled.catch(patchResult.undo)
+            }
+        }),
+        grantProjectManagerPermission: builder.mutation<string, string>({
+            query: (id) => ({
+                url: `/employees/${id}/permission/projectmanager/grant`,
+                method: 'POST',
+            }),
+            onQueryStarted(id, api) {
+                const patchResult = api.dispatch(
+                    extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
+                        employeesAdapter.updateOne(draft, {
+                            id: id,
+                            changes: {version: draft.entities[id]!.version + 1, isProjectManager: true}
+                        });
+                    })
+                );
+                api.queryFulfilled.catch(patchResult.undo)
+            }
+        }),
+        removeProjectManagerPermission: builder.mutation<string, string>({
+            query: (id) => ({
+                url: `/employees/${id}/permission/projectmanager/remove`,
+                method: 'POST',
+            }),
+            onQueryStarted(id, api) {
+                const patchResult = api.dispatch(
+                    extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
+                        employeesAdapter.updateOne(draft, {
+                            id: id,
+                            changes: {version: draft.entities[id]!.version + 1, isProjectManager: false}
+                        });
+                    })
+                );
+                api.queryFulfilled.catch(patchResult.undo)
+            }
         })
     })
 })
 
-export const {useGetEmployeesByCompanyQuery, useCreateEmployeeMutation} = extendedApiSlice;
+export const {
+    useGetEmployeesByCompanyQuery,
+    useCreateEmployeeMutation,
+    useGrantAdminPermissionMutation,
+    useRemoveAdminPermissionMutation,
+    useGrantProjectManagerPermissionMutation,
+    useRemoveProjectManagerPermissionMutation,
+} = extendedApiSlice;
 
 const selectGetEmployeesByCompanyResult
     = (state: RootState, companyId: EntityId) => extendedApiSlice.endpoints.getEmployeesByCompany.select(companyId.toString())(state)
