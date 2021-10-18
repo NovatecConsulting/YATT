@@ -35,7 +35,7 @@ export function ProjectsList() {
         content = <CircularProgress/>;
     } else if (isSuccess && projectIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000}} component={Paper}>
+            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
                 <TableToolbar
                     title={'All Projects'}
                     tooltip={'Create Project'}
