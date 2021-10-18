@@ -54,9 +54,8 @@ class ParticipantProjector(
     queryUpdateEmitter.emit<ParticipantByProjectQuery, ParticipantQueryResult>(
         participant.toQueryResult()) { query -> query.projectId == participant.projectId }
 
-    queryUpdateEmitter.emit<ParticipantQuery, ParticipantQueryResult>(participant.toQueryResult()) {
-      true
-    }
+    queryUpdateEmitter.emit<ParticipantQuery, ParticipantQueryResult>(
+        participant.toQueryResult()) { query -> query.participantId == participant.identifier }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
