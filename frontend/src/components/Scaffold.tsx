@@ -1,10 +1,24 @@
 import React from "react";
-import {AppBar, Box, Breadcrumbs, IconButton, Link, LinkProps, Toolbar, Typography} from "@mui/material";
+import {
+    AppBar,
+    Box,
+    Breadcrumbs,
+    Divider,
+    Drawer,
+    IconButton,
+    Link,
+    LinkProps,
+    List,
+    ListItem,
+    ListItemText,
+    Toolbar,
+    Typography
+} from "@mui/material";
 import {Logout} from "@mui/icons-material";
 import {useAppDispatch} from "../app/hooks";
 import {logout} from "../features/auth/authSlice";
 import {useKeycloak} from "@react-keycloak/web";
-import {Link as RouterLink, useLocation, useParams} from 'react-router-dom';
+import {Link as RouterLink, useHistory, useLocation, useParams} from 'react-router-dom';
 
 const breadcrumbNameMap: { [key: string]: string } = {
     '/projects': 'Projects',
@@ -16,6 +30,17 @@ const breadcrumbNameMap: { [key: string]: string } = {
     '/companies/employees': 'Employees',
     '/companies/employees/new': 'New',
 };
+
+const topLevelDestinations = [
+    {
+        title: 'Projects',
+        path: '/projects',
+    },
+    {
+        title: 'Companies',
+        path: '/companies',
+    }
+]
 
 interface LinkRouterProps extends LinkProps {
     to: string;
@@ -30,16 +55,22 @@ interface Props {
     title?: string;
 }
 
+const drawerWidth = 240;
+
 export function Scaffold(props: React.PropsWithChildren<Props>) {
     const {id: projectId} = useParams<{ id: string }>()
     const location = useLocation();
     const dispatch = useAppDispatch();
+    const history = useHistory();
     const {keycloak} = useKeycloak();
     const pathnames = location.pathname.split('/').filter((path) => path);
 
     return (
-        <Box className={"centerColumn fullViewPort"}>
-            <AppBar>
+        <Box sx={{display: 'flex', width: '100vw', height: '100vh'}}>
+            <AppBar
+                position="fixed"
+                sx={{width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`}}
+            >
                 <Toolbar>
                     {props.title ? (
                         <Typography variant="h6" color="primary.contrastText" component="div">
@@ -85,7 +116,35 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            {props.children}
+            <Drawer
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
+                }}
+                variant="permanent"
+                anchor="left"
+            >
+                <Toolbar/>
+                <Divider/>
+                <List>
+                    {topLevelDestinations.map((destination, index) => (
+                        <ListItem button key={destination.path} onClick={() => history.push(destination.path)}>
+                            <ListItemText primary={destination.title}/>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
+            <Box
+                component="main"
+                sx={{flexGrow: 1, p: 3}}
+            >
+                <Toolbar/>
+                {props.children}
+            </Box>
         </Box>
     );
 }

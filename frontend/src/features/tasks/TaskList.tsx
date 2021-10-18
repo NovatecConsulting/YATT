@@ -33,7 +33,7 @@ export function TaskList() {
         content = <CircularProgress/>;
     } else if (isSuccess && taskIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000}} component={Paper}>
+            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
                 <TableToolbar
                     title={`Task for Project "${project?.name}"`}
                     tooltip={'Create Task'}

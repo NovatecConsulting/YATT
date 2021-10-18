@@ -28,7 +28,7 @@ export function EmployeeList() {
         content = <CircularProgress/>;
     } else if (isSuccess && employeeIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000}} component={Paper}>
+            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
                 <TableToolbar
                     title={``}
                     tooltip={'Create Employee'}

@@ -67,37 +67,42 @@ function App() {
 
     const handleOnTokens = (tokens: AuthClientTokens) => dispatch(tokenUpdated(tokens.token))
 
+    const loadingComponent = (
+        <Box component="main" sx={{p: 3}}>
+            <CircularProgress/>
+        </Box>
+    );
+
     return (
         <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={DateAdapter} locale={locale}>
                 <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
-                    <Box className={"centerColumn fullViewPort"}>
-                        <ReactKeycloakProvider
-                            authClient={keycloak}
-                            initOptions={initOptions}
-                            isLoadingCheck={isLoadingCheck}
-                            LoadingComponent={<CircularProgress/>}
-                            onEvent={handleOnEvent}
-                            onTokens={handleOnTokens}
-                        >
-                            <Router>
-                                <Switch>
-                                    <Route exact path={"/"} component={Home}/>
-                                    <Route exact path={"/login"} component={Login}/>
-                                    <PrivateRoute exact path={"/registration"} component={Registration}
-                                                  allowUnregistered={true}/>
-                                    <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
-                                    <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
-                                    <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
-                                    <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
-                                    <PrivateRoute exact path={"/companies"} component={CompanyList}/>
-                                    <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>
-                                    <PrivateRoute exact path={"/companies/:id/employees"} component={EmployeeList}/>
-                                    <PrivateRoute exact path={"/companies/:id/employees/new"} component={CreateEmployeeForm}/>
-                                </Switch>
-                            </Router>
-                        </ReactKeycloakProvider>
-                    </Box>
+                    <ReactKeycloakProvider
+                        authClient={keycloak}
+                        initOptions={initOptions}
+                        isLoadingCheck={isLoadingCheck}
+                        LoadingComponent={loadingComponent}
+                        onEvent={handleOnEvent}
+                        onTokens={handleOnTokens}
+                    >
+                        <Router>
+                            <Switch>
+                                <Route exact path={"/"} component={Home}/>
+                                <Route exact path={"/login"} component={Login}/>
+                                <PrivateRoute exact path={"/registration"} component={Registration}
+                                              allowUnregistered={true}/>
+                                <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
+                                <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
+                                <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
+                                <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
+                                <PrivateRoute exact path={"/companies"} component={CompanyList}/>
+                                <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>
+                                <PrivateRoute exact path={"/companies/:id/employees"} component={EmployeeList}/>
+                                <PrivateRoute exact path={"/companies/:id/employees/new"}
+                                              component={CreateEmployeeForm}/>
+                            </Switch>
+                        </Router>
+                    </ReactKeycloakProvider>
                 </SnackbarProvider>
             </LocalizationProvider>
         </ThemeProvider>

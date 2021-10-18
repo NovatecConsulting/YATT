@@ -33,7 +33,7 @@ export function CompanyList() {
         content = <CircularProgress/>;
     } else if (isSuccess && companyIds) {
         content = (
-            <TableContainer sx={{minWidth: 1000}} component={Paper}>
+            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
                 <TableToolbar
                     title={'All Companies'}
                     tooltip={'Create Company'}
