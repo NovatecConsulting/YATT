@@ -82,23 +82,23 @@ class EmployeeController(
         .doFinally { query.cancel() }
   }
 
-  @PostMapping("/v2/companies/{employeeId}/permission/admin/grant")
+  @PostMapping("/v2/employees/{employeeId}/permission/admin/grant")
   fun grantAdminPermission(
       @PathVariable("employeeId") employeeId: EmployeeId
   ): CompletableFuture<String> = commandGateway.send(GrantAdminPermissionToEmployee(employeeId))
 
-  @PostMapping("/v2/companies/{employeeId}/permission/admin/remove")
+  @PostMapping("/v2/employees/{employeeId}/permission/admin/remove")
   fun removeAdminPermission(
       @PathVariable("employeeId") employeeId: EmployeeId
   ): CompletableFuture<String> = commandGateway.send(RemoveAdminPermissionFromEmployee(employeeId))
 
-  @PostMapping("/v2/companies/{employeeId}/permission/projectmanager/grant")
+  @PostMapping("/v2/employees/{employeeId}/permission/projectmanager/grant")
   fun grantProjectManagerPermission(
       @PathVariable("employeeId") employeeId: EmployeeId
   ): CompletableFuture<String> =
       commandGateway.send(GrantProjectManagerPermissionToEmployee(employeeId))
 
-  @PostMapping("/v2/companies/{employeeId}/permission/projectmanager/remove")
+  @PostMapping("/v2/employees/{employeeId}/permission/projectmanager/remove")
   fun removeProjectManagerPermission(
       @PathVariable("employeeId") employeeId: EmployeeId
   ): CompletableFuture<String> =

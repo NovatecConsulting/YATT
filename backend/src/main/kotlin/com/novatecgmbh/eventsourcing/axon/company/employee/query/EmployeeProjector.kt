@@ -37,12 +37,18 @@ class EmployeeProjector(
 
   @EventHandler
   fun on(event: AdminPermissionGrantedForEmployeeEvent, @SequenceNumber aggregateVersion: Long) {
-    updateProjection(event.aggregateIdentifier) { it.isAdmin = true }
+    updateProjection(event.aggregateIdentifier) {
+      it.isAdmin = true
+      it.version = aggregateVersion
+    }
   }
 
   @EventHandler
   fun on(event: AdminPermissionRemovedFromEmployeeEvent, @SequenceNumber aggregateVersion: Long) {
-    updateProjection(event.aggregateIdentifier) { it.isAdmin = false }
+    updateProjection(event.aggregateIdentifier) {
+      it.isAdmin = false
+      it.version = aggregateVersion
+    }
   }
 
   @EventHandler
@@ -50,7 +56,10 @@ class EmployeeProjector(
       event: ProjectManagerPermissionGrantedForEmployeeEvent,
       @SequenceNumber aggregateVersion: Long
   ) {
-    updateProjection(event.aggregateIdentifier) { it.isProjectManager = true }
+    updateProjection(event.aggregateIdentifier) {
+      it.isProjectManager = true
+      it.version = aggregateVersion
+    }
   }
 
   @EventHandler
@@ -58,7 +67,10 @@ class EmployeeProjector(
       event: ProjectManagerPermissionRemovedFromEmployeeEvent,
       @SequenceNumber aggregateVersion: Long
   ) {
-    updateProjection(event.aggregateIdentifier) { it.isProjectManager = false }
+    updateProjection(event.aggregateIdentifier) {
+      it.isProjectManager = false
+      it.version = aggregateVersion
+    }
   }
 
   private fun updateProjection(identifier: EmployeeId, stateChanges: (EmployeeProjection) -> Unit) {
