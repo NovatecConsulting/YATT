@@ -1,116 +1,102 @@
+import React from "react";
 import {useHistory, useParams} from "react-router-dom";
+import {useSnackbar} from "notistack";
 import {useFormik} from "formik";
 import {Scaffold} from "../../components/Scaffold";
-import {Box, Button, Card, CardContent, TextField, TextFieldProps} from "@mui/material";
-import DatePicker from '@mui/lab/DatePicker';
-import React from "react";
-import {useSnackbar} from "notistack";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+} from "@mui/material";
+import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useCreateParticipantMutation} from "./participantSlice";
-import dayjs, {Dayjs} from "dayjs";
+import {useGetAllEmployeesQuery} from "../employee/employeeSlice";
 
 interface Values {
-    name: string;
-    startDate: Dayjs;
-    endDate: Dayjs;
+    employeeId: string;
 }
 
-// TODO
 export function CreateParticipantForm() {
     const {id: projectId} = useParams<{ id: string }>()
 
+    const employeesResult = useGetAllEmployeesQuery(); // TODO filter out users who are already participant
     const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
     const [saveParticipant] = useCreateParticipantMutation();
 
     const formik = useFormik({
         initialValues: {
-            name: '',
-            startDate: dayjs(),
-            endDate: dayjs(),
+            employeeId: '',
         } as Values,
         validateOnChange: true,
-        validate: values => {
-            if (values.startDate > values.endDate) {
-                return {
-                    endDate: `Can't be before Planned Start Date`
-                }
-            }
-        },
         onSubmit: async (values, formikHelpers) => {
+            const employee = employeesResult.data?.find(employee => employee.identifier === values.employeeId);
             try {
-                await saveParticipant({
-                    projectId: projectId,
-                    name: values.name,
-                    endDate: values.endDate.toISOString(),
-                    startDate: values.startDate.toISOString(),
-                }).unwrap();
-                enqueueSnackbar(`Task "${values.name}" created successfully`)
-                history.goBack();
+                if (employee) {
+                    await saveParticipant({
+                        projectId: projectId,
+                        companyId: employee.companyId,
+                        userId: employee.userId,
+                    }).unwrap();
+
+                    enqueueSnackbar(`Participant "${employee.userFirstName} ${employee.userLastName}" created successfully`)
+                    history.goBack();
+                }
             } catch (e) {
+                // enqueueSnackbar(`Failed creating Participant. Status: ${e.status}`);
                 // TODO error handling
-                console.log("task creation failed");
+                console.log("participant creation failed");
             }
         },
     });
 
-    return (
-        <Scaffold>
+    let content: ReactJSXElement;
+    if (employeesResult.isLoading) {
+        content = <CircularProgress/>;
+    } else if (employeesResult.isSuccess) {
+        content = (
             <Card><CardContent>
                 <Box component="form" onSubmit={formik.handleSubmit}>
-                    <TextField
-                        required
-                        fullWidth
-                        id="name"
-                        name="name"
-                        label="Name"
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
-                    />
-                    <DatePicker
-                        label="Planned Start Date"
-                        value={formik.values.startDate}
-                        mask={"__.__.____"}
-                        inputFormat={"DD.MM.YYYY"}
-                        onChange={(newValue) => {
-                            formik.getFieldHelpers('startDate').setValue(newValue, true)
-                        }}
-                        renderInput={(params: TextFieldProps) => <TextField
-                            {...params}
-                            required
-                            fullWidth
-                            id="startDate"
-                            name="startDate"
-                            error={params.error || (formik.touched.startDate && Boolean(formik.errors.startDate))}
-                            helperText={formik.touched.startDate && formik.errors.startDate}
-                        />}
-                    />
-                    <DatePicker
-                        minDate={formik.values.startDate}
-                        label="End Date"
-                        value={formik.values.endDate}
-                        mask={"__.__.____"}
-                        inputFormat={"DD.MM.YYYY"}
-                        onChange={(newValue) => {
-                            formik.getFieldHelpers('endDate').setValue(newValue, true)
-                        }}
-                        renderInput={(params: TextFieldProps) => <TextField
-                            {...params}
-                            required
-                            fullWidth
-                            id="endDate"
-                            name="endDate"
-                            error={params.error || (formik.touched.endDate && Boolean(formik.errors.endDate))}
-                            helperText={formik.touched.endDate && formik.errors.endDate}
-                        />}
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="employeeIdLabel">User</InputLabel>
+                        <Select
+                            labelId="employeeIdLabel"
+                            id="employeeId"
+                            name="employeeId"
+                            value={formik.values.employeeId}
+                            label="User"
+                            onChange={formik.handleChange}
+                        >
+                            {employeesResult.data.map(employee => (
+                                <MenuItem key={employee.identifier}
+                                          value={employee.identifier}>
+                                    {`${employee.userFirstName} ${employee.userLastName}`}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <Button variant="contained" fullWidth type="submit"
                             disabled={formik.isSubmitting || !formik.isValid}>
                         Submit
                     </Button>
                 </Box>
             </CardContent></Card>
+        );
+    } else if (employeesResult.isError) {
+        content = <div>{employeesResult.error}</div>;
+    } else {
+        return null;
+    }
+
+    return (
+        <Scaffold>
+            {content}
         </Scaffold>
     );
 }

@@ -15,12 +15,10 @@ export interface Participant {
     userLastName?: string;
 }
 
-// TODO
 export interface CreateParticipantDto {
-    projectId: string,
-    name: string;
-    startDate: string;
-    endDate: string;
+    projectId: string;
+    companyId: string;
+    userId: string;
 }
 
 export const entityAdapter = createEntityAdapter<Participant>({

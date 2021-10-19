@@ -138,7 +138,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
                 api.queryFulfilled.catch(patchResult.undo)
             }
-        })
+        }),
+        getAllEmployees: builder.query<Employee[], void>({
+            query: () => '/employees'
+        }),
     })
 })
 
@@ -149,6 +152,7 @@ export const {
     useRemoveAdminPermissionMutation,
     useGrantProjectManagerPermissionMutation,
     useRemoveProjectManagerPermissionMutation,
+    useGetAllEmployeesQuery,
 } = extendedApiSlice;
 
 const selectGetEmployeesByCompanyResult
