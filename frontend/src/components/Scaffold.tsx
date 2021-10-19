@@ -19,11 +19,13 @@ import {useAppDispatch} from "../app/hooks";
 import {logout} from "../features/auth/authSlice";
 import {useKeycloak} from "@react-keycloak/web";
 import {Link as RouterLink, useHistory, useLocation, useParams} from 'react-router-dom';
+import {Property} from "csstype";
 
 const breadcrumbNameMap: { [key: string]: string } = {
     '/projects': 'Projects',
     '/projects/new': 'New',
     '/projects/tasks': 'Tasks',
+    '/projects/participants': 'Participants',
     '/projects/tasks/new': 'New',
     '/companies': 'Companies',
     '/companies/new': 'New',
@@ -53,12 +55,13 @@ const LinkRouter = (props: LinkRouterProps) => (
 
 interface Props {
     title?: string;
+    alignItems?: Property.AlignItems;
 }
 
 const drawerWidth = 240;
 
 export function Scaffold(props: React.PropsWithChildren<Props>) {
-    const {id: projectId} = useParams<{ id: string }>()
+    const {id: id} = useParams<{ id: string }>()
     const location = useLocation();
     const dispatch = useAppDispatch();
     const history = useHistory();
@@ -84,9 +87,16 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                             {pathnames.map((value, index) => {
                                 const last = index === pathnames.length - 1;
                                 const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-                                const text = breadcrumbNameMap[to.replace(`/${projectId}`, '')];
+                                let text = breadcrumbNameMap[to.replace(`/${id}`, '')];
+                                if (value === id && to.startsWith('/projects')) {
+                                    text = value;
+                                } else if(value === id) {
+                                    return null;
+                                }
+                                if (text === undefined) {
+                                    text = value.charAt(0).toUpperCase() + value.slice(1);
+                                }
 
-                                if (value === projectId) return null;
                                 return last ? (
                                     <Typography variant="h6" color="primary.contrastText" component="div" key={to}>
                                         {text}
@@ -140,7 +150,7 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
             </Drawer>
             <Box
                 component="main"
-                sx={{flexGrow: 1, p: 3}}
+                sx={{flexGrow: 1, p: 3, alignItems: props.alignItems}}
             >
                 <Toolbar/>
                 {props.children}

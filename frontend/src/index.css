@@ -18,3 +18,11 @@ main {
   flex-direction: column;
   align-items: center;
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-content: flex-start;
+}

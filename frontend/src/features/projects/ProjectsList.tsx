@@ -82,7 +82,7 @@ function ProjectRow(props: ProjectRowProps) {
     const history = useHistory()
     const [rescheduleProject] = useRescheduleProjectMutation();
 
-    const navigateToProjectList = (project: Project) => history.push(`/projects/${project.identifier}/tasks`)
+    const navigateToProjectDetailsPage = () => history.push(`/projects/${project?.identifier}`)
 
     const postponeProject = (event: React.MouseEvent, project: Project) => {
         event.stopPropagation();
@@ -97,7 +97,7 @@ function ProjectRow(props: ProjectRowProps) {
 
     if (project) {
         return (
-            <TableRow hover onClick={() => navigateToProjectList(project)}>
+            <TableRow hover onClick={navigateToProjectDetailsPage}>
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{dayjs(project.startDate).format('L')}</TableCell>
                 <TableCell>{dayjs(project.deadline).format('L')}</TableCell>
