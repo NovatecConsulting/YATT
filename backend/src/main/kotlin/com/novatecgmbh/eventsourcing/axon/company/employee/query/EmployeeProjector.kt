@@ -91,6 +91,10 @@ class EmployeeProjector(
     queryUpdateEmitter.emit<EmployeeQuery, EmployeeQueryResult>(employee.toQueryResult()) { query ->
       query.employeeId == employee.identifier
     }
+
+    queryUpdateEmitter.emit<AllEmployeesQuery, EmployeeQueryResult>(employee.toQueryResult()) {
+      true
+    }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
@@ -102,4 +106,8 @@ class EmployeeProjector(
   @QueryHandler
   fun handle(query: EmployeesByCompanyQuery): Iterable<EmployeeQueryResult> =
       repository.findAllByCompanyId(query.companyId).map { it.toQueryResult() }
+
+  @QueryHandler
+  fun handle(query: AllEmployeesQuery): Iterable<EmployeeQueryResult> =
+      repository.findAll().map { it.toQueryResult() }
 }

@@ -3,6 +3,8 @@ package com.novatecgmbh.eventsourcing.axon.company.employee.api
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 
+class AllEmployeesQuery
+
 data class EmployeesByCompanyQuery(val companyId: CompanyId)
 
 data class EmployeeQuery(val employeeId: EmployeeId)

@@ -30,6 +30,10 @@ class EmployeeController(
       @RequestBody body: CreateEmployeeDto,
   ): CompletableFuture<String> = commandGateway.send(body.toCommand(employeeId))
 
+  @GetMapping("/v2/employees")
+  fun getAllEmployees(): CompletableFuture<List<EmployeeQueryResult>> =
+      queryGateway.queryMany(AllEmployeesQuery())
+
   @GetMapping("/v2/employees/{employeeId}")
   fun getEmployeeById(
       @PathVariable("employeeId") employeeId: EmployeeId
