@@ -1,4 +1,4 @@
-import {Button} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import keycloak from "../../keycloak";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectIsAuthenticated, authLoading} from "./authSlice";
@@ -13,12 +13,14 @@ export function Login() {
     }
 
     return (
-        <Button
-            onClick={() => {
-                dispatch(authLoading(true));
-                keycloak.login();
-            }}
-            variant="contained"
-        >Login</Button>
+        <Box component="main" sx={{p: 3}}>
+            <Button
+                onClick={() => {
+                    dispatch(authLoading(true));
+                    keycloak.login();
+                }}
+                variant="contained"
+            >Login</Button>
+        </Box>
     );
 }
