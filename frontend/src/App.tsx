@@ -30,6 +30,7 @@ import {CreateEmployeeForm} from "./features/employee/CreateEmployeeForm";
 import {ProjectDetailsPage} from "./features/projects/ProjectDetailsPage";
 import {ParticipantList} from "./features/participants/ParticipantList";
 import {CreateParticipantForm} from "./features/participants/CreateParticipantForm";
+import {ProfilePage} from "./features/auth/ProfilePage";
 
 
 function App() {
@@ -94,6 +95,7 @@ function App() {
                                 <Route exact path={"/login"} component={Login}/>
                                 <PrivateRoute exact path={"/registration"} component={Registration}
                                               allowUnregistered={true}/>
+                                <PrivateRoute exact path={"/profile"} component={ProfilePage}/>
                                 <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
                                 <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
                                 <PrivateRoute exact path={"/projects/:id"} component={ProjectDetailsPage}/>
