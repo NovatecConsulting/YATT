@@ -25,6 +25,12 @@ export interface RenameTaskDto {
     name: string;
 }
 
+export interface RescheduleTaskDto {
+    identifier: string,
+    startDate: string;
+    endDate: string;
+}
+
 export const taskAdapter = createEntityAdapter<Task>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
@@ -95,6 +101,13 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        rescheduleTask: builder.mutation<string, RescheduleTaskDto>({
+            query: ({identifier, ...patch}) => ({
+                url: `/tasks/${identifier}/reschedule`,
+                method: 'POST',
+                body: patch,
+            }),
+        }),
     })
 });
 
@@ -104,6 +117,7 @@ export const {
     useRenameTaskMutation,
     useStartTaskMutation,
     useCompleteTaskMutation,
+    useRescheduleTaskMutation,
 } = taskApiSlice;
 
 const selectGetTasksByProjectResult

@@ -1,7 +1,8 @@
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
+    Box,
     Button,
-    CircularProgress,
+    CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     IconButton,
     Paper,
     Table,
@@ -9,12 +10,12 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, TextField, Typography
+    TableRow, TextField, TextFieldProps, Typography
 } from "@mui/material";
 import {
     selectTaskByProjectIdAndTaskId, Task, useCompleteTaskMutation,
     useGetTasksByProjectQuery,
-    useRenameTaskMutation,
+    useRenameTaskMutation, useRescheduleTaskMutation,
     useStartTaskMutation
 } from "./taskSlice";
 import {useHistory, useParams} from "react-router-dom";
@@ -29,6 +30,7 @@ import {useStore} from "react-redux";
 import dayjs from "dayjs";
 import {Check, Clear, Edit} from "@mui/icons-material";
 import {useFormik} from "formik";
+import DatePicker from "@mui/lab/DatePicker";
 
 export function TaskList() {
     const history = useHistory();
@@ -92,18 +94,140 @@ export function TaskList() {
 function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityId }) {
     const task = useAppSelector((state) => selectTaskByProjectIdAndTaskId(state, projectId, taskId));
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     if (task)
         return (
-            <TableRow hover>
-                <TaskNameCell task={task}/>
-                <TableCell>{dayjs(task.startDate).format('L')}</TableCell>
-                <TableCell>{dayjs(task.endDate).format('L')}</TableCell>
-                <TaskStatusCell taskStatus={task.status} taskId={task.identifier}/>
-            </TableRow>
+            <React.Fragment>
+                <TableRow hover>
+                    <TaskNameCell task={task}/>
+                    <TaskDateCell task={task} date={task.startDate} openDialog={handleClickOpen}/>
+                    <TaskDateCell task={task} date={task.endDate} openDialog={handleClickOpen}/>
+                    <TaskStatusCell taskStatus={task.status} taskId={task.identifier}/>
+                </TableRow>
+                <RescheduleDialog task={task} open={open} onClose={handleClose}/>
+            </React.Fragment>
         );
     else {
         return null;
     }
+}
+
+interface TaskDateCellProps {
+    date: string;
+    task: Task;
+    openDialog: () => void;
+}
+
+function TaskDateCell(props: TaskDateCellProps) {
+    const canEditDates = props.task.status !== 'COMPLETED';
+
+    return (
+        <TableCell>
+            {dayjs(props.date).format('L')}
+            {
+                canEditDates ? (
+                    <IconButton size='small' sx={{ml: 1}} onClick={props.openDialog}>
+                        <Edit fontSize="inherit"/>
+                    </IconButton>
+                ) : null
+            }
+        </TableCell>
+    );
+}
+
+interface RescheduleDialogProps {
+    open: boolean;
+    onClose: () => void;
+    task: Task;
+}
+
+function RescheduleDialog(props: RescheduleDialogProps) {
+    const [rescheduleTask] = useRescheduleTaskMutation();
+    const formik = useFormik({
+        initialValues: {
+            startDate: dayjs(props.task.startDate),
+            endDate: dayjs(props.task.endDate),
+        },
+        validateOnChange: true,
+        validate: values => {
+            if (values.startDate > values.endDate) {
+                return {
+                    endDate: `Can't be before Start Date`
+                }
+            }
+        },
+        onSubmit: async (values, formikHelpers) => {
+            try {
+                await rescheduleTask({
+                    identifier: props.task.identifier,
+                    startDate: values.startDate.format("YYYY-MM-DD"),
+                    endDate: values.endDate.format("YYYY-MM-DD"),
+                }).unwrap();
+                props.onClose();
+            } catch (e) {
+                // TODO error handling
+                console.log("task creation failed");
+            }
+        },
+    });
+
+    return (
+        <Dialog open={props.open} onClose={props.onClose}>
+            <DialogTitle>Update Start and End Date</DialogTitle>
+            <DialogContent>
+                <DatePicker
+                    label="Start Date"
+                    value={formik.values.startDate}
+                    mask={"__.__.____"}
+                    inputFormat={"DD.MM.YYYY"}
+                    onChange={(newValue) => {
+                        formik.getFieldHelpers('startDate').setValue(newValue, true)
+                    }}
+                    renderInput={(params: TextFieldProps) => <TextField
+                        {...params}
+                        required
+                        fullWidth
+                        id="startDate"
+                        name="startDate"
+                        error={params.error || (formik.touched.startDate && Boolean(formik.errors.startDate))}
+                        helperText={formik.touched.startDate && formik.errors.startDate}
+                    />}
+                />
+                <DatePicker
+                    minDate={formik.values.startDate}
+                    label="End Date"
+                    value={formik.values.endDate}
+                    mask={"__.__.____"}
+                    inputFormat={"DD.MM.YYYY"}
+                    onChange={(newValue) => {
+                        formik.getFieldHelpers('endDate').setValue(newValue, true)
+                    }}
+                    renderInput={(params: TextFieldProps) => <TextField
+                        {...params}
+                        required
+                        fullWidth
+                        id="endDate"
+                        name="endDate"
+                        error={params.error || (formik.touched.endDate && Boolean(formik.errors.endDate))}
+                        helperText={formik.touched.endDate && formik.errors.endDate}
+                    />}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.onClose}>Cancel</Button>
+                <Button onClick={formik.submitForm} disabled={formik.isSubmitting || !formik.isValid}>Save</Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 function TaskStatusCell({taskStatus, taskId}: { taskStatus: string, taskId: EntityId }) {
