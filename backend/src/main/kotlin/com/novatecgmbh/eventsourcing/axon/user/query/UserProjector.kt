@@ -50,6 +50,10 @@ class UserProjector(
         query ->
       query.externalUserId == user.externalUserId
     }
+    queryUpdateEmitter.emit<UserQuery, UserQueryResult>(user.toQueryResult()) { query ->
+      query.userId == user.identifier
+    }
+    queryUpdateEmitter.emit<AllUsersQuery, UserQueryResult>(user.toQueryResult()) { true }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()

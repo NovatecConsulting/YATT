@@ -6,6 +6,7 @@ export const baseUrl = 'http://localhost:8080/v2';
 
 export const apiSlice = createApi({
     reducerPath: 'api',
+    tagTypes: ['currentUser'],
     baseQuery: fetchBaseQuery({
         baseUrl: baseUrl,
         prepareHeaders: (headers, {getState}) => {

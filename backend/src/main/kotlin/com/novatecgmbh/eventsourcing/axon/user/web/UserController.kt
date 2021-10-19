@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.user.web
 
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.user.api.*
 import com.novatecgmbh.eventsourcing.axon.user.web.dto.RegisterUserDto
@@ -56,16 +57,14 @@ class UserController(
   @PostMapping("/current/rename")
   fun renameUser(
       @RequestBody body: RenameUserDto,
-      @AuthenticationPrincipal principal: RegisterUserCommand
+      @AuthenticationPrincipal principal: RegisteredUserPrincipal
   ): Mono<ResponseEntity<UserQueryResult>> =
       queryGateway.subscriptionQuery(
-              UserQuery(principal.aggregateIdentifier),
+              UserQuery(principal.identifier),
               ResponseTypes.instanceOf(UserQueryResult::class.java),
               ResponseTypes.instanceOf(UserQueryResult::class.java),
           )
-          .let { queryResult ->
-            wrapCommand(queryResult, body.toCommand(principal.aggregateIdentifier))
-          }
+          .let { queryResult -> wrapCommand(queryResult, body.toCommand(principal.identifier)) }
 
   fun <T, R> wrapCommand(queryResult: SubscriptionQueryResult<T, T>, command: R) =
       Mono.`when`(queryResult.initialResult())
