@@ -17,10 +17,14 @@ data class CreateTaskCommand(
     val endDate: LocalDate
 ) : TaskCommand(identifier)
 
-data class ChangeTaskDescriptionCommand(
+data class RenameTaskCommand(
     @TargetAggregateIdentifier override val identifier: TaskId,
     val name: String,
-    val description: String?
+) : TaskCommand(identifier)
+
+data class ChangeTaskDescriptionCommand(
+    @TargetAggregateIdentifier override val identifier: TaskId,
+    val description: String
 ) : TaskCommand(identifier)
 
 data class RescheduleTaskCommand(

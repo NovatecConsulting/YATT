@@ -14,11 +14,11 @@ data class TaskCreatedEvent(
     val endDate: LocalDate
 ) : TaskEvent(identifier)
 
-data class TaskDescriptionUpdatedEvent(
-    override val identifier: TaskId,
-    val name: String,
-    val description: String?
-) : TaskEvent(identifier)
+data class TaskRenamedEvent(override val identifier: TaskId, val name: String) :
+    TaskEvent(identifier)
+
+data class TaskDescriptionUpdatedEvent(override val identifier: TaskId, val description: String) :
+    TaskEvent(identifier)
 
 data class TaskRescheduledEvent(
     override val identifier: TaskId,

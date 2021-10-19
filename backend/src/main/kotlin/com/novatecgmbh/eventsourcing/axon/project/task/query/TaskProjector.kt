@@ -33,10 +33,18 @@ class TaskProjector(
   }
 
   @EventHandler
-  fun on(event: TaskDescriptionUpdatedEvent, @SequenceNumber aggregateVersion: Long) {
+  fun on(event: TaskRenamedEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
       it.name = event.name
+      it.version = aggregateVersion
+    }
+  }
+
+  @EventHandler
+  fun on(event: TaskDescriptionUpdatedEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
       it.description = event.description
+      it.version = aggregateVersion
     }
   }
 
@@ -45,17 +53,24 @@ class TaskProjector(
     updateProjection(event.identifier) {
       it.startDate = event.startDate
       it.endDate = event.endDate
+      it.version = aggregateVersion
     }
   }
 
   @EventHandler
   fun on(event: TaskStartedEvent, @SequenceNumber aggregateVersion: Long) {
-    updateProjection(event.identifier) { it.status = STARTED }
+    updateProjection(event.identifier) {
+      it.status = STARTED
+      it.version = aggregateVersion
+    }
   }
 
   @EventHandler
   fun on(event: TaskCompletedEvent, @SequenceNumber aggregateVersion: Long) {
-    updateProjection(event.identifier) { it.status = COMPLETED }
+    updateProjection(event.identifier) {
+      it.status = COMPLETED
+      it.version = aggregateVersion
+    }
   }
 
   private fun updateProjection(identifier: TaskId, stateChanges: (TaskProjection) -> Unit) {
