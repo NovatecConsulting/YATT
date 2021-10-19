@@ -20,6 +20,11 @@ export interface CreateTaskDto {
     endDate: string;
 }
 
+export interface RenameTaskDto {
+    identifier: string;
+    name: string;
+}
+
 export const taskAdapter = createEntityAdapter<Task>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
@@ -71,10 +76,35 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 body: taskDto
             }),
         }),
+        renameTask: builder.mutation<string, RenameTaskDto>({
+            query: ({identifier, ...patch}) => ({
+                url: `/tasks/${identifier}/rename`,
+                method: 'POST',
+                body: patch
+            }),
+        }),
+        startTask: builder.mutation<string, string>({
+            query: (taskId) => ({
+                url: `/tasks/${taskId}/start`,
+                method: 'POST',
+            }),
+        }),
+        completeTask: builder.mutation<string, string>({
+            query: (taskId) => ({
+                url: `/tasks/${taskId}/complete`,
+                method: 'POST',
+            }),
+        }),
     })
 });
 
-export const {useGetTasksByProjectQuery, useCreateTaskMutation} = taskApiSlice;
+export const {
+    useGetTasksByProjectQuery,
+    useCreateTaskMutation,
+    useRenameTaskMutation,
+    useStartTaskMutation,
+    useCompleteTaskMutation,
+} = taskApiSlice;
 
 const selectGetTasksByProjectResult
     = (state: RootState, projectId: EntityId) => taskApiSlice.endpoints.getTasksByProject.select(projectId.toString())(state)

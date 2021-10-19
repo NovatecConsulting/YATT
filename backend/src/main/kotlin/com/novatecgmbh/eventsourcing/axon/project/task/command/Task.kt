@@ -50,6 +50,20 @@ class Task {
   }
 
   @CommandHandler
+  fun handle(command: RenameTaskCommand): TaskId {
+    if (status == COMPLETED) {
+      throw IllegalArgumentException("Task is already completed. Name cannot be changed anymore.")
+    }
+    apply(TaskRenamedEvent(identifier = command.identifier, name = command.name))
+    return identifier
+  }
+
+  @EventSourcingHandler
+  fun on(event: TaskRenamedEvent) {
+    name = event.name
+  }
+
+  @CommandHandler
   fun handle(command: ChangeTaskDescriptionCommand): TaskId {
     if (status == COMPLETED) {
       throw IllegalArgumentException(
@@ -57,9 +71,7 @@ class Task {
     }
     apply(
         TaskDescriptionUpdatedEvent(
-            identifier = command.identifier,
-            name = command.name,
-            description = command.description))
+            identifier = command.identifier, description = command.description))
     return identifier
   }
 
@@ -129,7 +141,6 @@ class Task {
 
   @EventSourcingHandler
   fun on(event: TaskDescriptionUpdatedEvent) {
-    name = event.name
     description = event.description
   }
 

@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.web
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.CreateTaskDto
+import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RenameTaskDto
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RescheduleTaskDto
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -49,9 +50,7 @@ class TaskController(
             ResponseTypes.instanceOf(TaskQueryResult::class.java),
             ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
-    return query.initialResult().concatWith(query.updates()).doFinally {
-        query.cancel()
-    }
+    return query.initialResult().concatWith(query.updates()).doFinally { query.cancel() }
   }
 
   @GetMapping("/v2/projects/{projectId}/tasks")
@@ -74,10 +73,18 @@ class TaskController(
             ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
             ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
-    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates()).doFinally {
-        query.cancel()
-    }
+    return query
+        .initialResult()
+        .flatMapMany { Flux.fromIterable(it) }
+        .concatWith(query.updates())
+        .doFinally { query.cancel() }
   }
+
+  @PostMapping("/v2/tasks/{taskId}/rename")
+  fun rename(
+      @PathVariable("taskId") taskId: TaskId,
+      @RequestBody body: RenameTaskDto
+  ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
 
   @PostMapping("/v2/tasks/{taskId}/reschedule")
   fun reschedule(
