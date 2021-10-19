@@ -27,6 +27,9 @@ import {CompanyList} from "./features/company/CompanyList";
 import {CreateCompanyForm} from "./features/company/CreateCompanyForm";
 import {EmployeeList} from "./features/employee/EmployeeList";
 import {CreateEmployeeForm} from "./features/employee/CreateEmployeeForm";
+import {ProjectDetailsPage} from "./features/projects/ProjectDetailsPage";
+import {ParticipantList} from "./features/participants/ParticipantList";
+import {CreateParticipantForm} from "./features/participants/CreateParticipantForm";
 
 
 function App() {
@@ -93,6 +96,9 @@ function App() {
                                               allowUnregistered={true}/>
                                 <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
                                 <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
+                                <PrivateRoute exact path={"/projects/:id"} component={ProjectDetailsPage}/>
+                                <PrivateRoute exact path={"/projects/:id/participants"} component={ParticipantList}/>
+                                <PrivateRoute exact path={"/projects/:id/participants/new"} component={CreateParticipantForm}/>
                                 <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
                                 <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
                                 <PrivateRoute exact path={"/companies"} component={CompanyList}/>
