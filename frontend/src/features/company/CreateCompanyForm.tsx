@@ -50,8 +50,13 @@ export function CreateCompanyForm() {
                         error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
                     />
-                    <Button variant="contained" fullWidth type="submit"
-                            disabled={formik.isSubmitting || !formik.isValid}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        disabled={formik.isSubmitting || !formik.isValid}
+                        sx={{mt: 2}}
+                    >
                         Submit
                     </Button>
                 </Box>

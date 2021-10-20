@@ -104,8 +104,13 @@ export function CreateTaskForm() {
                             helperText={formik.touched.endDate && formik.errors.endDate}
                         />}
                     />
-                    <Button variant="contained" fullWidth type="submit"
-                            disabled={formik.isSubmitting || !formik.isValid}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        disabled={formik.isSubmitting || !formik.isValid}
+                        sx={{mt: 2}}
+                    >
                         Submit
                     </Button>
                 </Box>

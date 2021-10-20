@@ -58,18 +58,20 @@ const LinkRouter = (props: LinkRouterProps) => (
 interface Props {
     title?: string;
     alignItems?: Property.AlignItems;
+    showNav?: boolean;
 }
 
 const drawerWidth = 240;
 
 export function Scaffold(props: React.PropsWithChildren<Props>) {
     const history = useHistory();
+    const {showNav = true} = props;
 
     return (
         <Box sx={{display: 'flex', width: '100vw', height: '100vh'}}>
             <AppBar
                 position="fixed"
-                sx={{width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`}}
+                sx={{width: `calc(100% - ${showNav ? drawerWidth : 0}px)`, ml: `${showNav ? drawerWidth : 0}px`}}
             >
                 <Toolbar>
                     <CustomBreadcrumbs title={props.title}/>
@@ -77,28 +79,32 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                     <AccountAvatar/>
                 </Toolbar>
             </AppBar>
-            <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
-                        width: drawerWidth,
-                        boxSizing: 'border-box',
-                    },
-                }}
-                variant="permanent"
-                anchor="left"
-            >
-                <Toolbar/>
-                <Divider/>
-                <List>
-                    {topLevelDestinations.map((destination, index) => (
-                        <ListItem button key={destination.path} onClick={() => history.push(destination.path)}>
-                            <ListItemText primary={destination.title}/>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+            {
+                showNav ? (
+                    <Drawer
+                        sx={{
+                            width: drawerWidth,
+                            flexShrink: 0,
+                            '& .MuiDrawer-paper': {
+                                width: drawerWidth,
+                                boxSizing: 'border-box',
+                            },
+                        }}
+                        variant="permanent"
+                        anchor="left"
+                    >
+                        <Toolbar/>
+                        <Divider/>
+                        <List>
+                            {topLevelDestinations.map((destination, index) => (
+                                <ListItem button key={destination.path} onClick={() => history.push(destination.path)}>
+                                    <ListItemText primary={destination.title}/>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Drawer>
+                ) : null
+            }
             <Box
                 component="main"
                 sx={{flexGrow: 1, p: 3, alignItems: props.alignItems}}
@@ -237,7 +243,7 @@ function AccountAvatar() {
             >
                 <MenuItem onClick={navigateToProfile}>
                     <Avatar/>
-                    <ListItemText primary="Profile" secondary={fullName} />
+                    <ListItemText primary="Profile" secondary={fullName}/>
                 </MenuItem>
                 <Divider/>
                 <MenuItem>

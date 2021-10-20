@@ -66,6 +66,7 @@ export function CreateParticipantForm() {
                     <FormControl fullWidth>
                         <InputLabel id="employeeIdLabel">User</InputLabel>
                         <Select
+                            required
                             labelId="employeeIdLabel"
                             id="employeeId"
                             name="employeeId"
@@ -81,8 +82,13 @@ export function CreateParticipantForm() {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button variant="contained" fullWidth type="submit"
-                            disabled={formik.isSubmitting || !formik.isValid}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        disabled={formik.isSubmitting || !formik.isValid}
+                        sx={{mt: 2}}
+                    >
                         Submit
                     </Button>
                 </Box>

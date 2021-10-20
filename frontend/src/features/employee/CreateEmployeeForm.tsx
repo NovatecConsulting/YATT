@@ -61,6 +61,7 @@ export function CreateEmployeeForm() {
                     <FormControl fullWidth>
                         <InputLabel id="userIdLabel">User</InputLabel>
                         <Select
+                            required
                             labelId="userIdLabel"
                             id="userId"
                             name="userId"
@@ -73,8 +74,13 @@ export function CreateEmployeeForm() {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button variant="contained" fullWidth type="submit"
-                            disabled={formik.isSubmitting || !formik.isValid}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        disabled={formik.isSubmitting || !formik.isValid}
+                        sx={{mt: 2}}
+                    >
                         Submit
                     </Button>
                 </Box>

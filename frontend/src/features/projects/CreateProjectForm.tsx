@@ -102,8 +102,13 @@ export function CreateProjectForm() {
                             helperText={formik.touched.deadline && formik.errors.deadline}
                         />}
                     />
-                    <Button variant="contained" fullWidth type="submit"
-                            disabled={formik.isSubmitting || !formik.isValid}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        sx={{mt: 2}}
+                        disabled={formik.isSubmitting || !formik.isValid}
+                    >
                         Submit
                     </Button>
                 </Box>
