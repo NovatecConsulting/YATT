@@ -1,4 +1,4 @@
-import {Box, Button, Card, CardContent, CardHeader, Typography} from "@mui/material";
+import {Box, Button, Card, Typography} from "@mui/material";
 import keycloak from "../../keycloak";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectIsAuthenticated, authLoading} from "./authSlice";
