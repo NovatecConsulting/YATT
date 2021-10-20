@@ -5,8 +5,10 @@ import {Scaffold} from "../../components/Scaffold";
 import {useFormik} from "formik";
 import {Button, Card, CardContent, TextField} from "@mui/material";
 import {RegisterUserDto, useRegisterUserMutation} from "./usersSlice";
+import {useSnackbar} from "notistack";
 
 export function Registration() {
+    const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
     const dispatch = useAppDispatch();
     const [registerUser] = useRegisterUserMutation();
@@ -21,6 +23,7 @@ export function Registration() {
                 dispatch(registered(true));
                 history.replace("/");
             } catch (e) {
+                enqueueSnackbar(`Registration failed`);
                 // TODO error handling
                 console.log("registration failed");
             }

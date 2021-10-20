@@ -45,6 +45,7 @@ export function CreateEmployeeForm() {
                 enqueueSnackbar(`Employee "${user?.firstname} ${user?.lastname}" created successfully`)
                 history.goBack();
             } catch (e) {
+                enqueueSnackbar(`Failed creating employee.`);
                 // TODO error handling
                 console.log("employee creation failed");
             }

@@ -43,6 +43,7 @@ export function CreateProjectForm() {
                 enqueueSnackbar(`Project "${values.name}" created successfully`)
                 history.goBack();
             } catch (e) {
+                enqueueSnackbar(`Failed creating project.`);
                 // TODO error handling
                 console.log(e)
                 console.log("project creation failed");

@@ -28,6 +28,7 @@ export function CreateCompanyForm() {
                 enqueueSnackbar(`Company "${values.name}" created successfully`)
                 history.goBack();
             } catch (e) {
+                enqueueSnackbar(`Failed creating company.`);
                 // TODO error handling
                 console.log(e)
                 console.log("company creation failed");

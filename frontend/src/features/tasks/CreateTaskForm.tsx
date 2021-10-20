@@ -46,6 +46,7 @@ export function CreateTaskForm() {
                 enqueueSnackbar(`Task "${values.name}" created successfully`)
                 history.goBack();
             } catch (e) {
+                enqueueSnackbar(`Failed creating task.`);
                 // TODO error handling
                 console.log("task creation failed");
             }
