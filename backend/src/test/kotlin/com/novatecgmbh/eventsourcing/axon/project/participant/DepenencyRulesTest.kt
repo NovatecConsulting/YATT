@@ -1,5 +1,8 @@
 package com.novatecgmbh.eventsourcing.axon.project.participant
 
+import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
+import com.novatecgmbh.eventsourcing.axon.project.participant.command.Participant
+import com.novatecgmbh.eventsourcing.axon.user.command.User
 import com.tngtech.archunit.base.DescribedPredicate.alwaysTrue
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage
 import com.tngtech.archunit.junit.AnalyzeClasses
