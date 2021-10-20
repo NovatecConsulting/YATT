@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: lightgrey;
+  background: url(http://localhost:8081/auth/resources/mvmm2/login/keycloak/img/keycloak-bg.png) no-repeat center center fixed;
 }
 
 code {

@@ -27,7 +27,7 @@ export function ProfilePage() {
                 ) : (
                     <React.Fragment>
                         <Button sx={{m: 2}} onClick={handleEditing}>Edit Profile</Button>
-                        <Typography>
+                        <Typography color={'white'}>
                             {`${currentUser?.firstname} ${currentUser?.lastname}`}
                         </Typography>
                     </React.Fragment>
