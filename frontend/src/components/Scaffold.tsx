@@ -117,7 +117,7 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
 }
 
 function CustomBreadcrumbs({title}: { title?: string }) {
-    const {id: id} = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter((path) => path);
 

@@ -1,11 +1,11 @@
 import {Scaffold} from "../../components/Scaffold";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import { useAppSelector} from "../../app/hooks";
 import {
     RenameUserDto,
     selectCurrentUser,
     useRenameUserMutation
 } from "./usersSlice";
-import {Avatar, Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
+import {Avatar,  Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import {useState} from "react";
 import {useFormik} from "formik";
 import React from "react";

@@ -1,5 +1,4 @@
 import {
-    Button,
     CircularProgress,
     Paper,
     Table,
@@ -24,8 +23,6 @@ import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
-import dayjs from "dayjs";
-import {Task, useRenameTaskMutation, useRescheduleTaskMutation} from "../tasks/taskSlice";
 import {EditableTableCell} from "../../components/EditableTableCell";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 
