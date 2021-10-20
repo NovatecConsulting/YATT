@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import {Check, Clear, Edit} from "@mui/icons-material";
 import {useFormik} from "formik";
 import DatePicker from "@mui/lab/DatePicker";
+import {EditableTableCell} from "../../components/EditableTableCell";
 
 export function TaskList() {
     const history = useHistory();
@@ -274,67 +275,18 @@ function TaskStatusCell({taskStatus, taskId}: { taskStatus: string, taskId: Enti
 }
 
 function TaskNameCell({task}: { task: Task }) {
-    const [isEditing, setIsEditing] = useState(false);
-
-    const handleEditing = () => setIsEditing(!isEditing);
-
-    const [saveName, {isLoading}] = useRenameTaskMutation();
+    const [saveName] = useRenameTaskMutation();
 
     const canEditName = task.status !== 'COMPLETED';
 
-    const formik = useFormik({
-        initialValues: {
-            name: task.name,
-        },
-        onSubmit: async (values, formikHelpers) => {
-            try {
-                await saveName({
-                    identifier: task.identifier.toString(),
-                    name: values.name,
-                }).unwrap();
-                handleEditing();
-            } catch (e) {
-                // TODO error handling
-                console.log("task rename failed");
-            }
-        },
-    });
+    const onSave = async (name: string) => {
+        await saveName({
+            identifier: task.identifier.toString(),
+            name: name,
+        }).unwrap();
+    };
 
     return (
-        <TableCell>
-            {!isEditing ? (
-                <React.Fragment>
-                    {task.name}
-                    {
-                        canEditName ? (
-                            <IconButton size='small' sx={{ml: 1}} onClick={handleEditing}>
-                                <Edit fontSize="inherit"/>
-                            </IconButton>
-                        ) : null
-                    }
-
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    <TextField
-                        margin='none'
-                        size='small'
-                        id="name"
-                        name="name"
-                        label="Name"
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
-                    />
-                    <IconButton size='small' sx={{ml: 1}} onClick={formik.submitForm} disabled={isLoading}>
-                        <Check/>
-                    </IconButton>
-                    <IconButton size='small' sx={{ml: 1}} onClick={handleEditing}>
-                        <Clear/>
-                    </IconButton>
-                </React.Fragment>
-            )}
-        </TableCell>
+        <EditableTableCell initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
     );
 }
