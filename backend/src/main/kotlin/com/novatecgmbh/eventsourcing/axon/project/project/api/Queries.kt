@@ -13,3 +13,17 @@ data class ProjectQueryResult(
     val startDate: LocalDate,
     val deadline: LocalDate
 )
+
+data class ProjectDetailsQuery(val projectId: ProjectId)
+
+data class ProjectDetailsQueryResult(
+    val identifier: ProjectId,
+    val version: Long,
+    val name: String,
+    val startDate: LocalDate,
+    val deadline: LocalDate,
+    val allTasksCount: Long,
+    val plannedTasksCount: Long,
+    val startedTasksCount: Long,
+    val completedTasksCount: Long,
+)

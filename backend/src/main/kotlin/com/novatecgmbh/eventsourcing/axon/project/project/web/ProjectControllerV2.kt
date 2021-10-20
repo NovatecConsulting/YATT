@@ -38,9 +38,11 @@ class ProjectControllerV2(
             ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java),
             ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
-    return query.initialResult().flatMapMany { Flux.fromIterable(it) }.concatWith(query.updates()).doFinally {
-        query.cancel()
-    }
+    return query
+        .initialResult()
+        .flatMapMany { Flux.fromIterable(it) }
+        .concatWith(query.updates())
+        .doFinally { query.cancel() }
   }
 
   @GetMapping("/{projectId}")
@@ -63,9 +65,31 @@ class ProjectControllerV2(
             ResponseTypes.instanceOf(ProjectQueryResult::class.java),
             ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 
-    return query.initialResult().concatWith(query.updates()).doFinally {
-        query.cancel()
-    }
+    return query.initialResult().concatWith(query.updates()).doFinally { query.cancel() }
+  }
+
+  @GetMapping("/{projectId}/details")
+  fun getProjectDetailsById(
+      @PathVariable("projectId") projectId: ProjectId
+  ): ResponseEntity<ProjectDetailsQueryResult> =
+      queryGateway
+          .queryOptional<ProjectDetailsQueryResult, ProjectDetailsQuery>(
+              ProjectDetailsQuery(projectId))
+          .join()
+          .map { ResponseEntity(it, HttpStatus.OK) }
+          .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
+
+  @GetMapping(path = ["/{projectId}/details"], produces = [APPLICATION_NDJSON_VALUE])
+  fun getProjectDetailsByIdAndUpdates(
+      @PathVariable("projectId") projectId: ProjectId
+  ): Flux<ProjectDetailsQueryResult> {
+    val query =
+        queryGateway.subscriptionQuery(
+            ProjectDetailsQuery(projectId),
+            ResponseTypes.instanceOf(ProjectDetailsQueryResult::class.java),
+            ResponseTypes.instanceOf(ProjectDetailsQueryResult::class.java))
+
+    return query.initialResult().concatWith(query.updates()).doFinally { query.cancel() }
   }
 
   @PostMapping
