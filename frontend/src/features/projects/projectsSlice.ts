@@ -12,6 +12,18 @@ export interface Project {
     deadline: string;
 }
 
+export interface ProjectDetails {
+    identifier: string;
+    version: number;
+    name: string;
+    startDate: string;
+    deadline: string;
+    allTasksCount: number;
+    plannedTasksCount: number;
+    startedTasksCount: number;
+    completedTasksCount: number;
+}
+
 export interface CreateProjectDto {
     name: string;
     startDate: string;
@@ -108,6 +120,30 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 body: patch
             }),
         }),
+        getProjectDetails: builder.query<ProjectDetails, string>({
+            query: (id) => `/projects/${id}/details`,
+            async onCacheEntryAdded(id, api): Promise<void> {
+                let cancel: CancelCallback | undefined;
+                try {
+                    await api.cacheDataLoaded;
+
+                    cancel = await subscribe<ProjectDetails>(`/projects/${id}/details`, update => {
+                        api.updateCachedData(draft => {
+                            Object.keys(draft).forEach(key => {
+                                (draft as any)[key] = (update as any)[key];
+                            });
+                        });
+                    });
+                } catch {
+                    // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
+                    // in which case `cacheDataLoaded` will throw
+                }
+                await api.cacheEntryRemoved;
+                if (cancel) {
+                    await cancel("cacheEntryRemoved");
+                }
+            }
+        }),
     })
 });
 
@@ -116,6 +152,7 @@ export const {
     useCreateProjectMutation,
     useRescheduleProjectMutation,
     useRenameProjectMutation,
+    useGetProjectDetailsQuery,
 } = extendedApiSlice;
 
 const selectProjectsResult = extendedApiSlice.endpoints.getProjects.select();
