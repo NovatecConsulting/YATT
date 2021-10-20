@@ -25,8 +25,9 @@ import React from "react";
 import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
 import dayjs from "dayjs";
-import {Task, useRenameTaskMutation} from "../tasks/taskSlice";
+import {Task, useRenameTaskMutation, useRescheduleTaskMutation} from "../tasks/taskSlice";
 import {EditableTableCell} from "../../components/EditableTableCell";
+import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 
 export function ProjectsList() {
     const history = useHistory();
@@ -55,7 +56,6 @@ export function ProjectsList() {
                             <TableCell>Name</TableCell>
                             <TableCell>Planned Start Date</TableCell>
                             <TableCell>Deadline</TableCell>
-                            <TableCell/>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -92,26 +92,25 @@ function ProjectRow(props: ProjectRowProps) {
 
     const navigateToProjectDetailsPage = () => history.push(`/projects/${project?.identifier}`)
 
-    const postponeProject = (event: React.MouseEvent, project: Project) => {
-        event.stopPropagation();
-        const newDeadline = dayjs(project.deadline).add(1, 'day');
-        rescheduleProject({
-            identifier: project.identifier,
-            version: project.version,
-            startDate: project.startDate,
-            deadline: newDeadline.format("YYYY-MM-DD"),
-        });
+    const onSave = async (startDate: string, endDate: string) => {
+        await rescheduleProject({
+            identifier: project!.identifier,
+            version: project!.version,
+            startDate: startDate,
+            deadline: endDate,
+        }).unwrap();
     }
 
     if (project) {
         return (
             <TableRow hover onClick={navigateToProjectDetailsPage}>
                 <ProjectNameCell project={project} />
-                <TableCell>{dayjs(project.startDate).format('L')}</TableCell>
-                <TableCell>{dayjs(project.deadline).format('L')}</TableCell>
-                <TableCell align="right">
-                    <Button onClick={(event) => postponeProject(event, project)}>Postpone Deadline</Button>
-                </TableCell>
+                <EditableDateTableCells
+                    canEdit={true}
+                    onSave={onSave}
+                    startDate={project.startDate}
+                    endDate={project.deadline}
+                />
             </TableRow>
         );
     } else {
