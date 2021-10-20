@@ -24,7 +24,8 @@ export interface EditableDateTableCellsProps {
 export function EditableDateTableCells(props: EditableDateTableCellsProps) {
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (event: any) => {
+        event.stopPropagation();
         setOpen(true);
     };
 
@@ -101,7 +102,7 @@ function RescheduleDialog(props: RescheduleDialogProps) {
     });
 
     return (
-        <Dialog open={props.open} onClose={props.onClose}>
+        <Dialog open={props.open} onClose={props.onClose} onClick={event => event.stopPropagation()}>
             <DialogTitle>Update Start and End Date</DialogTitle>
             <DialogContent>
                 <DatePicker
