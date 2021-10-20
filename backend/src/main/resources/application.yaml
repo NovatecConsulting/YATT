@@ -35,6 +35,8 @@ logging:
 
 
 axon:
+  serializer:
+    events: jackson
   eventhandling:
     processors:
       user-unique-key-projector:
