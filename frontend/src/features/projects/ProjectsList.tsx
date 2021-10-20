@@ -9,7 +9,13 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import {Project, selectProjectById, useGetProjectsQuery, useRescheduleProjectMutation} from "./projectsSlice";
+import {
+    Project,
+    selectProjectById,
+    useGetProjectsQuery,
+    useRenameProjectMutation,
+    useRescheduleProjectMutation
+} from "./projectsSlice";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
@@ -19,6 +25,8 @@ import React from "react";
 import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
 import dayjs from "dayjs";
+import {Task, useRenameTaskMutation} from "../tasks/taskSlice";
+import {EditableTableCell} from "../../components/EditableTableCell";
 
 export function ProjectsList() {
     const history = useHistory();
@@ -98,7 +106,7 @@ function ProjectRow(props: ProjectRowProps) {
     if (project) {
         return (
             <TableRow hover onClick={navigateToProjectDetailsPage}>
-                <TableCell>{project.name}</TableCell>
+                <ProjectNameCell project={project} />
                 <TableCell>{dayjs(project.startDate).format('L')}</TableCell>
                 <TableCell>{dayjs(project.deadline).format('L')}</TableCell>
                 <TableCell align="right">
@@ -109,4 +117,20 @@ function ProjectRow(props: ProjectRowProps) {
     } else {
         return null;
     }
+}
+
+function ProjectNameCell({project}: { project: Project }) {
+    const [saveName] = useRenameProjectMutation();
+
+    const onSave = async (name: string) => {
+        await saveName({
+            identifier: project.identifier.toString(),
+            version: project.version,
+            name: name,
+        }).unwrap();
+    };
+
+    return (
+        <EditableTableCell initialValue={project.name} label={'Name'} canEdit={true} onSave={onSave}/>
+    );
 }

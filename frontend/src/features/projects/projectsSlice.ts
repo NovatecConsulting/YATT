@@ -25,6 +25,12 @@ export interface RescheduleProjectDto {
     deadline: string;
 }
 
+export interface RenameProjectDto {
+    identifier: string;
+    version: number;
+    name: string;
+}
+
 const projectsAdapter = createEntityAdapter<Project>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
@@ -95,6 +101,13 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 api.queryFulfilled.catch(patchResult.undo)
             }
         }),
+        renameProject: builder.mutation<string, RenameProjectDto>({
+            query: ({identifier, ...patch}) => ({
+                url: `/projects/${identifier}/rename`,
+                method: 'POST',
+                body: patch
+            }),
+        }),
     })
 });
 
@@ -102,6 +115,7 @@ export const {
     useGetProjectsQuery,
     useCreateProjectMutation,
     useRescheduleProjectMutation,
+    useRenameProjectMutation,
 } = extendedApiSlice;
 
 const selectProjectsResult = extendedApiSlice.endpoints.getProjects.select();
