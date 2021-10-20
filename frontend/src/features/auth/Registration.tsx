@@ -33,7 +33,7 @@ export function Registration() {
     }
 
     return (
-        <Scaffold title={"Registration"}>
+        <Scaffold title={"Registration"} showNav={false}>
             <Card><CardContent>
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
@@ -58,7 +58,13 @@ export function Registration() {
                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
                         helperText={formik.touched.lastname && formik.errors.lastname}
                     />
-                    <Button variant="contained" fullWidth type="submit" disabled={formik.isSubmitting}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        disabled={formik.isSubmitting}
+                        sx={{mt: 2}}
+                    >
                         Submit
                     </Button>
                 </form>
