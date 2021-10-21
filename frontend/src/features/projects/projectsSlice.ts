@@ -10,6 +10,7 @@ export interface Project {
     name: string;
     startDate: string;
     deadline: string;
+    companyReference: { identifier: string, displayName: string }
 }
 
 export interface ProjectDetails {
@@ -28,6 +29,7 @@ export interface CreateProjectDto {
     name: string;
     startDate: string;
     deadline: string;
+    companyId: string;
 }
 
 export interface RescheduleProjectDto {

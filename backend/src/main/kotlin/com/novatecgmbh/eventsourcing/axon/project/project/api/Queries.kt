@@ -1,5 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
+import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import java.time.LocalDate
 
 class AllProjectsQuery
@@ -11,7 +13,8 @@ data class ProjectQueryResult(
     val version: Long,
     val name: String,
     val startDate: LocalDate,
-    val deadline: LocalDate
+    val deadline: LocalDate,
+    val companyReference: AggregateReference<CompanyId>
 )
 
 data class ProjectDetailsQuery(val projectId: ProjectId)

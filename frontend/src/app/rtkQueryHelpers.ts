@@ -1,13 +1,21 @@
 import {QueryDefinition, QueryStatus} from "@reduxjs/toolkit/query";
 import {Id, Override} from "@reduxjs/toolkit/dist/query/tsHelpers";
 import {QuerySubState} from "@reduxjs/toolkit/dist/query/core/apiState";
-import {EntityState} from "@reduxjs/toolkit";
+import {createEntityAdapter, EntityState} from "@reduxjs/toolkit";
 
 export function selectIdsFromResult<T>(result: UseQueryStateDefaultResult<QueryDefinition<any, any, any, EntityState<T>>>) {
     const {data: entityState, ...rest} = result;
     return ({
         ...rest,
         data: entityState?.ids
+    });
+}
+
+export function selectEntitiesFromResult<T>(result: UseQueryStateDefaultResult<QueryDefinition<any, any, any, EntityState<T>>>) {
+    const {data: entityState, ...rest} = result;
+    return ({
+        ...rest,
+        data: entityState ? createEntityAdapter<T>().getSelectors().selectAll(entityState) : undefined
     });
 }
 

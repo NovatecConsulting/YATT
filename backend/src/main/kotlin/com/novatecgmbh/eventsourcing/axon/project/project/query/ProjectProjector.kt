@@ -1,5 +1,8 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.query
 
+import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.util.*
 import org.axonframework.config.ProcessingGroup
@@ -7,6 +10,8 @@ import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
+import org.axonframework.extensions.kotlin.queryOptional
+import org.axonframework.queryhandling.QueryGateway
 import org.axonframework.queryhandling.QueryHandler
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
@@ -15,10 +20,15 @@ import org.springframework.stereotype.Component
 @ProcessingGroup("project-projector")
 class ProjectProjector(
     private val repository: ProjectProjectionRepository,
-    private val queryUpdateEmitter: QueryUpdateEmitter
+    private val queryUpdateEmitter: QueryUpdateEmitter,
+    private val queryGateway: QueryGateway
 ) {
   @EventHandler
   fun on(event: ProjectCreatedEvent, @SequenceNumber aggregateVersion: Long) {
+    val company =
+        queryGateway
+            .queryOptional<CompanyQueryResult, CompanyQuery>(CompanyQuery(event.companyId))
+            .get()
     saveProjection(
         ProjectProjection(
             identifier = event.aggregateIdentifier,
@@ -26,7 +36,10 @@ class ProjectProjector(
             name = event.projectName,
             plannedStartDate = event.plannedStartDate,
             deadline = event.deadline,
-        ))
+            companyReference =
+                company
+                    .map { it.toAggregateReference() }
+                    .orElse(AggregateReference(event.companyId))))
   }
 
   @EventHandler

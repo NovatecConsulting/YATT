@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.api
 
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import java.time.LocalDate
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 import org.axonframework.modelling.command.TargetAggregateVersion
@@ -13,6 +14,7 @@ data class CreateProjectCommand(
     val projectName: String,
     val plannedStartDate: LocalDate,
     val deadline: LocalDate,
+    val companyId: CompanyId
 ) : ProjectCommand(aggregateIdentifier)
 
 data class UpdateProjectCommand(

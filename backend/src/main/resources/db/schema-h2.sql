@@ -90,6 +90,8 @@ create sequence hibernate_sequence start with 1 increment by 1;
 
     create table projects (
        identifier varchar(255) not null,
+        company_name varchar(255),
+        company_id varchar(255) not null,
         deadline date not null,
         name varchar(255) not null,
         planned_start_date date not null,

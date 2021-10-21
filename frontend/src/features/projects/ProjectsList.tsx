@@ -51,6 +51,7 @@ export function ProjectsList() {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
+                            <TableCell>Company</TableCell>
                             <TableCell>Planned Start Date</TableCell>
                             <TableCell>Deadline</TableCell>
                         </TableRow>
@@ -101,7 +102,8 @@ function ProjectRow(props: ProjectRowProps) {
     if (project) {
         return (
             <TableRow hover onClick={navigateToProjectDetailsPage}>
-                <ProjectNameCell project={project} />
+                <ProjectNameCell project={project}/>
+                <TableCell>{project.companyReference.displayName}</TableCell>
                 <EditableDateTableCells
                     canEdit={true}
                     onSave={onSave}
