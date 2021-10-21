@@ -17,7 +17,6 @@ import {
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useCreateParticipantMutation} from "./participantSlice";
 import {useGetAllEmployeesQuery} from "../employee/employeeSlice";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query/react";
 
 interface Values {
     employeeId: string;
