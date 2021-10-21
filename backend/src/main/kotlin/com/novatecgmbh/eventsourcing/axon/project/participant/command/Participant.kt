@@ -6,6 +6,7 @@ import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCreatedEvent
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
+import com.novatecgmbh.eventsourcing.axon.project.participant.command.views.ParticipantUniqueKeyRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.command.User

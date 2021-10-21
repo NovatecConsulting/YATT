@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
@@ -18,6 +19,7 @@ class Project {
   private lateinit var projectName: String
   private lateinit var plannedStartDate: LocalDate
   private lateinit var deadline: LocalDate
+  private lateinit var companyId: CompanyId
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
@@ -34,7 +36,7 @@ class Project {
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
-        ))
+            companyId = command.companyId))
     return command.aggregateIdentifier
   }
 
@@ -103,6 +105,7 @@ class Project {
     projectName = event.projectName
     plannedStartDate = event.plannedStartDate
     deadline = event.deadline
+    companyId = event.companyId
   }
 
   @EventSourcingHandler

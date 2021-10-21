@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import org.axonframework.modelling.command.ConflictingAggregateVersionException
@@ -19,20 +20,21 @@ class ProjectTest {
   }
 
   companion object {
+    val companyId = CompanyId()
     val createProjectCommand =
         CreateProjectCommand(
             aggregateIdentifier = ProjectId("1"),
             projectName = "test",
             plannedStartDate = LocalDate.of(2021, 1, 1),
             deadline = LocalDate.of(2022, 1, 1),
-        )
+            companyId = companyId)
     val projectCreatedEvent =
         ProjectCreatedEvent(
             aggregateIdentifier = ProjectId("1"),
             projectName = "test",
             plannedStartDate = LocalDate.of(2021, 1, 1),
             deadline = LocalDate.of(2022, 1, 1),
-        )
+            companyId = companyId)
     val renameProjectCommand =
         RenameProjectCommand(
             aggregateIdentifier = ProjectId("1"),

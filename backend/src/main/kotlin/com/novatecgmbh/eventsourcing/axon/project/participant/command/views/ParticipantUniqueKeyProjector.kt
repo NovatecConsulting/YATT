@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.participant.command
+package com.novatecgmbh.eventsourcing.axon.project.participant.command.views
 
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCreatedEvent
 import org.axonframework.config.ProcessingGroup
@@ -15,6 +15,7 @@ class ParticipantUniqueKeyProjector(private val repository: ParticipantUniqueKey
             identifier = event.aggregateIdentifier,
             projectId = event.projectId,
             companyId = event.companyId,
-            userId = event.userId))
+            userId = event.userId)
+    )
   }
 }

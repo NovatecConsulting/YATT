@@ -45,3 +45,5 @@ axon:
         mode: subscribing
       participant-unique-key-projector:
         mode: subscribing
+      participant-auto-creator:
+        mode: subscribing

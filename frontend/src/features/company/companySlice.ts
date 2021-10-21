@@ -14,7 +14,7 @@ export interface CreateCompanyDto {
     name: string;
 }
 
-const companiesAdapter = createEntityAdapter<Company>({
+export const companiesAdapter = createEntityAdapter<Company>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
         return a.name.localeCompare(b.name);

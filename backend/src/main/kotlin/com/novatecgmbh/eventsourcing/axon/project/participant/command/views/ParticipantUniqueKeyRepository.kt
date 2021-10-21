@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.participant.command
+package com.novatecgmbh.eventsourcing.axon.project.participant.command.views
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
