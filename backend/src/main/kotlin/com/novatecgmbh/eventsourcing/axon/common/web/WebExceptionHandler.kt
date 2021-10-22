@@ -30,6 +30,7 @@ class WebExceptionHandler : ResponseEntityExceptionHandler() {
                 ILLEGAL_STATE -> ResponseEntity(CONFLICT)
                 NOT_FOUND -> ResponseEntity(HttpStatus.NOT_FOUND)
                 UNKNOWN -> ResponseEntity(INTERNAL_SERVER_ERROR)
+                ACCESS_DENIED -> ResponseEntity(FORBIDDEN)
               }
           else -> ResponseEntity(INTERNAL_SERVER_ERROR)
         }

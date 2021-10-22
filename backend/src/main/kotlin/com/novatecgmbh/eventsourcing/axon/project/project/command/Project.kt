@@ -5,13 +5,12 @@ import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
+import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.modelling.command.AggregateCreationPolicy
-import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateLifecycle
-import org.axonframework.modelling.command.CreationPolicy
+import org.axonframework.modelling.command.*
 import org.axonframework.spring.stereotype.Aggregate
+import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
 class Project {
