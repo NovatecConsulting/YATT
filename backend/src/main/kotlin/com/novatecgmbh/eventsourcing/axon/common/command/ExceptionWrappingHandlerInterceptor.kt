@@ -33,6 +33,7 @@ class ExceptionWrappingHandlerInterceptor : MessageHandlerInterceptor<CommandMes
         is ConflictingAggregateVersionException -> CONCURRENT_MODIFICATION
         is IllegalArgumentException -> ILLEGAL_ARGUMENT
         is IllegalStateException -> ILLEGAL_STATE
+        is IllegalAccessException -> ACCESS_DENIED
         else -> UNKNOWN
       }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
 
