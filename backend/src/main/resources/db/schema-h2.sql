@@ -168,7 +168,7 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
        add constraint UKikkx651fvk6yi9iymk7620mgp unique (company_id, user_id);
 
     alter table participant_unique_key 
-       add constraint UKlck0qqqdij8b3cchkj8u9tjis unique (company_id, user_id);
+       add constraint participant_unique_key_constraint unique (project_id, company_id, user_id);
 
     alter table snapshot_event_entry 
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);

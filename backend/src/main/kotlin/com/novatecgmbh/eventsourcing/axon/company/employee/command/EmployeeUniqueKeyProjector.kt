@@ -6,7 +6,7 @@ import org.axonframework.eventhandling.EventHandler
 import org.springframework.stereotype.Component
 
 @Component
-@ProcessingGroup("participant-unique-key-projector")
+@ProcessingGroup("employee-unique-key-projector")
 class EmployeeUniqueKeyProjector(private val repository: EmployeeUniqueKeyRepository) {
   @EventHandler
   fun on(event: EmployeeCreatedEvent) {

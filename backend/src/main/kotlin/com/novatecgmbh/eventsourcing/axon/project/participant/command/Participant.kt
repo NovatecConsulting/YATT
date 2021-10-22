@@ -34,7 +34,7 @@ class Participant {
       throw AlreadyExistsException()
     }
     assertNoParticipantExistsForCompanyAndUser(
-        participantUniqueKeyRepository, command.companyId, command.userId)
+        participantUniqueKeyRepository, command.projectId, command.companyId, command.userId)
     assertUserExists(userRepository, command.userId)
     assertCompanyExists(companyRepository, command.companyId)
     AggregateLifecycle.apply(
@@ -64,11 +64,14 @@ class Participant {
 
   private fun assertNoParticipantExistsForCompanyAndUser(
       participantUniqueKeyRepository: ParticipantUniqueKeyRepository,
+      projectId: ProjectId,
       companyId: CompanyId,
       userId: UserId
   ) {
-    if (participantUniqueKeyRepository.existsByCompanyIdAndUserId(companyId, userId))
-        throw IllegalArgumentException("Participant already exists for this company and user")
+    if (participantUniqueKeyRepository.existsByProjectIdAndCompanyIdAndUserId(
+        projectId, companyId, userId))
+        throw IllegalArgumentException(
+            "A participant already exists for this company and user on this project")
   }
 
   @EventSourcingHandler
