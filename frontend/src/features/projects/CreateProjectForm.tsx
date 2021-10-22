@@ -7,7 +7,8 @@ import {
     Card,
     CardContent,
     CircularProgress,
-    FormControl, InputLabel,
+    FormControl,
+    InputLabel,
     MenuItem,
     Select,
     TextField,
@@ -74,88 +75,86 @@ export function CreateProjectForm() {
         content = <CircularProgress/>;
     } else if (companiesResult.isSuccess && companiesResult.data) {
         content = (
-            <Scaffold>
-                <Card><CardContent>
-                    <Box component="form" onSubmit={formik.handleSubmit}>
-                        <FormControl fullWidth>
-                            <InputLabel id="companyIdLabel">Company</InputLabel>
-                            <Select
-                                required
-                                labelId="companyIdLabel"
-                                id="companyId"
-                                name="companyId"
-                                value={formik.values.companyId}
-                                label="Company"
-                                onChange={formik.handleChange}
-                            >
-                                {companiesResult.data.map(company => (
-                                    <MenuItem key={company.identifier}
-                                              value={company.identifier}>
-                                        {`${company.name}`}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <TextField
+            <Card><CardContent>
+                <Box component="form" onSubmit={formik.handleSubmit}>
+                    <FormControl fullWidth>
+                        <InputLabel id="companyIdLabel">Company</InputLabel>
+                        <Select
+                            required
+                            labelId="companyIdLabel"
+                            id="companyId"
+                            name="companyId"
+                            value={formik.values.companyId}
+                            label="Company"
+                            onChange={formik.handleChange}
+                        >
+                            {companiesResult.data.map(company => (
+                                <MenuItem key={company.identifier}
+                                          value={company.identifier}>
+                                    {`${company.name}`}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        required
+                        fullWidth
+                        id="name"
+                        name="name"
+                        label="Name"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        error={formik.touched.name && Boolean(formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                    />
+                    <DatePicker
+                        label="Planned Start Date"
+                        value={formik.values.startDate}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
+                        onChange={(newValue) => {
+                            formik.getFieldHelpers('startDate').setValue(newValue, true)
+                        }}
+                        renderInput={(params: TextFieldProps) => <TextField
+                            {...params}
                             required
                             fullWidth
-                            id="name"
-                            name="name"
-                            label="Name"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                        />
-                        <DatePicker
-                            label="Planned Start Date"
-                            value={formik.values.startDate}
-                            mask={"__.__.____"}
-                            inputFormat={"DD.MM.YYYY"}
-                            onChange={(newValue) => {
-                                formik.getFieldHelpers('startDate').setValue(newValue, true)
-                            }}
-                            renderInput={(params: TextFieldProps) => <TextField
-                                {...params}
-                                required
-                                fullWidth
-                                id="startDate"
-                                name="startDate"
-                                error={params.error || (formik.touched.startDate && Boolean(formik.errors.startDate))}
-                                helperText={formik.touched.startDate && formik.errors.startDate}
-                            />}
-                        />
-                        <DatePicker
-                            minDate={formik.values.startDate}
-                            label="Deadline"
-                            value={formik.values.deadline}
-                            mask={"__.__.____"}
-                            inputFormat={"DD.MM.YYYY"}
-                            onChange={(newValue) => {
-                                formik.getFieldHelpers('deadline').setValue(newValue, true)
-                            }}
-                            renderInput={(params: TextFieldProps) => <TextField
-                                {...params}
-                                required
-                                fullWidth
-                                id="deadline"
-                                name="deadline"
-                                error={params.error || (formik.touched.deadline && Boolean(formik.errors.deadline))}
-                                helperText={formik.touched.deadline && formik.errors.deadline}
-                            />}
-                        />
-                        <Button
-                            variant="contained"
+                            id="startDate"
+                            name="startDate"
+                            error={params.error || (formik.touched.startDate && Boolean(formik.errors.startDate))}
+                            helperText={formik.touched.startDate && formik.errors.startDate}
+                        />}
+                    />
+                    <DatePicker
+                        minDate={formik.values.startDate}
+                        label="Deadline"
+                        value={formik.values.deadline}
+                        mask={"__.__.____"}
+                        inputFormat={"DD.MM.YYYY"}
+                        onChange={(newValue) => {
+                            formik.getFieldHelpers('deadline').setValue(newValue, true)
+                        }}
+                        renderInput={(params: TextFieldProps) => <TextField
+                            {...params}
+                            required
                             fullWidth
-                            type="submit"
-                            sx={{mt: 2}}
-                            disabled={formik.isSubmitting || !formik.isValid}
-                        >
-                            Submit
-                        </Button>
-                    </Box>
-                </CardContent></Card>
-            </Scaffold>
+                            id="deadline"
+                            name="deadline"
+                            error={params.error || (formik.touched.deadline && Boolean(formik.errors.deadline))}
+                            helperText={formik.touched.deadline && formik.errors.deadline}
+                        />}
+                    />
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        sx={{mt: 2}}
+                        disabled={formik.isSubmitting || !formik.isValid}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </CardContent></Card>
         );
     } else if (companiesResult.isError) {
         content = <div>{companiesResult.error}</div>;
