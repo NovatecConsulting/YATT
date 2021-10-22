@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.user.command
+package com.novatecgmbh.eventsourcing.axon.user.command.view
 
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import javax.persistence.Column

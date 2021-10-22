@@ -36,8 +36,6 @@ logging:
     org.springframework.boot: info
 
 axon:
-  server:
-    enabled: false
   serializer:
     events: jackson
   eventhandling:

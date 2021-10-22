@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.user.command
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.user.api.*
+import com.novatecgmbh.eventsourcing.axon.user.command.view.UserUniqueKeyRepository
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.messaging.MetaData

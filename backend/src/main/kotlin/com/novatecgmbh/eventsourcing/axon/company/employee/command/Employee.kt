@@ -4,6 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
+import com.novatecgmbh.eventsourcing.axon.company.employee.command.view.EmployeeUniqueKeyRepository
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.command.User
 import org.axonframework.commandhandling.CommandHandler
@@ -60,9 +61,9 @@ class Employee {
   }
 
   private fun assertNoEmployeeExistsForCompanyAndUser(
-      employeeUniqueKeyRepository: EmployeeUniqueKeyRepository,
-      companyId: CompanyId,
-      userId: UserId
+    employeeUniqueKeyRepository: EmployeeUniqueKeyRepository,
+    companyId: CompanyId,
+    userId: UserId
   ) {
     if (employeeUniqueKeyRepository.existsByCompanyIdAndUserId(companyId, userId))
         throw IllegalArgumentException("Employee already exists for this company and user")
