@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.user.command
+package com.novatecgmbh.eventsourcing.axon.user.command.view
 
 import com.novatecgmbh.eventsourcing.axon.user.api.UserRegisteredEvent
 import org.axonframework.config.ProcessingGroup
@@ -12,6 +12,7 @@ class UserUniqueKeyProjector(private val repository: UserUniqueKeyRepository) {
   fun on(event: UserRegisteredEvent) {
     repository.save(
         UserUniqueKeyProjection(
-            identifier = event.aggregateIdentifier, externalUserId = event.externalUserId))
+            identifier = event.aggregateIdentifier, externalUserId = event.externalUserId)
+    )
   }
 }

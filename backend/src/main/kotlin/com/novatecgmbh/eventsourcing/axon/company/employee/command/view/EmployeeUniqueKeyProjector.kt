@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.company.employee.command
+package com.novatecgmbh.eventsourcing.axon.company.employee.command.view
 
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.EmployeeCreatedEvent
 import org.axonframework.config.ProcessingGroup
@@ -14,6 +14,7 @@ class EmployeeUniqueKeyProjector(private val repository: EmployeeUniqueKeyReposi
         EmployeeUniqueKeyProjection(
             identifier = event.aggregateIdentifier,
             companyId = event.companyId,
-            userId = event.userId))
+            userId = event.userId)
+    )
   }
 }

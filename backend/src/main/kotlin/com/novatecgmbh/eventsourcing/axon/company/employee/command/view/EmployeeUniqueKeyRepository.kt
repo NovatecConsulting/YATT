@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.company.employee.command
+package com.novatecgmbh.eventsourcing.axon.company.employee.command.view
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.EmployeeId
