@@ -8,4 +8,4 @@ create table participant_unique_key
 );
 
 alter table if exists participant_unique_key
-    add constraint UKlck0qqqdij8b3cchkj8u9tjis unique (company_id, user_id);
+    add constraint participant_unique_key_constraint unique (project_id, company_id, user_id);

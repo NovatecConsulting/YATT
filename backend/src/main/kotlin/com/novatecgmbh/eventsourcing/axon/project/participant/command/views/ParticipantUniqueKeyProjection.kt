@@ -9,7 +9,11 @@ import javax.persistence.*
 @Entity
 @Table(
     name = "participant_unique_key",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["companyId", "userId"])])
+    uniqueConstraints =
+        [
+            UniqueConstraint(
+                name = "participant_unique_key_constraint",
+                columnNames = ["projectId", "companyId", "userId"])])
 class ParticipantUniqueKeyProjection(
     @EmbeddedId var identifier: ParticipantId,
     @Embedded
