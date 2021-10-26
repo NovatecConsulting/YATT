@@ -29,14 +29,13 @@ class CreateProjectAuthorizer(
   override fun handle(
       unitOfWork: UnitOfWork<out CommandMessage<*>>,
       interceptorChain: InterceptorChain
-  ) {
-
+  ): Any? {
     val payload = unitOfWork.message.payload
     val userId = UserId(unitOfWork.message.metaData[AUDIT_USER_ID_META_DATA_KEY].toString())
     when (payload) {
       is CreateProjectCommand -> authorize(payload, userId)
-      else -> interceptorChain.proceed()
     }
+    return interceptorChain.proceed()
   }
 
   fun authorize(command: CreateProjectCommand, userId: UserId) {

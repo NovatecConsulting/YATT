@@ -93,14 +93,14 @@ class ProjectControllerV2(
   }
 
   @PostMapping
-  fun createProject(@RequestBody body: CreateProjectDto): CompletableFuture<String> =
+  fun createProject(@RequestBody body: CreateProjectDto): CompletableFuture<ProjectId> =
       createProjectWithId(ProjectId(), body)
 
   @PostMapping("/{projectId}")
   fun createProjectWithId(
       @PathVariable("projectId") projectId: ProjectId,
       @RequestBody body: CreateProjectDto,
-  ): CompletableFuture<String> = commandGateway.send(body.toCommand(projectId))
+  ): CompletableFuture<ProjectId> = commandGateway.send(body.toCommand(projectId))
 
   @PostMapping("/{projectId}/rename")
   fun renameProject(
