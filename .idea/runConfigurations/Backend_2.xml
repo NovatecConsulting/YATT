@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="Backend 2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="backend.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.AxonApplication" />
-    <option name="PROGRAM_PARAMETERS" value="--server.port=8080" />
+    <option name="PROGRAM_PARAMETERS" value="--server.port=8081" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="SHORTEN_COMMAND_LINE" value="NONE" />
     <method v="2">

@@ -25,9 +25,6 @@ services:
         source: ./axonserver/data
         target: /data
       - type: bind
-        source: ./axonserver/events
-        target: /eventdata
-      - type: bind
         source: ./axonserver/config
         target: /config
         read_only: true
@@ -61,7 +58,7 @@ services:
         target: /tmp/realm.json
         read_only: true
     ports:
-      - "8081:8080"
+      - "8999:8080"
 
   keycloak-db:
     image: postgres:13.3-alpine
