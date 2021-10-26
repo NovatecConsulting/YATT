@@ -3,23 +3,46 @@ package com.novatecgmbh.eventsourcing.axon
 import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
 import com.novatecgmbh.eventsourcing.axon.company.employee.command.Employee
 import com.novatecgmbh.eventsourcing.axon.project.participant.command.Participant
+import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
+import com.novatecgmbh.eventsourcing.axon.project.task.command.Task
 import com.novatecgmbh.eventsourcing.axon.user.command.User
 import com.tngtech.archunit.base.DescribedPredicate.alwaysTrue
+import com.tngtech.archunit.core.domain.JavaClass
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage
-import com.tngtech.archunit.core.importer.ImportOption.*
 import com.tngtech.archunit.junit.AnalyzeClasses
 import com.tngtech.archunit.junit.ArchTest
 import com.tngtech.archunit.lang.ArchRule
+import com.tngtech.archunit.library.dependencies.SliceAssignment
+import com.tngtech.archunit.library.dependencies.SliceIdentifier
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition
 
-@AnalyzeClasses(
-    packagesOf = [DependencyRulesTest::class], importOptions = [DoNotIncludeTests::class])
+@AnalyzeClasses(packagesOf = [AxonApplication::class])
 class DependencyRulesTest {
+
+  @ArchTest
+  val cqrs: ArchRule =
+      SlicesRuleDefinition.slices()
+          .assignedFrom(commandQueryWebPackages)
+          .should()
+          .notDependOnEachOther()
+
+  @ArchTest
+  val aggregates: ArchRule =
+      SlicesRuleDefinition.slices()
+          .assignedFrom(aggregatePackages)
+          .should()
+          .notDependOnEachOther()
+          .ignoreDependency(alwaysTrue(), resideInAPackage("..api.."))
+          .ignoreDependency(Participant::class.java, User::class.java) // TODO fix dependency
+          .ignoreDependency(Participant::class.java, Company::class.java) // TODO fix dependency
+          .ignoreDependency(Employee::class.java, User::class.java) // TODO fix dependency
+          .ignoreDependency(Employee::class.java, Company::class.java) // TODO fix dependency?
+          .ignoreDependency(Task::class.java, Project::class.java) // TODO fix dependency?
+
   @ArchTest
   val contexts: ArchRule =
       SlicesRuleDefinition.slices()
-          .matching("..axon.(*)..")
-          .`as`("bounded contexts")
+          .assignedFrom(contextPackages)
           .should()
           .notDependOnEachOther()
           .ignoreDependency(alwaysTrue(), resideInAPackage("..api.."))
@@ -32,4 +55,58 @@ class DependencyRulesTest {
           .ignoreDependency(Participant::class.java, User::class.java) // TODO fix dependency
           .ignoreDependency(Participant::class.java, Company::class.java) // TODO fix dependency
           .ignoreDependency(Employee::class.java, User::class.java) // TODO fix dependency
+
+  companion object {
+    val commandQueryWebPackages =
+        object : SliceAssignment {
+          override fun getIdentifierOf(javaClass: JavaClass): SliceIdentifier {
+            return when {
+              javaClass.fullName.contains(".command.") -> SliceIdentifier.of("command")
+              javaClass.fullName.contains(".query.") -> SliceIdentifier.of("query")
+              javaClass.fullName.contains(".web.") -> SliceIdentifier.of("web")
+              else -> SliceIdentifier.ignore()
+            }
+          }
+
+          override fun getDescription(): String {
+            return "command, query and web"
+          }
+        }
+
+    val aggregatePackages =
+        object : SliceAssignment {
+          override fun getIdentifierOf(javaClass: JavaClass): SliceIdentifier {
+            return when {
+              javaClass.packageName.contains(".project.project") -> SliceIdentifier.of("project")
+              javaClass.packageName.contains(".project.task") -> SliceIdentifier.of("task")
+              javaClass.packageName.contains(".project.participant") ->
+                  SliceIdentifier.of("participant")
+              javaClass.packageName.contains(".company.company") -> SliceIdentifier.of("company")
+              javaClass.packageName.contains(".company.employee") -> SliceIdentifier.of("employee")
+              javaClass.packageName.contains(".user") -> SliceIdentifier.of("user")
+              else -> SliceIdentifier.ignore()
+            }
+          }
+
+          override fun getDescription(): String {
+            return "aggregates"
+          }
+        }
+
+    val contextPackages =
+        object : SliceAssignment {
+          override fun getIdentifierOf(javaClass: JavaClass): SliceIdentifier {
+            return when {
+              javaClass.packageName.contains(".axon.project") -> SliceIdentifier.of("project")
+              javaClass.packageName.contains(".axon.company") -> SliceIdentifier.of("company")
+              javaClass.packageName.contains(".axon.user") -> SliceIdentifier.of("user")
+              else -> SliceIdentifier.ignore()
+            }
+          }
+
+          override fun getDescription(): String {
+            return "bounded contexts"
+          }
+        }
+  }
 }
