@@ -5,12 +5,14 @@ import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
 import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.COMPANY
 import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.CREATE_PROJECT
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
+import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.extensions.kotlin.query
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.stereotype.Component
 
 @Component
+@ProcessingGroup("project-acl-projector")
 class ProjectAclProjector(
     val queryGateway: QueryGateway,
     val projectAclRepository: ProjectAclRepository
@@ -38,4 +40,6 @@ class ProjectAclProjector(
 
   fun findEmployee(employeeId: EmployeeId): EmployeeQueryResult =
       queryGateway.query<EmployeeQueryResult, EmployeeQuery>(EmployeeQuery(employeeId)).get()
+
+
 }

@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.command
 
+import com.novatecgmbh.eventsourcing.axon.application.config.MetaDataSequencingPolicy
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
@@ -8,12 +9,9 @@ import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
+import org.axonframework.messaging.MetaData
+import org.axonframework.modelling.command.*
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
-import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateLifecycle.apply
-import org.axonframework.modelling.command.AggregateNotFoundException
-import org.axonframework.modelling.command.CreationPolicy
-import org.axonframework.modelling.command.Repository
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -158,5 +156,18 @@ class Task {
   @EventSourcingHandler
   fun on(event: TaskCompletedEvent) {
     status = COMPLETED
+  }
+
+  private fun apply(event: TaskEvent, metaData: MetaData = MetaData(mutableMapOf<String, Any>())) {
+    val sequenceIdentifier =
+        if (event is TaskCreatedEvent) {
+          event.projectId.identifier
+        } else {
+          projectId.identifier
+        }
+    AggregateLifecycle.apply(
+        event,
+        metaData.mergedWith(
+            mutableMapOf(MetaDataSequencingPolicy.META_DATA_KEY to sequenceIdentifier)))
   }
 }
