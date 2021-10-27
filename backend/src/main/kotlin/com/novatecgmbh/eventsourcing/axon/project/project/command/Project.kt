@@ -1,19 +1,18 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
-import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
 import org.axonframework.modelling.command.*
 import org.axonframework.spring.stereotype.Aggregate
-import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class Project {
+class Project : BaseAggregate() {
   @AggregateIdentifier private lateinit var aggregateIdentifier: ProjectId
   private lateinit var projectName: String
   private lateinit var plannedStartDate: LocalDate
@@ -29,13 +28,14 @@ class Project {
     if (command.plannedStartDate.isAfter(command.deadline)) {
       throw IllegalArgumentException("Start date can't be after deadline")
     }
-    AggregateLifecycle.apply(
+    apply(
         ProjectCreatedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
-            companyId = command.companyId))
+            companyId = command.companyId),
+        sequenceIdentifier = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
 
@@ -47,7 +47,7 @@ class Project {
       anyRelevantEventsInPastOccured && command.newName != projectName
     }
     if (command.newName != projectName) {
-      AggregateLifecycle.apply(
+      apply(
           ProjectRenamedEvent(
               aggregateIdentifier = command.aggregateIdentifier,
               newName = command.newName,
@@ -68,7 +68,7 @@ class Project {
       throw IllegalArgumentException("Start date can't be after deadline")
     } else {
       if (command.newStartDate != plannedStartDate || command.newDeadline != deadline) {
-        AggregateLifecycle.apply(
+        apply(
             ProjectRescheduledEvent(
                 aggregateIdentifier = command.aggregateIdentifier,
                 newStartDate = command.newStartDate,
@@ -117,4 +117,6 @@ class Project {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
   }
+
+  override fun getSequenceIdentifier() = aggregateIdentifier.identifier
 }

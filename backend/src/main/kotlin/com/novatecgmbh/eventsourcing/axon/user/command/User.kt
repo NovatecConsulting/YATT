@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.user.command
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.user.api.*
 import com.novatecgmbh.eventsourcing.axon.user.command.view.UserUniqueKeyRepository
 import org.axonframework.commandhandling.CommandHandler
@@ -9,13 +10,12 @@ import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.messaging.MetaData
 import org.axonframework.modelling.command.AggregateCreationPolicy
 import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class User {
+class User : BaseAggregate() {
   @AggregateIdentifier private lateinit var aggregateIdentifier: UserId
   private lateinit var externalUserId: String
   private lateinit var firstname: String
@@ -31,14 +31,15 @@ class User {
       throw AlreadyExistsException()
     }
     assertNoUserExistsForExternalIdentifier(userUniqueKeyRepository, command.externalUserId)
-    AggregateLifecycle.apply(
+    apply(
         UserRegisteredEvent(
             aggregateIdentifier = command.aggregateIdentifier,
             externalUserId = command.externalUserId,
             firstname = command.firstname,
             lastname = command.lastname),
         MetaData(
-            mutableMapOf(AUDIT_USER_ID_META_DATA_KEY to command.aggregateIdentifier.toString())))
+            mutableMapOf(AUDIT_USER_ID_META_DATA_KEY to command.aggregateIdentifier.identifier)),
+        sequenceIdentifier = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
 
@@ -53,7 +54,7 @@ class User {
 
   @CommandHandler
   fun handle(command: RenameUserCommand): UserId {
-    AggregateLifecycle.apply(
+    apply(
         UserRenamedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
             firstname = command.firstname,
@@ -74,4 +75,6 @@ class User {
     firstname = event.firstname
     lastname = event.lastname
   }
+
+  override fun getSequenceIdentifier() = aggregateIdentifier.identifier
 }

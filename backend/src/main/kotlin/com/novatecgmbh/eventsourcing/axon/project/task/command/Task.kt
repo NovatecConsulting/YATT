@@ -1,7 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.command
 
-import com.novatecgmbh.eventsourcing.axon.application.config.MetaDataSequencingPolicy
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
@@ -9,14 +9,13 @@ import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
-import org.axonframework.messaging.MetaData
 import org.axonframework.modelling.command.*
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class Task {
+class Task : BaseAggregate() {
   @AggregateIdentifier private lateinit var identifier: TaskId
   private lateinit var projectId: ProjectId
   private lateinit var name: String
@@ -43,7 +42,8 @@ class Task {
             name = command.name,
             description = command.description,
             startDate = command.startDate,
-            endDate = command.endDate))
+            endDate = command.endDate),
+        sequenceIdentifier = command.projectId.identifier)
     return command.identifier
   }
 
@@ -158,16 +158,5 @@ class Task {
     status = COMPLETED
   }
 
-  private fun apply(event: TaskEvent, metaData: MetaData = MetaData(mutableMapOf<String, Any>())) {
-    val sequenceIdentifier =
-        if (event is TaskCreatedEvent) {
-          event.projectId.identifier
-        } else {
-          projectId.identifier
-        }
-    AggregateLifecycle.apply(
-        event,
-        metaData.mergedWith(
-            mutableMapOf(MetaDataSequencingPolicy.META_DATA_KEY to sequenceIdentifier)))
-  }
+  override fun getSequenceIdentifier() = projectId.identifier
 }

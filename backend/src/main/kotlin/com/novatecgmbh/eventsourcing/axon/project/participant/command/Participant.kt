@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.participant.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand
@@ -17,7 +18,7 @@ import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class Participant {
+class Participant : BaseAggregate() {
   @AggregateIdentifier private lateinit var aggregateIdentifier: ParticipantId
   private lateinit var projectId: ProjectId
   private lateinit var userId: UserId
@@ -37,12 +38,13 @@ class Participant {
         participantUniqueKeyRepository, command.projectId, command.companyId, command.userId)
     assertUserExists(userRepository, command.userId)
     assertCompanyExists(companyRepository, command.companyId)
-    AggregateLifecycle.apply(
+    apply(
         ParticipantCreatedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
             projectId = command.projectId,
             companyId = command.companyId,
-            userId = command.userId))
+            userId = command.userId),
+        sequenceIdentifier = command.projectId.identifier)
     return command.aggregateIdentifier
   }
 
@@ -80,4 +82,6 @@ class Participant {
     projectId = event.projectId
     userId = event.userId
   }
+
+  override fun getSequenceIdentifier() = projectId.identifier
 }

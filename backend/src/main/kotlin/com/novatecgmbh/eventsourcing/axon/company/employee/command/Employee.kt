@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.company.employee.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
+import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
@@ -14,7 +15,7 @@ import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class Employee {
+class Employee : BaseAggregate() {
   @AggregateIdentifier private lateinit var aggregateIdentifier: EmployeeId
   private lateinit var userId: UserId
   private lateinit var companyId: CompanyId
@@ -36,11 +37,12 @@ class Employee {
         employeeUniqueKeyRepository, command.companyId, command.userId)
     assertUserExists(userRepository, command.userId)
     assertCompanyExists(companyRepository, command.companyId)
-    AggregateLifecycle.apply(
+    apply(
         EmployeeCreatedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
             userId = command.userId,
-            companyId = command.companyId))
+            companyId = command.companyId),
+        sequenceIdentifier = command.companyId.identifier)
     return command.aggregateIdentifier
   }
 
@@ -61,9 +63,9 @@ class Employee {
   }
 
   private fun assertNoEmployeeExistsForCompanyAndUser(
-    employeeUniqueKeyRepository: EmployeeUniqueKeyRepository,
-    companyId: CompanyId,
-    userId: UserId
+      employeeUniqueKeyRepository: EmployeeUniqueKeyRepository,
+      companyId: CompanyId,
+      userId: UserId
   ) {
     if (employeeUniqueKeyRepository.existsByCompanyIdAndUserId(companyId, userId))
         throw IllegalArgumentException("Employee already exists for this company and user")
@@ -72,7 +74,7 @@ class Employee {
   @CommandHandler
   fun handle(command: GrantAdminPermissionToEmployee): EmployeeId {
     if (!isAdmin) {
-      AggregateLifecycle.apply(
+      apply(
           AdminPermissionGrantedForEmployeeEvent(aggregateIdentifier = command.aggregateIdentifier))
     }
     return command.aggregateIdentifier
@@ -81,7 +83,7 @@ class Employee {
   @CommandHandler
   fun handle(command: RemoveAdminPermissionFromEmployee): EmployeeId {
     if (isAdmin) {
-      AggregateLifecycle.apply(
+      apply(
           AdminPermissionRemovedFromEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
@@ -91,7 +93,7 @@ class Employee {
   @CommandHandler
   fun handle(command: GrantProjectManagerPermissionToEmployee): EmployeeId {
     if (!isProjectManager) {
-      AggregateLifecycle.apply(
+      apply(
           ProjectManagerPermissionGrantedForEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
@@ -101,7 +103,7 @@ class Employee {
   @CommandHandler
   fun handle(command: RemoveProjectManagerPermissionFromEmployee): EmployeeId {
     if (isProjectManager) {
-      AggregateLifecycle.apply(
+      apply(
           ProjectManagerPermissionRemovedFromEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
@@ -134,4 +136,6 @@ class Employee {
   fun on(enum: ProjectManagerPermissionRemovedFromEmployeeEvent) {
     isProjectManager = false
   }
+
+  override fun getSequenceIdentifier() = companyId.identifier
 }
