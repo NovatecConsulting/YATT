@@ -5,12 +5,9 @@ import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.justRun
-import io.mockk.slot
-import io.mockk.verify
 import java.time.LocalDate
 import java.util.*
 import org.axonframework.extensions.kotlin.queryOptional
@@ -33,7 +30,7 @@ class ProjectProjectorTest {
 
   private val companyQueryResult = CompanyQueryResult(CompanyId(), 0, "MyCompany")
   private var projectProjectionCaptor = slot<ProjectProjection>()
-  private var projectQueryResultCaptor = slot<ProjectQueryResult>()
+  private var projectQueryResultsCaptor = mutableListOf<ProjectQueryResult>()
 
   @BeforeEach
   fun setUp() {
@@ -57,10 +54,10 @@ class ProjectProjectorTest {
         Optional.of(companyQueryResult)
 
     justRun {
-      updateEmitter.emit(ProjectQuery::class.java, any(), capture(projectQueryResultCaptor))
+      updateEmitter.emit(ProjectQuery::class.java, any(), capture(projectQueryResultsCaptor))
     }
     justRun {
-      updateEmitter.emit(AllProjectsQuery::class.java, any(), capture(projectQueryResultCaptor))
+      updateEmitter.emit(AllProjectsQuery::class.java, any(), capture(projectQueryResultsCaptor))
     }
   }
 
@@ -159,15 +156,16 @@ class ProjectProjectorTest {
     if (expectedCompanyReference != null)
         assertEquals(expectedCompanyReference, projectProjectionCaptor.captured.companyReference)
 
-    assertNotNull(projectQueryResultCaptor.captured)
-    assertEquals(expectedIdentifier, projectQueryResultCaptor.captured.identifier)
-    if (expectedName != null) assertEquals(expectedName, projectQueryResultCaptor.captured.name)
-    if (expectedStartDate != null)
-        assertEquals(expectedStartDate, projectQueryResultCaptor.captured.startDate)
-    if (expectedDeadline != null)
-        assertEquals(expectedDeadline, projectQueryResultCaptor.captured.deadline)
-    assertEquals(expectedVersion, projectQueryResultCaptor.captured.version)
-    if (expectedCompanyReference != null)
-        assertEquals(expectedCompanyReference, projectQueryResultCaptor.captured.companyReference)
+    assertNotNull(projectQueryResultsCaptor)
+    assertEquals(2, projectQueryResultsCaptor.size)
+    for (projectQueryResult in projectQueryResultsCaptor) {
+      assertEquals(expectedIdentifier, projectQueryResult.identifier)
+      if (expectedName != null) assertEquals(expectedName, projectQueryResult.name)
+      if (expectedStartDate != null) assertEquals(expectedStartDate, projectQueryResult.startDate)
+      if (expectedDeadline != null) assertEquals(expectedDeadline, projectQueryResult.deadline)
+      assertEquals(expectedVersion, projectQueryResult.version)
+      if (expectedCompanyReference != null)
+          assertEquals(expectedCompanyReference, projectQueryResult.companyReference)
+    }
   }
 }
