@@ -1,23 +1,25 @@
 package com.novatecgmbh.eventsourcing.axon.application.config
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_KEYS
-import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditingInterceptor
-import com.novatecgmbh.eventsourcing.axon.common.command.ExceptionWrappingHandlerInterceptor
+import com.novatecgmbh.eventsourcing.axon.application.auditing.SecurityContextSettingEventMessageHandlerInterceptor
+import com.novatecgmbh.eventsourcing.axon.application.auditing.UserInjectingCommandMessageInterceptor
+import com.novatecgmbh.eventsourcing.axon.application.auditing.UserInjectingQueryMessageInterceptor
+import com.novatecgmbh.eventsourcing.axon.application.sequencing.RootContextIdentifierSequencingPolicy
+import com.novatecgmbh.eventsourcing.axon.common.command.ExceptionWrappingCommandMessageHandlerInterceptor
+import com.novatecgmbh.eventsourcing.axon.common.query.ExceptionWrappingQueryMessageHandlerInterceptor
 import java.util.concurrent.Executors
 import org.axonframework.commandhandling.CommandBus
 import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.common.AxonThreadFactory
 import org.axonframework.config.EventProcessingConfigurer
-import org.axonframework.eventhandling.EventMessage
 import org.axonframework.eventhandling.TrackedEventMessage
-import org.axonframework.eventhandling.async.SequencingPolicy
 import org.axonframework.eventhandling.async.SequentialPerAggregatePolicy
 import org.axonframework.messaging.StreamableMessageSource
-import org.axonframework.messaging.annotation.MetaDataValue
 import org.axonframework.messaging.correlation.CorrelationDataProvider
 import org.axonframework.messaging.correlation.MessageOriginProvider
 import org.axonframework.messaging.correlation.MultiCorrelationDataProvider
 import org.axonframework.messaging.correlation.SimpleCorrelationDataProvider
+import org.axonframework.queryhandling.QueryBus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,11 +30,22 @@ class AxonConfig {
   @Autowired
   fun commandBus(
       commandBus: CommandBus,
-      exceptionWrappingHandlerInterceptor: ExceptionWrappingHandlerInterceptor,
+      exceptionWrapper: ExceptionWrappingCommandMessageHandlerInterceptor
   ) {
     commandBus.run {
-      registerHandlerInterceptor(exceptionWrappingHandlerInterceptor)
-      registerDispatchInterceptor(AuditingInterceptor())
+      registerHandlerInterceptor(exceptionWrapper)
+      registerDispatchInterceptor(UserInjectingCommandMessageInterceptor())
+    }
+  }
+
+  @Autowired
+  fun queryBus(
+      queryBus: QueryBus,
+      exceptionWrapper: ExceptionWrappingQueryMessageHandlerInterceptor,
+  ) {
+    queryBus.run {
+      registerHandlerInterceptor(exceptionWrapper)
+      registerDispatchInterceptor(UserInjectingQueryMessageInterceptor())
     }
   }
 
@@ -58,6 +71,9 @@ class AxonConfig {
         }
 
     processingConfigurer
+        .registerDefaultHandlerInterceptor { _, _ ->
+          SecurityContextSettingEventMessageHandlerInterceptor()
+        }
         .registerPooledStreamingEventProcessor(
             "project-acl-projector", { it.eventStore() }, psepConfig)
         .registerPooledStreamingEventProcessor("project-projector", { it.eventStore() }, psepConfig)
@@ -75,28 +91,13 @@ class AxonConfig {
   @Autowired
   fun configureSequencingPolicy(
       processingConfigurer: EventProcessingConfigurer,
-      metaDataSequencingPolicy: MetaDataSequencingPolicy
+      rootContextIdentifierSequencingPolicy: RootContextIdentifierSequencingPolicy
   ) {
-    processingConfigurer.registerDefaultSequencingPolicy { metaDataSequencingPolicy }
+    processingConfigurer.registerDefaultSequencingPolicy { rootContextIdentifierSequencingPolicy }
   }
 
   @Bean
-  fun metaDataSequencingPolicy(): MetaDataSequencingPolicy =
-      MetaDataSequencingPolicy(fallbackSequencingPolicy = SequentialPerAggregatePolicy())
+  fun rootContextIdentifierSequencingPolicy(): RootContextIdentifierSequencingPolicy =
+      RootContextIdentifierSequencingPolicy(
+          fallbackSequencingPolicy = SequentialPerAggregatePolicy())
 }
-
-class MetaDataSequencingPolicy(
-    private val fallbackSequencingPolicy: SequencingPolicy<EventMessage<*>>
-) : SequencingPolicy<EventMessage<*>> {
-  override fun getSequenceIdentifierFor(event: EventMessage<*>): Any? =
-      event.metaData[SEQUENCE_IDENTIFIER_META_DATA_KEY]
-          ?: fallbackSequencingPolicy.getSequenceIdentifierFor(event)
-}
-
-const val SEQUENCE_IDENTIFIER_META_DATA_KEY = "sequenceIdentifier"
-
-@MustBeDocumented
-@Target(AnnotationTarget.VALUE_PARAMETER)
-@Retention(AnnotationRetention.RUNTIME)
-@MetaDataValue(SEQUENCE_IDENTIFIER_META_DATA_KEY, required = true)
-annotation class SequenceIdentifier

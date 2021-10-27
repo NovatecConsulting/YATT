@@ -2,9 +2,10 @@ package com.novatecgmbh.eventsourcing.axon.project.project.api
 
 import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
+import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.time.LocalDate
 
-class AllProjectsQuery
+class MyProjectsQuery(val userId: UserId)
 
 data class ProjectQuery(val projectId: ProjectId)
 

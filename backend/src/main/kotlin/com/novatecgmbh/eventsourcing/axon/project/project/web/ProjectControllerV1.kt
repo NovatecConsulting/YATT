@@ -1,6 +1,10 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.web
 
-import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
+import com.novatecgmbh.eventsourcing.axon.project.project.api.MyProjectsQuery
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQuery
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.UpdateProjectDto
 import java.time.Duration
@@ -12,6 +16,7 @@ import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
@@ -23,8 +28,10 @@ class ProjectControllerV1(
     private val queryGateway: QueryGateway,
 ) {
   @GetMapping
-  fun getAllProjects(): CompletableFuture<List<ProjectQueryResult>> =
-      queryGateway.queryMany(AllProjectsQuery())
+  fun getAllProjects(
+      @AuthenticationPrincipal user: RegisteredUserPrincipal
+  ): CompletableFuture<List<ProjectQueryResult>> =
+      queryGateway.queryMany(MyProjectsQuery(user.identifier))
 
   @GetMapping("/{projectId}")
   fun getProjectById(

@@ -35,6 +35,8 @@ class SecurityConfig(val userDetailsService: UserDetailsService) : WebSecurityCo
         .exceptionHandling()
         .and()
         .authorizeRequests()
+        .mvcMatchers("/admin/**")
+        .permitAll()
         .anyRequest()
         .authenticated()
         .and()

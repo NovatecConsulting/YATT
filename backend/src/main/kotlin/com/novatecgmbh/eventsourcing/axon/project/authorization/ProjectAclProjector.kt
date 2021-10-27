@@ -3,10 +3,15 @@ package com.novatecgmbh.eventsourcing.axon.project.authorization
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
 import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.COMPANY
+import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.PROJECT
+import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.ACCESS_PROJECT
 import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.CREATE_PROJECT
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCreatedEvent
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
+import org.axonframework.eventhandling.ResetHandler
 import org.axonframework.extensions.kotlin.query
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.stereotype.Component
@@ -41,5 +46,15 @@ class ProjectAclProjector(
   fun findEmployee(employeeId: EmployeeId): EmployeeQueryResult =
       queryGateway.query<EmployeeQueryResult, EmployeeQuery>(EmployeeQuery(employeeId)).get()
 
+  @EventHandler
+  fun on(event: ParticipantCreatedEvent) = grantAccessToProject(event.projectId, event.userId)
 
+  fun grantAccessToProject(projectId: ProjectId, userId: UserId) =
+      ProjectAcl(ProjectAclKey(PROJECT, projectId.toString(), userId, ACCESS_PROJECT))
+          .run(projectAclRepository::save)
+
+  @ResetHandler
+  fun reset() {
+    projectAclRepository.deleteAll()
+  }
 }

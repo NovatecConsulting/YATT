@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.command.eventhandler
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.application.auditing.SecurityContextHelper
-import com.novatecgmbh.eventsourcing.axon.application.config.SequenceIdentifier
+import com.novatecgmbh.eventsourcing.axon.application.sequencing.SequenceIdentifier
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.command.RegisterTaskScheduleInternalCommand
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCreatedEvent

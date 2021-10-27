@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class AdminController(private val axonAdministration: AxonAdministration) {
 
   @GetMapping
-  fun getEventProcessors(): List<EventProcessor> = axonAdministration.getTrackingEventProcessors()
+  fun getEventProcessors(): List<EventProcessor> = axonAdministration.getStreamingEventProcessors()
 
   @GetMapping("/{groupName}")
   fun getEventProcessor(@PathVariable groupName: String): Optional<EventProcessor> =
@@ -25,7 +25,7 @@ class AdminController(private val axonAdministration: AxonAdministration) {
   */
   @GetMapping("/{groupName}/status")
   fun getEventProcessorStatus(@PathVariable groupName: String): Map<Int, EventTrackerStatus> =
-      axonAdministration.getTrackingEventProcessorStatus(groupName)
+      axonAdministration.getStreamingEventProcessorStatus(groupName)
 
   @PostMapping("/{groupName}/reset")
   fun resetEventProcessor(@PathVariable groupName: String): ResponseEntity<Any> {

@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.query
 import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
@@ -14,7 +15,6 @@ import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.queryhandling.QueryGateway
-import org.axonframework.queryhandling.QueryHandler
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
 
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component
 @ProcessingGroup("project-projector")
 class ProjectProjector(
     private val repository: ProjectProjectionRepository,
+    private val aclRepository: ProjectAclRepository,
     private val queryUpdateEmitter: QueryUpdateEmitter,
     private val queryGateway: QueryGateway
 ) {
@@ -90,16 +91,12 @@ class ProjectProjector(
       query.projectId == project.identifier
     }
 
-    queryUpdateEmitter.emit<AllProjectsQuery, ProjectQueryResult>(project.toQueryResult()) { true }
+    queryUpdateEmitter.emit<MyProjectsQuery, ProjectQueryResult>(project.toQueryResult()) { query ->
+      aclRepository
+          .findAllUserWithAccessToProject(project.identifier.identifier)
+          .contains(query.userId)
+    }
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
-
-  @QueryHandler
-  fun handle(query: ProjectQuery): Optional<ProjectQueryResult> =
-      repository.findById(query.projectId).map { it.toQueryResult() }
-
-  @QueryHandler
-  fun handle(query: AllProjectsQuery): Iterable<ProjectQueryResult> =
-      repository.findAll().map { it.toQueryResult() }
 }
