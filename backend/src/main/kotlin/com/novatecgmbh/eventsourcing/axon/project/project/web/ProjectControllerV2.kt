@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.web
 
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.CreateProjectDto
 import com.novatecgmbh.eventsourcing.axon.project.project.web.dto.RenameProjectDto
@@ -13,6 +14,7 @@ import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 
@@ -27,14 +29,18 @@ class ProjectControllerV2(
     private val queryGateway: QueryGateway,
 ) {
   @GetMapping
-  fun getAllProjects(): CompletableFuture<List<ProjectQueryResult>> =
-      queryGateway.queryMany(AllProjectsQuery())
+  fun getAllProjects(
+      @AuthenticationPrincipal user: RegisteredUserPrincipal
+  ): CompletableFuture<List<ProjectQueryResult>> =
+      queryGateway.queryMany(MyProjectsQuery(user.identifier))
 
   @GetMapping(produces = [APPLICATION_NDJSON_VALUE])
-  fun getAllProjectsAndUpdates(): Flux<ProjectQueryResult> {
+  fun getAllProjectsAndUpdates(
+      @AuthenticationPrincipal user: RegisteredUserPrincipal
+  ): Flux<ProjectQueryResult> {
     val query =
         queryGateway.subscriptionQuery(
-            AllProjectsQuery(),
+            MyProjectsQuery(user.identifier),
             ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java),
             ResponseTypes.instanceOf(ProjectQueryResult::class.java))
 

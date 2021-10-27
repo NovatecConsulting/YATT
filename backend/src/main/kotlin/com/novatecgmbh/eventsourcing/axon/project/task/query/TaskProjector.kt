@@ -95,12 +95,4 @@ class TaskProjector(
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
-
-  @QueryHandler
-  fun handle(query: TasksByProjectQuery): Iterable<TaskQueryResult> =
-      repository.findAllByProjectId(query.projectId).map { it.toQueryResult() }
-
-  @QueryHandler
-  fun handle(query: TaskQuery): Optional<TaskQueryResult> =
-      repository.findById(query.taskId).map { it.toQueryResult() }
 }

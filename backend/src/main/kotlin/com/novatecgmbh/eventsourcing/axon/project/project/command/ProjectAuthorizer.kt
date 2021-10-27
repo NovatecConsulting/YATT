@@ -16,7 +16,7 @@ import org.axonframework.messaging.unitofwork.UnitOfWork
 import org.springframework.stereotype.Component
 
 @Component
-class CreateProjectAuthorizer(
+class ProjectAuthorizer(
     val projectAclRepository: ProjectAclRepository,
     val commandBus: CommandBus
 ) : MessageHandlerInterceptor<CommandMessage<*>> {
@@ -44,4 +44,5 @@ class CreateProjectAuthorizer(
       throw IllegalAccessException("Not authorized to create project for this company")
     }
   }
+
 }

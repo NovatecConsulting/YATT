@@ -4,6 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
 import io.mockk.every
@@ -29,6 +30,7 @@ class ProjectProjectorTest {
   @MockK private lateinit var repository: ProjectProjectionRepository
   @MockK private lateinit var updateEmitter: QueryUpdateEmitter
   @MockK private lateinit var queryGateway: QueryGateway
+  @MockK private lateinit var aclRepository: ProjectAclRepository
 
   private lateinit var testSubject: ProjectProjector
 
@@ -38,7 +40,7 @@ class ProjectProjectorTest {
 
   @BeforeEach
   fun setUp() {
-    testSubject = ProjectProjector(repository, updateEmitter, queryGateway)
+    testSubject = ProjectProjector(repository, aclRepository, updateEmitter, queryGateway)
     every { (repository.findById(ProjectId("1"))) } answers
         {
           Optional.of(
@@ -62,7 +64,7 @@ class ProjectProjectorTest {
       updateEmitter.emit(ProjectQuery::class.java, any(), capture(projectQueryResultsCaptor))
     }
     justRun {
-      updateEmitter.emit(AllProjectsQuery::class.java, any(), capture(projectQueryResultsCaptor))
+      updateEmitter.emit(MyProjectsQuery::class.java, any(), capture(projectQueryResultsCaptor))
     }
   }
 
@@ -130,19 +132,6 @@ class ProjectProjectorTest {
 
     `verify that save and emit are called with correct arguments`(
         expectedIdentifier, null, expectedStartDate, expectedDeadline, expectedVersion)
-  }
-
-  @Test
-  fun `handle ProjectQuery should call repository findById`() {
-    testSubject.handle(ProjectQuery(ProjectId("1")))
-    verify(exactly = 1) { repository.findById(ProjectId("1")) }
-  }
-
-  @Test
-  fun `handle AllProjectsQuery should call repository findAll`() {
-    every { repository.findAll() } returns emptyList()
-    testSubject.handle(AllProjectsQuery())
-    verify(exactly = 1) { repository.findAll() }
   }
 
   private fun `verify that save and emit are called with correct arguments`(

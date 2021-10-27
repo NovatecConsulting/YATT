@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class ExceptionWrappingHandlerInterceptor : MessageHandlerInterceptor<CommandMessage<*>?> {
+class ExceptionWrappingCommandMessageHandlerInterceptor :
+    MessageHandlerInterceptor<CommandMessage<*>?> {
 
   @Throws(Exception::class)
   override fun handle(
@@ -38,6 +39,7 @@ class ExceptionWrappingHandlerInterceptor : MessageHandlerInterceptor<CommandMes
       }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
 
   companion object {
-    val LOGGER: Logger = LoggerFactory.getLogger(ExceptionWrappingHandlerInterceptor::class.java)
+    val LOGGER: Logger =
+        LoggerFactory.getLogger(ExceptionWrappingCommandMessageHandlerInterceptor::class.java)
   }
 }
