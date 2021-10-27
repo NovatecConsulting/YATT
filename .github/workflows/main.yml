@@ -3,6 +3,8 @@ name: Build
 on:
   pull_request:
     branches: [ master ]
+  push:
+    branches: [ master ]
 
 jobs:
   backend:
@@ -16,6 +18,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+          cache: 'gradle'
       - name: Grant execute permission for gradlew
         working-directory: ./backend
         run: chmod +x gradlew
@@ -31,6 +34,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+          cache: npm
+          cache-dependency-path: ./frontend/package-lock.json
       - name: Install dependencies
         working-directory: ./frontend
         run: npm install

@@ -67,5 +67,3 @@ out/
 
 **/.gradle
 **/build
-
-package-lock.json
