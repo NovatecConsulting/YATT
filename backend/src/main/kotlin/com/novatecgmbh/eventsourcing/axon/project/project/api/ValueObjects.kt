@@ -11,3 +11,7 @@ data class ProjectId(@get:JsonValue val identifier: String) : Serializable {
 
   override fun toString(): String = identifier
 }
+
+enum class ProjectStatus {
+  ON_TIME, DELAYED
+}

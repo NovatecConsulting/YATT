@@ -13,6 +13,7 @@ import org.axonframework.eventhandling.TrackedEventMessage
 import org.axonframework.eventhandling.async.SequencingPolicy
 import org.axonframework.eventhandling.async.SequentialPerAggregatePolicy
 import org.axonframework.messaging.StreamableMessageSource
+import org.axonframework.messaging.annotation.MetaDataValue
 import org.axonframework.messaging.correlation.CorrelationDataProvider
 import org.axonframework.messaging.correlation.MessageOriginProvider
 import org.axonframework.messaging.correlation.MultiCorrelationDataProvider
@@ -88,9 +89,14 @@ class MetaDataSequencingPolicy(
     private val fallbackSequencingPolicy: SequencingPolicy<EventMessage<*>>
 ) : SequencingPolicy<EventMessage<*>> {
   override fun getSequenceIdentifierFor(event: EventMessage<*>): Any? =
-      event.metaData[META_DATA_KEY] ?: fallbackSequencingPolicy.getSequenceIdentifierFor(event)
-
-  companion object {
-    const val META_DATA_KEY = "sequenceIdentifier"
-  }
+      event.metaData[SEQUENCE_IDENTIFIER_META_DATA_KEY]
+          ?: fallbackSequencingPolicy.getSequenceIdentifierFor(event)
 }
+
+const val SEQUENCE_IDENTIFIER_META_DATA_KEY = "sequenceIdentifier"
+
+@MustBeDocumented
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+@MetaDataValue(SEQUENCE_IDENTIFIER_META_DATA_KEY, required = true)
+annotation class SequenceIdentifier

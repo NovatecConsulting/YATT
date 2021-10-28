@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.common.command
 
-import com.novatecgmbh.eventsourcing.axon.application.config.MetaDataSequencingPolicy
+import com.novatecgmbh.eventsourcing.axon.application.config.SEQUENCE_IDENTIFIER_META_DATA_KEY
 import org.axonframework.messaging.MetaData
 import org.axonframework.modelling.command.AggregateLifecycle
 
@@ -14,7 +14,6 @@ abstract class BaseAggregate {
   ) {
     AggregateLifecycle.apply(
         payload,
-        metaData.mergedWith(
-            mutableMapOf(MetaDataSequencingPolicy.META_DATA_KEY to sequenceIdentifier)))
+        metaData.mergedWith(mutableMapOf(SEQUENCE_IDENTIFIER_META_DATA_KEY to sequenceIdentifier)))
   }
 }

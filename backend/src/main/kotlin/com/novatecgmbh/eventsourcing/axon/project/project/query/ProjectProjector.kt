@@ -39,8 +39,23 @@ class ProjectProjector(
             companyReference =
                 company
                     .map { it.toAggregateReference() }
-                    .orElse(AggregateReference(event.companyId))))
+                    .orElse(AggregateReference(event.companyId)),
+            status = event.status))
   }
+
+  @EventHandler
+  fun on(event: ProjectDelayedEvent, @SequenceNumber aggregateVersion: Long) =
+      updateProjection(event.aggregateIdentifier) {
+        it.status = ProjectStatus.DELAYED
+        it.version = aggregateVersion
+      }
+
+  @EventHandler
+  fun on(event: ProjectOnTimeEvent, @SequenceNumber aggregateVersion: Long) =
+      updateProjection(event.aggregateIdentifier) {
+        it.status = ProjectStatus.ON_TIME
+        it.version = aggregateVersion
+      }
 
   @EventHandler
   fun on(event: ProjectRenamedEvent, @SequenceNumber aggregateVersion: Long) =

@@ -10,7 +10,8 @@ data class ProjectCreatedEvent(
     val projectName: String,
     val plannedStartDate: LocalDate,
     val deadline: LocalDate,
-    val companyId: CompanyId
+    val companyId: CompanyId,
+    val status: ProjectStatus
 ) : ProjectEvent(aggregateIdentifier)
 
 data class ProjectRenamedEvent(
@@ -22,4 +23,12 @@ data class ProjectRescheduledEvent(
     override val aggregateIdentifier: ProjectId,
     val newStartDate: LocalDate,
     val newDeadline: LocalDate,
+) : ProjectEvent(aggregateIdentifier)
+
+data class ProjectDelayedEvent(
+    override val aggregateIdentifier: ProjectId,
+) : ProjectEvent(aggregateIdentifier)
+
+data class ProjectOnTimeEvent(
+    override val aggregateIdentifier: ProjectId,
 ) : ProjectEvent(aggregateIdentifier)

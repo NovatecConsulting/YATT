@@ -44,7 +44,8 @@ class ProjectProjectorTest {
                   version = 0L,
                   plannedStartDate = LocalDate.of(2021, 1, 1),
                   deadline = LocalDate.of(2022, 1, 1),
-                  companyReference = companyQueryResult.toAggregateReference()))
+                  companyReference = companyQueryResult.toAggregateReference(),
+                  status = ProjectStatus.ON_TIME))
         }
     every { repository.save(capture(projectProjectionCaptor)) } answers
         {
@@ -69,6 +70,7 @@ class ProjectProjectorTest {
     val expectedDeadline = LocalDate.of(2022, 1, 1)
     val expectedVersion = 0L
     val expectedCompanyReference = companyQueryResult.toAggregateReference()
+    val expectedStatus = ProjectStatus.ON_TIME
 
     val testEvent =
         ProjectCreatedEvent(
@@ -76,7 +78,8 @@ class ProjectProjectorTest {
             expectedName,
             expectedStartDate,
             expectedDeadline,
-            expectedCompanyReference.identifier)
+            expectedCompanyReference.identifier,
+            expectedStatus)
     testSubject.on(testEvent, expectedVersion)
 
     `verify that save and emit are called with correct arguments`(
@@ -85,7 +88,8 @@ class ProjectProjectorTest {
         expectedStartDate,
         expectedDeadline,
         expectedVersion,
-        expectedCompanyReference)
+        expectedCompanyReference,
+        expectedStatus)
   }
 
   @Test
@@ -143,7 +147,8 @@ class ProjectProjectorTest {
       expectedStartDate: LocalDate?,
       expectedDeadline: LocalDate?,
       expectedVersion: Long,
-      expectedCompanyReference: AggregateReference<CompanyId>? = null
+      expectedCompanyReference: AggregateReference<CompanyId>? = null,
+      expectedStatus: ProjectStatus? = null
   ) {
     assertNotNull(projectProjectionCaptor.captured)
     assertEquals(expectedIdentifier, projectProjectionCaptor.captured.identifier)
@@ -155,6 +160,8 @@ class ProjectProjectorTest {
     assertEquals(expectedVersion, projectProjectionCaptor.captured.version)
     if (expectedCompanyReference != null)
         assertEquals(expectedCompanyReference, projectProjectionCaptor.captured.companyReference)
+    if (expectedStatus != null)
+        assertEquals(expectedStatus, projectProjectionCaptor.captured.status)
 
     assertNotNull(projectQueryResultsCaptor)
     assertEquals(2, projectQueryResultsCaptor.size)
@@ -166,6 +173,7 @@ class ProjectProjectorTest {
       assertEquals(expectedVersion, projectQueryResult.version)
       if (expectedCompanyReference != null)
           assertEquals(expectedCompanyReference, projectQueryResult.companyReference)
+      if (expectedStatus != null) assertEquals(expectedStatus, projectQueryResult.status)
     }
   }
 }

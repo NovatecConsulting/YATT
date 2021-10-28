@@ -103,6 +103,7 @@ create sequence hibernate_sequence start 1 increment 1;
         deadline date not null,
         name varchar(255) not null,
         planned_start_date date not null,
+        status varchar(255) not null,
         version int8 not null,
         primary key (identifier)
     );

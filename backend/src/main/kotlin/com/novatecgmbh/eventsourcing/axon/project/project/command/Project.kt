@@ -4,6 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -18,6 +19,9 @@ class Project : BaseAggregate() {
   private lateinit var plannedStartDate: LocalDate
   private lateinit var deadline: LocalDate
   private lateinit var companyId: CompanyId
+  private lateinit var status: ProjectStatus
+  private var onTimeTasks: MutableMap<TaskId, TaskOnTimeInternalEvent> = mutableMapOf()
+  private var delayedTasks: MutableMap<TaskId, TaskDelayedInternalEvent> = mutableMapOf()
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
@@ -34,7 +38,8 @@ class Project : BaseAggregate() {
             projectName = command.projectName,
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
-            companyId = command.companyId),
+            companyId = command.companyId,
+            status = ProjectStatus.ON_TIME),
         sequenceIdentifier = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
@@ -105,6 +110,7 @@ class Project : BaseAggregate() {
     plannedStartDate = event.plannedStartDate
     deadline = event.deadline
     companyId = event.companyId
+    status = ProjectStatus.ON_TIME
   }
 
   @EventSourcingHandler
@@ -116,6 +122,54 @@ class Project : BaseAggregate() {
   fun on(event: ProjectRescheduledEvent) {
     plannedStartDate = event.newStartDate
     deadline = event.newDeadline
+  }
+
+  @CommandHandler
+  fun handle(command: CheckTaskTimelinessInternalCommand) {
+    val isTaskDelayed = command.endDate.isAfter(deadline)
+    if (isTaskDelayed) {
+      val taskDelayedEvent =
+          TaskDelayedInternalEvent(
+              command.aggregateIdentifier, command.taskId, command.startDate, command.endDate)
+      if (delayedTasks[command.taskId] != taskDelayedEvent) {
+        apply(taskDelayedEvent)
+      }
+      if (status != ProjectStatus.DELAYED) {
+        apply(ProjectDelayedEvent(aggregateIdentifier))
+      }
+    } else {
+      val taskOnTimeEvent =
+          TaskOnTimeInternalEvent(
+              command.aggregateIdentifier, command.taskId, command.startDate, command.endDate)
+      if (onTimeTasks[command.taskId] != taskOnTimeEvent) {
+        apply(taskOnTimeEvent)
+      }
+      if (status == ProjectStatus.DELAYED && delayedTasks.isEmpty()) {
+        apply(ProjectOnTimeEvent(aggregateIdentifier))
+      }
+    }
+  }
+
+  @EventSourcingHandler
+  fun on(event: TaskDelayedInternalEvent) {
+    onTimeTasks.remove(event.taskId)
+    delayedTasks[event.taskId] = event
+  }
+
+  @EventSourcingHandler
+  fun on(event: TaskOnTimeInternalEvent) {
+    delayedTasks.remove(event.taskId)
+    onTimeTasks[event.taskId] = event
+  }
+
+  @EventSourcingHandler
+  fun on(event: ProjectDelayedEvent) {
+    status = ProjectStatus.DELAYED
+  }
+
+  @EventSourcingHandler
+  fun on(event: ProjectOnTimeEvent) {
+    status = ProjectStatus.ON_TIME
   }
 
   override fun getSequenceIdentifier() = aggregateIdentifier.identifier

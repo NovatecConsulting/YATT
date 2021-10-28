@@ -10,7 +10,13 @@ export interface Project {
     name: string;
     startDate: string;
     deadline: string;
-    companyReference: { identifier: string, displayName: string }
+    companyReference: { identifier: string, displayName: string };
+    status: ProjectStatus;
+}
+
+export enum ProjectStatus {
+    ON_TIME = 'ON_TIME',
+    DELAYED = 'DELAYED'
 }
 
 export interface ProjectDetails {
