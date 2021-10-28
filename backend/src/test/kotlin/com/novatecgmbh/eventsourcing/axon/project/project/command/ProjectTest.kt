@@ -34,7 +34,8 @@ class ProjectTest {
             projectName = "test",
             plannedStartDate = LocalDate.of(2021, 1, 1),
             deadline = LocalDate.of(2022, 1, 1),
-            companyId = companyId)
+            companyId = companyId,
+            status = ProjectStatus.ON_TIME)
     val renameProjectCommand =
         RenameProjectCommand(
             aggregateIdentifier = ProjectId("1"),

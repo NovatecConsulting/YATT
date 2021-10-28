@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {
     Project,
+    ProjectStatus,
     selectProjectById,
     useGetProjectsQuery,
     useRenameProjectMutation,
@@ -54,6 +55,7 @@ export function ProjectsList() {
                             <TableCell>Company</TableCell>
                             <TableCell>Planned Start Date</TableCell>
                             <TableCell>Deadline</TableCell>
+                            <TableCell>Status</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -110,12 +112,31 @@ function ProjectRow(props: ProjectRowProps) {
                     startDate={project.startDate}
                     endDate={project.deadline}
                 />
+                <ProjectStatusCell status={project.status}/>
             </TableRow>
         );
     } else {
         return null;
     }
 }
+
+function ProjectStatusCell({status}: { status: ProjectStatus }) {
+    let color: string;
+    let text: string;
+    switch (status) {
+        case ProjectStatus.DELAYED:
+            text = 'Delayed'
+            color = 'red';
+            break;
+        case ProjectStatus.ON_TIME:
+            text = 'On Time'
+            color = 'green';
+            break;
+    }
+
+    return <TableCell sx={{color: color}}>{text}</TableCell>
+}
+
 
 function ProjectNameCell({project}: { project: Project }) {
     const [saveName] = useRenameProjectMutation();
