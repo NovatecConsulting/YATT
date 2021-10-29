@@ -18,7 +18,7 @@ services:
 
 
   axonserver:
-    image: axoniq/axonserver:4.5.6
+    image: axoniq/axonserver:4.5.8
     hostname: axonserver
     volumes:
       - type: bind
