@@ -79,6 +79,33 @@ class Project : BaseAggregate() {
                 newStartDate = command.newStartDate,
                 newDeadline = command.newDeadline,
             ))
+        for (delayedTask in delayedTasks.values.toList()) {
+          val taskNotDelayedAnymore = !delayedTask.endDate.isAfter(deadline)
+          if (taskNotDelayedAnymore) {
+            apply(
+                TaskOnTimeInternalEvent(
+                    delayedTask.aggregateIdentifier,
+                    delayedTask.taskId,
+                    delayedTask.startDate,
+                    delayedTask.endDate))
+          }
+        }
+        for (onTimeTask in onTimeTasks.values.toList()) {
+          val taskNotOnTimeAnymore = onTimeTask.endDate.isAfter(deadline)
+          if (taskNotOnTimeAnymore) {
+            apply(
+                TaskDelayedInternalEvent(
+                    onTimeTask.aggregateIdentifier,
+                    onTimeTask.taskId,
+                    onTimeTask.startDate,
+                    onTimeTask.endDate))
+          }
+        }
+        if (status != ProjectStatus.DELAYED && delayedTasks.isNotEmpty()) {
+          apply(ProjectDelayedEvent(aggregateIdentifier))
+        } else if (status != ProjectStatus.ON_TIME && delayedTasks.isEmpty()) {
+          apply(ProjectOnTimeEvent(aggregateIdentifier))
+        }
       }
       return AggregateLifecycle.getVersion()
     }
