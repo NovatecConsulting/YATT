@@ -4,7 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.application.auditing.SecurityContextHelper
 import com.novatecgmbh.eventsourcing.axon.application.config.SequenceIdentifier
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.project.command.CheckTaskTimelinessInternalCommand
+import com.novatecgmbh.eventsourcing.axon.project.project.command.RegisterTaskScheduleInternalCommand
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCreatedEvent
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskRescheduledEvent
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -14,9 +14,10 @@ import org.axonframework.eventhandling.EventHandler
 import org.axonframework.messaging.unitofwork.UnitOfWork
 import org.springframework.stereotype.Component
 
+// TODO if failed handling -> retry
 @Component
-@ProcessingGroup("task-timeliness-checker")
-class TaskTimelinessChecker(val commandGateway: CommandGateway) {
+@ProcessingGroup("task-schedule-registrar")
+class TaskScheduleRegistrar(val commandGateway: CommandGateway) {
 
   @EventHandler
   @DisallowReplay
@@ -28,7 +29,7 @@ class TaskTimelinessChecker(val commandGateway: CommandGateway) {
   ) {
     SecurityContextHelper.setAuthentication(userId)
     commandGateway.send<Unit>(
-        CheckTaskTimelinessInternalCommand(
+        RegisterTaskScheduleInternalCommand(
             ProjectId(sequenceIdentifier), event.identifier, event.startDate, event.endDate))
   }
 
@@ -41,7 +42,7 @@ class TaskTimelinessChecker(val commandGateway: CommandGateway) {
   ) {
     SecurityContextHelper.setAuthentication(userId)
     commandGateway.send<Unit>(
-        CheckTaskTimelinessInternalCommand(
+        RegisterTaskScheduleInternalCommand(
             ProjectId(sequenceIdentifier), event.identifier, event.startDate, event.endDate))
   }
 }
