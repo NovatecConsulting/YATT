@@ -20,8 +20,7 @@ class Project : BaseAggregate() {
   private lateinit var deadline: LocalDate
   private lateinit var companyId: CompanyId
   private lateinit var status: ProjectStatus
-  private var onTimeTasks: MutableMap<TaskId, TaskOnTimeInternalEvent> = mutableMapOf()
-  private var delayedTasks: MutableMap<TaskId, TaskDelayedInternalEvent> = mutableMapOf()
+  private var taskSchedules: MutableMap<TaskId, TaskSchedule> = mutableMapOf()
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
@@ -79,33 +78,8 @@ class Project : BaseAggregate() {
                 newStartDate = command.newStartDate,
                 newDeadline = command.newDeadline,
             ))
-        for (delayedTask in delayedTasks.values.toList()) {
-          val taskNotDelayedAnymore = !delayedTask.endDate.isAfter(deadline)
-          if (taskNotDelayedAnymore) {
-            apply(
-                TaskOnTimeInternalEvent(
-                    delayedTask.aggregateIdentifier,
-                    delayedTask.taskId,
-                    delayedTask.startDate,
-                    delayedTask.endDate))
-          }
-        }
-        for (onTimeTask in onTimeTasks.values.toList()) {
-          val taskNotOnTimeAnymore = onTimeTask.endDate.isAfter(deadline)
-          if (taskNotOnTimeAnymore) {
-            apply(
-                TaskDelayedInternalEvent(
-                    onTimeTask.aggregateIdentifier,
-                    onTimeTask.taskId,
-                    onTimeTask.startDate,
-                    onTimeTask.endDate))
-          }
-        }
-        if (status != ProjectStatus.DELAYED && delayedTasks.isNotEmpty()) {
-          apply(ProjectDelayedEvent(aggregateIdentifier))
-        } else if (status != ProjectStatus.ON_TIME && delayedTasks.isEmpty()) {
-          apply(ProjectOnTimeEvent(aggregateIdentifier))
-        }
+
+        applyEventIfProjectStatusChanged()
       }
       return AggregateLifecycle.getVersion()
     }
@@ -152,41 +126,33 @@ class Project : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: CheckTaskTimelinessInternalCommand) {
-    val isTaskDelayed = command.endDate.isAfter(deadline)
-    if (isTaskDelayed) {
-      val taskDelayedEvent =
-          TaskDelayedInternalEvent(
-              command.aggregateIdentifier, command.taskId, command.startDate, command.endDate)
-      if (delayedTasks[command.taskId] != taskDelayedEvent) {
-        apply(taskDelayedEvent)
-      }
-      if (status != ProjectStatus.DELAYED) {
-        apply(ProjectDelayedEvent(aggregateIdentifier))
-      }
-    } else {
-      val taskOnTimeEvent =
-          TaskOnTimeInternalEvent(
-              command.aggregateIdentifier, command.taskId, command.startDate, command.endDate)
-      if (onTimeTasks[command.taskId] != taskOnTimeEvent) {
-        apply(taskOnTimeEvent)
-      }
-      if (status == ProjectStatus.DELAYED && delayedTasks.isEmpty()) {
-        apply(ProjectOnTimeEvent(aggregateIdentifier))
-      }
+  fun handle(command: RegisterTaskScheduleInternalCommand) {
+    apply(
+        TaskScheduleRegisteredInternalEvent(
+            command.aggregateIdentifier, command.taskId, command.startDate, command.endDate))
+
+    applyEventIfProjectStatusChanged()
+  }
+
+  private fun applyEventIfProjectStatusChanged() {
+    when (status) {
+      ProjectStatus.DELAYED ->
+          if (!isProjectDelayed()) {
+            apply(ProjectOnTimeEvent(aggregateIdentifier))
+          }
+      ProjectStatus.ON_TIME ->
+          if (isProjectDelayed()) {
+            apply(ProjectDelayedEvent(aggregateIdentifier))
+          }
     }
   }
 
-  @EventSourcingHandler
-  fun on(event: TaskDelayedInternalEvent) {
-    onTimeTasks.remove(event.taskId)
-    delayedTasks[event.taskId] = event
-  }
+  private fun isProjectDelayed(): Boolean =
+      taskSchedules.values.stream().anyMatch { it.endDate.isAfter(deadline) }
 
   @EventSourcingHandler
-  fun on(event: TaskOnTimeInternalEvent) {
-    delayedTasks.remove(event.taskId)
-    onTimeTasks[event.taskId] = event
+  fun on(event: TaskScheduleRegisteredInternalEvent) {
+    taskSchedules[event.taskId] = event.toTaskSchedule()
   }
 
   @EventSourcingHandler
@@ -201,3 +167,16 @@ class Project : BaseAggregate() {
 
   override fun getSequenceIdentifier() = aggregateIdentifier.identifier
 }
+
+private data class TaskSchedule(
+    val taskId: TaskId,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+)
+
+private fun TaskScheduleRegisteredInternalEvent.toTaskSchedule() =
+    TaskSchedule(
+        taskId = taskId,
+        startDate = startDate,
+        endDate = endDate,
+    )

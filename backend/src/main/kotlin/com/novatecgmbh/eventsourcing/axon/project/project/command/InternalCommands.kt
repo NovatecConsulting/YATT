@@ -6,7 +6,7 @@ import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
 import java.time.LocalDate
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 
-data class CheckTaskTimelinessInternalCommand(
+data class RegisterTaskScheduleInternalCommand(
     @TargetAggregateIdentifier override val aggregateIdentifier: ProjectId,
     val taskId: TaskId,
     val startDate: LocalDate,
