@@ -16,7 +16,8 @@ data class ProjectQueryResult(
     val startDate: LocalDate,
     val deadline: LocalDate,
     val companyReference: AggregateReference<CompanyId>,
-    val status: ProjectStatus
+    val status: ProjectStatus,
+    var actualEndDate: LocalDate? = null
 )
 
 data class ProjectDetailsQuery(val projectId: ProjectId)

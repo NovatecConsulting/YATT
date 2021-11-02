@@ -26,6 +26,7 @@ import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
 import {EditableTableCell} from "../../components/EditableTableCell";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
+import dayjs from "dayjs";
 
 export function ProjectsList() {
     const history = useHistory();
@@ -56,6 +57,7 @@ export function ProjectsList() {
                             <TableCell>Planned Start Date</TableCell>
                             <TableCell>Deadline</TableCell>
                             <TableCell>Status</TableCell>
+                            <TableCell>Actual End Date</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -113,6 +115,7 @@ function ProjectRow(props: ProjectRowProps) {
                     endDate={project.deadline}
                 />
                 <ProjectStatusCell status={project.status}/>
+                <TableCell>{project.actualEndDate ? dayjs(project.actualEndDate).format('DD.MM.YYYY') : '-'}</TableCell>
             </TableRow>
         );
     } else {
