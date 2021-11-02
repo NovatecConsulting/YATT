@@ -27,8 +27,10 @@ data class ProjectRescheduledEvent(
 
 data class ProjectDelayedEvent(
     override val aggregateIdentifier: ProjectId,
+    val actualEndDate: LocalDate
 ) : ProjectEvent(aggregateIdentifier)
 
 data class ProjectOnTimeEvent(
     override val aggregateIdentifier: ProjectId,
+    val actualEndDate: LocalDate
 ) : ProjectEvent(aggregateIdentifier)

@@ -6,7 +6,6 @@ import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -25,7 +24,7 @@ class Project : BaseAggregate() {
   private lateinit var deadline: LocalDate
   private lateinit var companyId: CompanyId
   private lateinit var status: ProjectStatus
-  private var taskSchedules: MutableMap<TaskId, TaskSchedule> = mutableMapOf()
+  private var actualEndDate: LocalDate? = null
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
@@ -84,7 +83,14 @@ class Project : BaseAggregate() {
                 newDeadline = command.newDeadline,
             ))
 
-        applyEventIfProjectStatusChanged()
+        actualEndDate?.let { actualEndDate ->
+          val isProjectDelayed = actualEndDate.isAfter(deadline)
+          if (isProjectDelayed && status != DELAYED) {
+            apply(ProjectDelayedEvent(command.aggregateIdentifier, actualEndDate))
+          } else if (!isProjectDelayed && status != ON_TIME) {
+            apply(ProjectOnTimeEvent(command.aggregateIdentifier, actualEndDate))
+          }
+        }
       }
       return AggregateLifecycle.getVersion()
     }
@@ -131,57 +137,27 @@ class Project : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: RegisterTaskScheduleInternalCommand) {
-    apply(
-        TaskScheduleRegisteredInternalEvent(
-            command.aggregateIdentifier, command.taskId, command.startDate, command.endDate))
-
-    applyEventIfProjectStatusChanged()
-  }
-
-  private fun applyEventIfProjectStatusChanged() {
-    when (status) {
-      DELAYED ->
-          if (!isProjectDelayed()) {
-            apply(ProjectOnTimeEvent(aggregateIdentifier))
-          }
-      ON_TIME ->
-          if (isProjectDelayed()) {
-            apply(ProjectDelayedEvent(aggregateIdentifier))
-          }
+  fun handle(command: UpdateActualScheduleInternalCommand) {
+    val isProjectDelayed = command.endDate.isAfter(deadline)
+    val hasActualEndDateChanged = command.endDate != actualEndDate
+    if (isProjectDelayed && (status != DELAYED || hasActualEndDateChanged)) {
+      apply(ProjectDelayedEvent(command.aggregateIdentifier, command.endDate))
+    } else if (!isProjectDelayed && (status != ON_TIME || hasActualEndDateChanged)) {
+      apply(ProjectOnTimeEvent(command.aggregateIdentifier, command.endDate))
     }
-  }
-
-  private fun isProjectDelayed(): Boolean =
-      taskSchedules.values.stream().anyMatch { it.endDate.isAfter(deadline) }
-
-  @EventSourcingHandler
-  fun on(event: TaskScheduleRegisteredInternalEvent) {
-    taskSchedules[event.taskId] = event.toTaskSchedule()
   }
 
   @EventSourcingHandler
   fun on(event: ProjectDelayedEvent) {
     status = DELAYED
+    actualEndDate = event.actualEndDate
   }
 
   @EventSourcingHandler
   fun on(event: ProjectOnTimeEvent) {
     status = ON_TIME
+    actualEndDate = event.actualEndDate
   }
 
   override fun getSequenceIdentifier() = aggregateIdentifier.identifier
 }
-
-private data class TaskSchedule(
-    val taskId: TaskId,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-)
-
-private fun TaskScheduleRegisteredInternalEvent.toTaskSchedule() =
-    TaskSchedule(
-        taskId = taskId,
-        startDate = startDate,
-        endDate = endDate,
-    )
