@@ -129,6 +129,14 @@ create sequence hibernate_sequence start with 1 increment by 1;
         primary key (aggregate_identifier, sequence_number, type)
     );
 
+    create table task_schedule_projection (
+       identifier varchar(255) not null,
+        end_date date not null,
+        project_id varchar(255) not null,
+        start_date date not null,
+        primary key (identifier)
+    );
+
     create table tasks (
        identifier varchar(255) not null,
         description varchar(255),
