@@ -4,6 +4,8 @@ import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
 import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -46,14 +48,14 @@ class ProjectProjector(
   @EventHandler
   fun on(event: ProjectDelayedEvent, @SequenceNumber aggregateVersion: Long) =
       updateProjection(event.aggregateIdentifier) {
-        it.status = ProjectStatus.DELAYED
+        it.status = DELAYED
         it.version = aggregateVersion
       }
 
   @EventHandler
   fun on(event: ProjectOnTimeEvent, @SequenceNumber aggregateVersion: Long) =
       updateProjection(event.aggregateIdentifier) {
-        it.status = ProjectStatus.ON_TIME
+        it.status = ON_TIME
         it.version = aggregateVersion
       }
 

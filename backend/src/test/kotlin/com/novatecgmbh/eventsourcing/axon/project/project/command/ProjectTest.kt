@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.command
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
 import java.time.LocalDate
 import org.axonframework.modelling.command.ConflictingAggregateVersionException
 import org.axonframework.test.aggregate.AggregateTestFixture
@@ -35,7 +36,8 @@ class ProjectTest {
             plannedStartDate = LocalDate.of(2021, 1, 1),
             deadline = LocalDate.of(2022, 1, 1),
             companyId = companyId,
-            status = ProjectStatus.ON_TIME)
+            status = ON_TIME
+        )
     val renameProjectCommand =
         RenameProjectCommand(
             aggregateIdentifier = ProjectId("1"),

@@ -5,9 +5,13 @@ import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
-import io.mockk.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
+import io.mockk.slot
+import io.mockk.verify
 import java.time.LocalDate
 import java.util.*
 import org.axonframework.extensions.kotlin.queryOptional
@@ -45,7 +49,7 @@ class ProjectProjectorTest {
                   plannedStartDate = LocalDate.of(2021, 1, 1),
                   deadline = LocalDate.of(2022, 1, 1),
                   companyReference = companyQueryResult.toAggregateReference(),
-                  status = ProjectStatus.ON_TIME))
+                  status = ON_TIME))
         }
     every { repository.save(capture(projectProjectionCaptor)) } answers
         {
@@ -70,7 +74,7 @@ class ProjectProjectorTest {
     val expectedDeadline = LocalDate.of(2022, 1, 1)
     val expectedVersion = 0L
     val expectedCompanyReference = companyQueryResult.toAggregateReference()
-    val expectedStatus = ProjectStatus.ON_TIME
+    val expectedStatus = ON_TIME
 
     val testEvent =
         ProjectCreatedEvent(
