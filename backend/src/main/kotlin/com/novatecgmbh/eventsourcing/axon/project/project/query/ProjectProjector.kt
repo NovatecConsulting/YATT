@@ -47,11 +47,17 @@ class ProjectProjector(
   }
 
   @EventHandler
+  fun on(event: ActualEndDateChangedEvent, @SequenceNumber aggregateVersion: Long) =
+      updateProjection(event.aggregateIdentifier) {
+        it.actualEndDate = event.actualEndDate
+        it.version = aggregateVersion
+      }
+
+  @EventHandler
   fun on(event: ProjectDelayedEvent, @SequenceNumber aggregateVersion: Long) =
       updateProjection(event.aggregateIdentifier) {
         it.status = DELAYED
         it.version = aggregateVersion
-        it.actualEndDate = event.actualEndDate
       }
 
   @EventHandler
@@ -59,7 +65,6 @@ class ProjectProjector(
       updateProjection(event.aggregateIdentifier) {
         it.status = ON_TIME
         it.version = aggregateVersion
-        it.actualEndDate = event.actualEndDate
       }
 
   @EventHandler
