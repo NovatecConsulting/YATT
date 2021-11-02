@@ -33,6 +33,7 @@ class DependencyRulesTest {
           .should()
           .notDependOnEachOther()
           .ignoreDependency(alwaysTrue(), resideInAPackage("..api.."))
+          .ignoreDependency(Project::class.java, Participant::class.java) // required to create first participant
           .ignoreDependency(Participant::class.java, User::class.java) // TODO fix dependency
           .ignoreDependency(Participant::class.java, Company::class.java) // TODO fix dependency
           .ignoreDependency(Employee::class.java, User::class.java) // TODO fix dependency

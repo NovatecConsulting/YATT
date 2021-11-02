@@ -1,16 +1,19 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
+import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
+import com.novatecgmbh.eventsourcing.axon.project.participant.command.Participant
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
+import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.modelling.command.AggregateCreationPolicy
+import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.CreationPolicy
@@ -27,14 +30,10 @@ class Project : BaseAggregate() {
   private var actualEndDate: LocalDate? = null
 
   @CommandHandler
-  @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
-  fun handle(command: CreateProjectCommand): ProjectId {
-    if (::aggregateIdentifier.isInitialized) {
-      throw AlreadyExistsException()
-    }
-    if (command.plannedStartDate.isAfter(command.deadline)) {
-      throw IllegalArgumentException("Start date can't be after deadline")
-    }
+  @CreationPolicy(CREATE_IF_MISSING)
+  fun handle(command: CreateProjectCommand, @AuditUserId userId: String): ProjectId {
+    assertAggregateDoesNotExistYet()
+    assertDeadlineIsAfterStartDate(command.plannedStartDate, command.deadline)
     apply(
         ProjectCreatedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
@@ -44,7 +43,24 @@ class Project : BaseAggregate() {
             companyId = command.companyId,
             status = ON_TIME),
         sequenceIdentifier = command.aggregateIdentifier.identifier)
+
+    // automatically create the first participant for the user that created the project
+    AggregateLifecycle.createNew(Participant::class.java) {
+      Participant(command.aggregateIdentifier, UserId(userId), command.companyId)
+    }
     return command.aggregateIdentifier
+  }
+
+  private fun assertAggregateDoesNotExistYet() {
+    if (::aggregateIdentifier.isInitialized) {
+      throw AlreadyExistsException()
+    }
+  }
+
+  private fun assertDeadlineIsAfterStartDate(start: LocalDate, deadline: LocalDate) {
+    if (start.isAfter(deadline)) {
+      throw IllegalArgumentException("Start date can't be after deadline")
+    }
   }
 
   @CommandHandler
@@ -72,22 +88,23 @@ class Project : BaseAggregate() {
       anyRelevantEventsInPastOccured &&
           (command.newStartDate != plannedStartDate || command.newDeadline != deadline)
     }
-    if (command.newStartDate.isAfter(command.newDeadline)) {
-      throw IllegalArgumentException("Start date can't be after deadline")
-    } else {
-      if (command.newStartDate != plannedStartDate || command.newDeadline != deadline) {
-        apply(
-            ProjectRescheduledEvent(
-                aggregateIdentifier = command.aggregateIdentifier,
-                newStartDate = command.newStartDate,
-                newDeadline = command.newDeadline,
-            ))
 
-        applyEventIfProjectStatusChanged()
-      }
-      return AggregateLifecycle.getVersion()
+    assertDeadlineIsAfterStartDate(command.newStartDate, command.newDeadline)
+    if (taskWasRescheduled(command.newStartDate, command.newDeadline)) {
+      apply(
+          ProjectRescheduledEvent(
+              aggregateIdentifier = command.aggregateIdentifier,
+              newStartDate = command.newStartDate,
+              newDeadline = command.newDeadline,
+          ))
     }
+
+    applyEventIfProjectStatusChanged()
+    return AggregateLifecycle.getVersion()
   }
+
+  private fun taskWasRescheduled(newStartDate: LocalDate, newDeadline: LocalDate) =
+      newStartDate != plannedStartDate || newDeadline != deadline
 
   @CommandHandler
   fun handle(command: UpdateProjectCommand, conflictResolver: ConflictResolver): Long {

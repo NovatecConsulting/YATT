@@ -9,14 +9,17 @@ import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
-import org.axonframework.modelling.command.*
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
+import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateNotFoundException
+import org.axonframework.modelling.command.CreationPolicy
+import org.axonframework.modelling.command.Repository
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
 class Task : BaseAggregate() {
-  @AggregateIdentifier private lateinit var identifier: TaskId
+  @AggregateIdentifier private lateinit var aggregateIdentifier: TaskId
   private lateinit var projectId: ProjectId
   private lateinit var name: String
   private var description: String? = null
@@ -30,9 +33,7 @@ class Task : BaseAggregate() {
       command: CreateTaskCommand,
       @Autowired projectRepository: Repository<Project>
   ): TaskId {
-    if (::projectId.isInitialized) {
-      throw AlreadyExistsException()
-    }
+    assertAggregateDoesNotExistYet()
     assertProjectExists(projectRepository, command.projectId)
     assertStartDateBeforeEndDate(command.startDate, command.endDate)
     apply(
@@ -47,13 +48,19 @@ class Task : BaseAggregate() {
     return command.identifier
   }
 
+  private fun assertAggregateDoesNotExistYet() {
+    if (::aggregateIdentifier.isInitialized) {
+      throw AlreadyExistsException()
+    }
+  }
+
   @CommandHandler
   fun handle(command: RenameTaskCommand): TaskId {
     if (status == COMPLETED) {
       throw IllegalArgumentException("Task is already completed. Name cannot be changed anymore.")
     }
     apply(TaskRenamedEvent(identifier = command.identifier, name = command.name))
-    return identifier
+    return aggregateIdentifier
   }
 
   @EventSourcingHandler
@@ -70,7 +77,7 @@ class Task : BaseAggregate() {
     apply(
         TaskDescriptionUpdatedEvent(
             identifier = command.identifier, description = command.description))
-    return identifier
+    return aggregateIdentifier
   }
 
   @CommandHandler
@@ -89,27 +96,27 @@ class Task : BaseAggregate() {
               startDate = command.startDate,
               endDate = command.endDate))
     }
-    return identifier
+    return aggregateIdentifier
   }
 
   @CommandHandler
   fun handle(command: StartTaskCommand): TaskId {
     when (status) {
-      PLANNED -> apply(TaskStartedEvent(identifier))
+      PLANNED -> apply(TaskStartedEvent(aggregateIdentifier))
       STARTED -> {}
       COMPLETED -> throw IllegalStateException("Task is already completed.")
     }
-    return identifier
+    return aggregateIdentifier
   }
 
   @CommandHandler
   fun handle(command: CompleteTaskCommand): TaskId {
     when (status) {
       PLANNED -> throw IllegalStateException("Task has not yet been started.")
-      STARTED -> apply(TaskCompletedEvent(identifier))
+      STARTED -> apply(TaskCompletedEvent(aggregateIdentifier))
       COMPLETED -> {}
     }
-    return identifier
+    return aggregateIdentifier
   }
 
   private fun assertProjectExists(projectRepository: Repository<Project>, projectId: ProjectId) {
@@ -128,7 +135,7 @@ class Task : BaseAggregate() {
 
   @EventSourcingHandler
   fun on(event: TaskCreatedEvent) {
-    identifier = event.identifier
+    aggregateIdentifier = event.identifier
     projectId = event.projectId
     name = event.name
     description = event.description

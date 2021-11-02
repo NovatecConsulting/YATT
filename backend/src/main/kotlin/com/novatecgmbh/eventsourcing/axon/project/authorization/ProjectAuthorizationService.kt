@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.authorization
 
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import org.springframework.stereotype.Service

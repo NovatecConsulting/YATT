@@ -1,11 +1,9 @@
-package com.novatecgmbh.eventsourcing.axon.project.project.command
+package com.novatecgmbh.eventsourcing.axon.project.participant.command.authorization
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
-import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.COMPANY
-import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.CREATE_PROJECT
-import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclKey
-import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
-import com.novatecgmbh.eventsourcing.axon.project.project.api.CreateProjectCommand
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCommand
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import javax.annotation.PostConstruct
 import org.axonframework.commandhandling.CommandBus
@@ -16,9 +14,9 @@ import org.axonframework.messaging.unitofwork.UnitOfWork
 import org.springframework.stereotype.Component
 
 @Component
-class ProjectAuthorizer(
-    val projectAclRepository: ProjectAclRepository,
-    val commandBus: CommandBus
+class ParticipantAuthorizer(
+  val projectAclRepository: ProjectAclRepository,
+  val commandBus: CommandBus
 ) : MessageHandlerInterceptor<CommandMessage<*>> {
 
   @PostConstruct
@@ -32,17 +30,18 @@ class ProjectAuthorizer(
   ): Any? {
     val payload = unitOfWork.message.payload
     val userId = UserId(unitOfWork.message.metaData[AUDIT_USER_ID_META_DATA_KEY].toString())
-    when (payload) {
-      is CreateProjectCommand -> authorize(payload, userId)
+    if (payload is ParticipantCommand) {
+      when (payload) {
+        is CreateParticipantCommand -> authorize(payload, userId)
+        else -> IllegalStateException("Authorization rule missing for participant command")
+      }
     }
     return interceptorChain.proceed()
   }
 
-  fun authorize(command: CreateProjectCommand, userId: UserId) {
-    if (!projectAclRepository.existsById(
-        ProjectAclKey(COMPANY, command.companyId.identifier, userId, CREATE_PROJECT))) {
-      throw IllegalAccessException("Not authorized to create project for this company")
+  fun authorize(command: CreateParticipantCommand, userId: UserId) {
+    if (!projectAclRepository.hasAccessToProject(userId, command.projectId.toString())) {
+      throw IllegalAccessException("Not authorized to add participant to this project")
     }
   }
-
 }

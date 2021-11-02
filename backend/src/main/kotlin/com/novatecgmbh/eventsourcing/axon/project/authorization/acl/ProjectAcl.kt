@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.authorization
+package com.novatecgmbh.eventsourcing.axon.project.authorization.acl
 
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.io.Serializable
@@ -9,10 +9,10 @@ import javax.persistence.EnumType.STRING
 
 @Embeddable
 class ProjectAclKey(
-    @Enumerated(STRING) var aggregateType: AuthorizableAggregateTypesEnum,
-    var aggregateIdentifier: String,
-    @Embedded var userId: UserId,
-    @Enumerated(STRING) var permission: PermissionEnum
+  @Enumerated(STRING) var aggregateType: AuthorizableAggregateTypesEnum,
+  var aggregateIdentifier: String,
+  @Embedded var userId: UserId,
+  @Enumerated(STRING) var permission: PermissionEnum
 ) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

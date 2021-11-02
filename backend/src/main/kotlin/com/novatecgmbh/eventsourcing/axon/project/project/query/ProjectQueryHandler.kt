@@ -1,7 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.query
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
-import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAuthorizationService
 import com.novatecgmbh.eventsourcing.axon.project.project.api.MyProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId

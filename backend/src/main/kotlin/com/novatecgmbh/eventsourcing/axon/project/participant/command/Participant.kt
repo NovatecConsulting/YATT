@@ -13,27 +13,40 @@ import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.command.User
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
-import org.axonframework.modelling.command.*
+import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
+import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateNotFoundException
+import org.axonframework.modelling.command.CreationPolicy
+import org.axonframework.modelling.command.Repository
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
 @Aggregate
-class Participant : BaseAggregate() {
+class Participant() : BaseAggregate() {
   @AggregateIdentifier private lateinit var aggregateIdentifier: ParticipantId
   private lateinit var projectId: ProjectId
   private lateinit var userId: UserId
 
+  // only used for auto creation of first participant when project is created
+  constructor(projectId: ProjectId, userId: UserId, companyId: CompanyId) : this() {
+    apply(
+        ParticipantCreatedEvent(
+            aggregateIdentifier = ParticipantId(),
+            projectId = projectId,
+            companyId = companyId,
+            userId = userId),
+        sequenceIdentifier = projectId.identifier)
+  }
+
   @CommandHandler
-  @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
+  @CreationPolicy(CREATE_IF_MISSING)
   fun handle(
       command: CreateParticipantCommand,
       @Autowired userRepository: Repository<User>,
       @Autowired companyRepository: Repository<Company>,
       @Autowired participantUniqueKeyRepository: ParticipantUniqueKeyRepository
   ): ParticipantId {
-    if (::aggregateIdentifier.isInitialized) {
-      throw AlreadyExistsException()
-    }
+    assertAggregateDoesNotExistYet()
     assertNoParticipantExistsForCompanyAndUser(
         participantUniqueKeyRepository, command.projectId, command.companyId, command.userId)
     assertUserExists(userRepository, command.userId)
@@ -46,6 +59,12 @@ class Participant : BaseAggregate() {
             userId = command.userId),
         sequenceIdentifier = command.projectId.identifier)
     return command.aggregateIdentifier
+  }
+
+  private fun assertAggregateDoesNotExistYet() {
+    if (::aggregateIdentifier.isInitialized) {
+      throw AlreadyExistsException()
+    }
   }
 
   private fun assertUserExists(userRepository: Repository<User>, userId: UserId) {

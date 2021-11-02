@@ -21,7 +21,7 @@ class ProjectTest {
   }
 
   companion object {
-    val companyId = CompanyId()
+    private val companyId = CompanyId()
     val createProjectCommand =
         CreateProjectCommand(
             aggregateIdentifier = ProjectId("1"),
