@@ -4,12 +4,17 @@ import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
 import java.time.LocalDate
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.eventsourcing.conflictresolution.ConflictResolver
-import org.axonframework.modelling.command.*
+import org.axonframework.modelling.command.AggregateCreationPolicy
+import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateLifecycle
+import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
 
 @Aggregate
@@ -38,7 +43,7 @@ class Project : BaseAggregate() {
             plannedStartDate = command.plannedStartDate,
             deadline = command.deadline,
             companyId = command.companyId,
-            status = ProjectStatus.ON_TIME),
+            status = ON_TIME),
         sequenceIdentifier = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
@@ -111,7 +116,7 @@ class Project : BaseAggregate() {
     plannedStartDate = event.plannedStartDate
     deadline = event.deadline
     companyId = event.companyId
-    status = ProjectStatus.ON_TIME
+    status = ON_TIME
   }
 
   @EventSourcingHandler
@@ -136,11 +141,11 @@ class Project : BaseAggregate() {
 
   private fun applyEventIfProjectStatusChanged() {
     when (status) {
-      ProjectStatus.DELAYED ->
+      DELAYED ->
           if (!isProjectDelayed()) {
             apply(ProjectOnTimeEvent(aggregateIdentifier))
           }
-      ProjectStatus.ON_TIME ->
+      ON_TIME ->
           if (isProjectDelayed()) {
             apply(ProjectDelayedEvent(aggregateIdentifier))
           }
@@ -157,12 +162,12 @@ class Project : BaseAggregate() {
 
   @EventSourcingHandler
   fun on(event: ProjectDelayedEvent) {
-    status = ProjectStatus.DELAYED
+    status = DELAYED
   }
 
   @EventSourcingHandler
   fun on(event: ProjectOnTimeEvent) {
-    status = ProjectStatus.ON_TIME
+    status = ON_TIME
   }
 
   override fun getSequenceIdentifier() = aggregateIdentifier.identifier
