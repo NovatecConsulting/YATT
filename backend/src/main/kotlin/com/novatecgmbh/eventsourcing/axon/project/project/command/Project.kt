@@ -83,14 +83,7 @@ class Project : BaseAggregate() {
                 newDeadline = command.newDeadline,
             ))
 
-        actualEndDate?.let { actualEndDate ->
-          val isProjectDelayed = actualEndDate.isAfter(deadline)
-          if (isProjectDelayed && status != DELAYED) {
-            apply(ProjectDelayedEvent(command.aggregateIdentifier, actualEndDate))
-          } else if (!isProjectDelayed && status != ON_TIME) {
-            apply(ProjectOnTimeEvent(command.aggregateIdentifier, actualEndDate))
-          }
-        }
+        applyEventIfProjectStatusChanged()
       }
       return AggregateLifecycle.getVersion()
     }
@@ -138,25 +131,42 @@ class Project : BaseAggregate() {
 
   @CommandHandler
   fun handle(command: UpdateActualScheduleInternalCommand) {
-    val isProjectDelayed = command.endDate.isAfter(deadline)
     val hasActualEndDateChanged = command.endDate != actualEndDate
-    if (isProjectDelayed && (status != DELAYED || hasActualEndDateChanged)) {
-      apply(ProjectDelayedEvent(command.aggregateIdentifier, command.endDate))
-    } else if (!isProjectDelayed && (status != ON_TIME || hasActualEndDateChanged)) {
-      apply(ProjectOnTimeEvent(command.aggregateIdentifier, command.endDate))
+    if (hasActualEndDateChanged) {
+      apply(ActualEndDateChangedEvent(command.aggregateIdentifier, command.endDate))
     }
+
+    applyEventIfProjectStatusChanged()
+  }
+
+  private fun applyEventIfProjectStatusChanged() {
+    when (status) {
+      DELAYED ->
+          if (!isProjectDelayed()) {
+            apply(ProjectOnTimeEvent(aggregateIdentifier))
+          }
+      ON_TIME ->
+          if (isProjectDelayed()) {
+            apply(ProjectDelayedEvent(aggregateIdentifier))
+          }
+    }
+  }
+
+  private fun isProjectDelayed(): Boolean = actualEndDate?.isAfter(deadline) ?: false
+
+  @EventSourcingHandler
+  fun on(event: ActualEndDateChangedEvent) {
+    actualEndDate = event.actualEndDate
   }
 
   @EventSourcingHandler
   fun on(event: ProjectDelayedEvent) {
     status = DELAYED
-    actualEndDate = event.actualEndDate
   }
 
   @EventSourcingHandler
   fun on(event: ProjectOnTimeEvent) {
     status = ON_TIME
-    actualEndDate = event.actualEndDate
   }
 
   override fun getSequenceIdentifier() = aggregateIdentifier.identifier
