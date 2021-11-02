@@ -24,9 +24,17 @@ class ProjectProjection(
         AttributeOverride(
             name = "displayName", column = Column(name = "companyName", nullable = true)))
     var companyReference: AggregateReference<CompanyId>,
-    @Column(nullable = false) @Enumerated(STRING) var status: ProjectStatus
+    @Column(nullable = false) @Enumerated(STRING) var status: ProjectStatus,
+    var actualEndDate: LocalDate? = null
 ) {
   fun toQueryResult() =
       ProjectQueryResult(
-          identifier, version, name, plannedStartDate, deadline, companyReference, status)
+          identifier,
+          version,
+          name,
+          plannedStartDate,
+          deadline,
+          companyReference,
+          status,
+          actualEndDate)
 }

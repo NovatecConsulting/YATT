@@ -12,6 +12,7 @@ export interface Project {
     deadline: string;
     companyReference: { identifier: string, displayName: string };
     status: ProjectStatus;
+    actualEndDate?: string;
 }
 
 export enum ProjectStatus {
