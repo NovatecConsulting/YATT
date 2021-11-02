@@ -29,7 +29,7 @@ class AdminController(private val axonAdministration: AxonAdministration) {
 
   @PostMapping("/{groupName}/reset")
   fun resetEventProcessor(@PathVariable groupName: String): ResponseEntity<Any> {
-    axonAdministration.resetTrackingEventProcessor(groupName)
+    axonAdministration.resetStreamingEventProcessor(groupName)
     return ResponseEntity.accepted().build()
   }
 }
