@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class AxonAdministration(private val eventProcessingConfiguration: EventProcessingConfiguration) {
 
-  fun resetTrackingEventProcessor(processingGroup: String) =
+  fun resetStreamingEventProcessor(processingGroup: String) =
       eventProcessingConfiguration.eventProcessorByProcessingGroup(
               processingGroup, StreamingEventProcessor::class.java)
           .ifPresent {
