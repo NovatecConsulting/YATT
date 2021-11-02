@@ -1,12 +1,14 @@
-package com.novatecgmbh.eventsourcing.axon.project.authorization
+package com.novatecgmbh.eventsourcing.axon.project.authorization.acl
 
+import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
-import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.COMPANY
-import com.novatecgmbh.eventsourcing.axon.project.authorization.AuthorizableAggregateTypesEnum.PROJECT
-import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.ACCESS_PROJECT
-import com.novatecgmbh.eventsourcing.axon.project.authorization.PermissionEnum.CREATE_PROJECT
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.AuthorizableAggregateTypesEnum.COMPANY
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.AuthorizableAggregateTypesEnum.PROJECT
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.PermissionEnum.ACCESS_PROJECT
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.PermissionEnum.CREATE_PROJECT
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCreatedEvent
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectCreatedEvent
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import org.axonframework.config.ProcessingGroup
@@ -45,6 +47,10 @@ class ProjectAclProjector(
 
   fun findEmployee(employeeId: EmployeeId): EmployeeQueryResult =
       queryGateway.query<EmployeeQueryResult, EmployeeQuery>(EmployeeQuery(employeeId)).get()
+
+//  @EventHandler
+//  fun on(event: ProjectCreatedEvent, @AuditUserId userId: UserId) =
+//      grantAccessToProject(event.aggregateIdentifier, userId)
 
   @EventHandler
   fun on(event: ParticipantCreatedEvent) = grantAccessToProject(event.projectId, event.userId)

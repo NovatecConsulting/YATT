@@ -3,11 +3,10 @@ package com.novatecgmbh.eventsourcing.axon.project.project.query
 import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.DELAYED
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
-import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler

@@ -4,7 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.common.query.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAclRepository
+import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
 import io.mockk.every
@@ -12,7 +12,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.slot
-import io.mockk.verify
 import java.time.LocalDate
 import java.util.*
 import org.axonframework.extensions.kotlin.queryOptional
