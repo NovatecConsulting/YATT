@@ -1,13 +1,18 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command
 
+import com.novatecgmbh.eventsourcing.axon.application.auditing.SecurityContextHelper
+import com.novatecgmbh.eventsourcing.axon.application.auditing.UserInjectingCommandMessageInterceptor
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantCreatedEvent
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus.ON_TIME
+import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.time.LocalDate
 import org.axonframework.modelling.command.ConflictingAggregateVersionException
 import org.axonframework.test.aggregate.AggregateTestFixture
 import org.axonframework.test.aggregate.FixtureConfiguration
+import org.axonframework.test.matchers.Matchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -18,10 +23,13 @@ class ProjectTest {
   @BeforeEach
   fun setUp() {
     fixture = AggregateTestFixture(Project::class.java)
+    fixture.registerCommandDispatchInterceptor(UserInjectingCommandMessageInterceptor())
+    SecurityContextHelper.setAuthentication(userId.identifier)
   }
 
   companion object {
     private val companyId = CompanyId()
+    private val userId = UserId()
     val createProjectCommand =
         CreateProjectCommand(
             aggregateIdentifier = ProjectId("1"),
@@ -73,7 +81,15 @@ class ProjectTest {
           .`when`(createProjectCommand)
           .expectResultMessagePayload(ProjectId("1"))
           .expectSuccessfulHandlerExecution()
-          .expectEvents(projectCreatedEvent)
+          .expectEventsMatching(
+              exactSequenceOf(
+                  messageWithPayload(equalTo(projectCreatedEvent)),
+                  messageWithPayload(
+                      matches<ParticipantCreatedEvent> {
+                        it.userId == userId &&
+                            it.projectId == projectCreatedEvent.aggregateIdentifier &&
+                            it.companyId == projectCreatedEvent.companyId
+                      })))
     }
 
     @Test
