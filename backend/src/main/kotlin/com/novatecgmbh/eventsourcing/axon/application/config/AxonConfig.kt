@@ -12,6 +12,7 @@ import org.axonframework.commandhandling.CommandBus
 import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.common.AxonThreadFactory
 import org.axonframework.config.EventProcessingConfigurer
+import org.axonframework.eventhandling.PropagatingErrorHandler
 import org.axonframework.eventhandling.TrackedEventMessage
 import org.axonframework.eventhandling.async.SequentialPerAggregatePolicy
 import org.axonframework.messaging.StreamableMessageSource
@@ -56,6 +57,13 @@ class AxonConfig {
               SimpleCorrelationDataProvider(*AUDIT_KEYS),
               MessageOriginProvider(),
           ))
+
+  @Autowired
+  fun configureEventProcessingDefaults(processingConfigurer: EventProcessingConfigurer) {
+    processingConfigurer.registerDefaultListenerInvocationErrorHandler {
+      PropagatingErrorHandler.instance()
+    }
+  }
 
   @Autowired
   fun configurePooledStreamingProcessors(
