@@ -13,5 +13,6 @@ data class ProjectId(@get:JsonValue val identifier: String) : Serializable {
 }
 
 enum class ProjectStatus {
-  ON_TIME, DELAYED
+  ON_TIME,
+  DELAYED
 }

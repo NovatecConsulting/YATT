@@ -10,7 +10,6 @@ import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.messaging.responsetypes.ResponseTypes
-import org.axonframework.modelling.command.Repository
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE

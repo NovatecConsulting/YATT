@@ -15,7 +15,6 @@ class ParticipantUniqueKeyProjector(private val repository: ParticipantUniqueKey
             identifier = event.aggregateIdentifier,
             projectId = event.projectId,
             companyId = event.companyId,
-            userId = event.userId)
-    )
+            userId = event.userId))
   }
 }

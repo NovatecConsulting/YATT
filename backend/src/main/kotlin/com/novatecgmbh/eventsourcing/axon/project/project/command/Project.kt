@@ -90,7 +90,7 @@ class Project : BaseAggregate() {
     }
 
     assertDeadlineIsAfterStartDate(command.newStartDate, command.newDeadline)
-    if (taskWasRescheduled(command.newStartDate, command.newDeadline)) {
+    if (projectWasRescheduled(command.newStartDate, command.newDeadline)) {
       apply(
           ProjectRescheduledEvent(
               aggregateIdentifier = command.aggregateIdentifier,
@@ -103,7 +103,7 @@ class Project : BaseAggregate() {
     return AggregateLifecycle.getVersion()
   }
 
-  private fun taskWasRescheduled(newStartDate: LocalDate, newDeadline: LocalDate) =
+  private fun projectWasRescheduled(newStartDate: LocalDate, newDeadline: LocalDate) =
       newStartDate != plannedStartDate || newDeadline != deadline
 
   @CommandHandler

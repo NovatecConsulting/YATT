@@ -14,7 +14,6 @@ class EmployeeUniqueKeyProjector(private val repository: EmployeeUniqueKeyReposi
         EmployeeUniqueKeyProjection(
             identifier = event.aggregateIdentifier,
             companyId = event.companyId,
-            userId = event.userId)
-    )
+            userId = event.userId))
   }
 }

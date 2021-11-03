@@ -5,7 +5,6 @@ import org.axonframework.config.EventProcessingConfiguration
 import org.axonframework.eventhandling.EventProcessor
 import org.axonframework.eventhandling.EventTrackerStatus
 import org.axonframework.eventhandling.StreamingEventProcessor
-import org.axonframework.eventhandling.TrackingEventProcessor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

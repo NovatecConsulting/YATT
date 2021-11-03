@@ -7,7 +7,7 @@ import javax.persistence.Embeddable
 
 @Embeddable
 data class UserId(@get:JsonValue val identifier: String) : Serializable {
-    constructor() : this(UUID.randomUUID().toString())
+  constructor() : this(UUID.randomUUID().toString())
 
-    override fun toString(): String = identifier
+  override fun toString(): String = identifier
 }

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ParticipantAuthorizer(
-  val projectAclRepository: ProjectAclRepository,
-  val commandBus: CommandBus
+    val projectAclRepository: ProjectAclRepository,
+    val commandBus: CommandBus
 ) : MessageHandlerInterceptor<CommandMessage<*>> {
 
   @PostConstruct
@@ -33,7 +33,7 @@ class ParticipantAuthorizer(
     if (payload is ParticipantCommand) {
       when (payload) {
         is CreateParticipantCommand -> authorize(payload, userId)
-        else -> IllegalStateException("Authorization rule missing for participant command")
+        else -> throw IllegalStateException("Authorization rule missing for participant command")
       }
     }
     return interceptorChain.proceed()
