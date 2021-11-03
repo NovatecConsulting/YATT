@@ -13,7 +13,6 @@ import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
-import org.axonframework.queryhandling.QueryHandler
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
@@ -151,8 +150,4 @@ class ProjectDetailsProjector(
     repository.deleteAll()
     lookupRepository.deleteAll()
   }
-
-  @QueryHandler
-  fun handle(query: ProjectDetailsQuery): Optional<ProjectDetailsQueryResult> =
-      repository.findById(query.projectId).map { it.toQueryResult() }
 }
