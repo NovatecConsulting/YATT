@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.command.eventhandler
 
-import com.novatecgmbh.eventsourcing.axon.application.sequencing.SequenceIdentifier
+import com.novatecgmbh.eventsourcing.axon.application.sequencing.RootContextId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.command.UpdateActualScheduleInternalCommand
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskCreatedEvent
@@ -16,7 +16,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Component
 
-// TODO if failed handling -> retry
 @Component
 @ProcessingGroup("actual-project-schedule-calculator")
 class ActualProjectScheduleCalculator(
@@ -47,17 +46,17 @@ class ActualProjectScheduleCalculator(
   @DisallowReplay
   fun on(
       event: TaskRescheduledEvent,
-      @SequenceIdentifier sequenceIdentifier: String,
+      @RootContextId rootContextId: String,
   ) {
     updateProjection(event.identifier) {
       it.startDate = event.startDate
       it.endDate = event.endDate
     }
         .also {
-          repository.findActualStartAndEndDate(ProjectId(sequenceIdentifier)).let {
+          repository.findActualStartAndEndDate(ProjectId(rootContextId)).let {
             commandGateway.send<Unit>(
                 UpdateActualScheduleInternalCommand(
-                    ProjectId(sequenceIdentifier), it.startDate, it.endDate))
+                    ProjectId(rootContextId), it.startDate, it.endDate))
           }
         }
   }

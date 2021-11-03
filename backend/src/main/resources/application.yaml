@@ -46,3 +46,5 @@ axon:
         mode: subscribing
       participant-unique-key-projector:
         mode: subscribing
+      root-context-id-mapping-projector:
+        mode: subscribing

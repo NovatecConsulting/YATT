@@ -42,7 +42,7 @@ class Project : BaseAggregate() {
             deadline = command.deadline,
             companyId = command.companyId,
             status = ON_TIME),
-        sequenceIdentifier = command.aggregateIdentifier.identifier)
+        rootContextId = command.aggregateIdentifier.identifier)
 
     // automatically create the first participant for the user that created the project
     AggregateLifecycle.createNew(Participant::class.java) {
@@ -186,5 +186,5 @@ class Project : BaseAggregate() {
     status = ON_TIME
   }
 
-  override fun getSequenceIdentifier() = aggregateIdentifier.identifier
+  override fun getRootContextId() = aggregateIdentifier.identifier
 }

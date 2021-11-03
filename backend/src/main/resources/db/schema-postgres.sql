@@ -77,13 +77,6 @@ create sequence hibernate_sequence start 1 increment 1;
         primary key (aggregate_identifier, aggregate_type, permission, identifier)
     );
 
-    create table project_acls_id_mapping (
-       aggregate_identifier varchar(255) not null,
-        aggregate_type varchar(255) not null,
-        identifier varchar(255) not null,
-        primary key (aggregate_identifier, aggregate_type, identifier)
-    );
-
     create table project_by_task_lookup (
        identifier varchar(255) not null,
         project_id varchar(255) not null,
@@ -114,6 +107,13 @@ create sequence hibernate_sequence start 1 increment 1;
         status varchar(255) not null,
         version int8 not null,
         primary key (identifier)
+    );
+
+    create table root_context_id_mapping (
+       aggregate_identifier varchar(255) not null,
+        aggregate_type varchar(255) not null,
+        root_context_id varchar(255) not null,
+        primary key (aggregate_identifier, aggregate_type, root_context_id)
     );
 
     create table saga_entry (

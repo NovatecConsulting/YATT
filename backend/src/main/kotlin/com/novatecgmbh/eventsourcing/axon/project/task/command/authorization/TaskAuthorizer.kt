@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.command.authorization
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
 import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
-import com.novatecgmbh.eventsourcing.axon.project.authorization.idmapping.ProjectAclIdMappingRepository
+import com.novatecgmbh.eventsourcing.axon.application.references.RootContextIdMappingRepository
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import javax.annotation.PostConstruct
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class TaskAuthorizer(
     val projectAclRepository: ProjectAclRepository,
-    val projectAclIdMappingRepository: ProjectAclIdMappingRepository,
+    val rootContextIdMappingRepository: RootContextIdMappingRepository,
     val commandBus: CommandBus
 ) : MessageHandlerInterceptor<CommandMessage<*>> {
 
@@ -53,35 +53,40 @@ class TaskAuthorizer(
 
   fun authorize(command: RescheduleTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
-        userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to reschedule task in this project")
     }
   }
 
   fun authorize(command: RenameTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
-        userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to rename task in this project")
     }
   }
 
   fun authorize(command: ChangeTaskDescriptionCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
-        userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to change task description in this project")
     }
   }
 
   fun authorize(command: StartTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
-        userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to start task in this project")
     }
   }
 
   fun authorize(command: CompleteTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
-        userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to complete task in this project")
     }
   }
