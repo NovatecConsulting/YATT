@@ -25,7 +25,7 @@ class Company : BaseAggregate() {
     }
     apply(
         CompanyCreatedEvent(aggregateIdentifier = command.aggregateIdentifier, name = command.name),
-        sequenceIdentifier = command.aggregateIdentifier.identifier)
+        rootContextId = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
 
@@ -35,5 +35,5 @@ class Company : BaseAggregate() {
     name = event.name
   }
 
-  override fun getSequenceIdentifier() = aggregateIdentifier.identifier
+  override fun getRootContextId() = aggregateIdentifier.identifier
 }

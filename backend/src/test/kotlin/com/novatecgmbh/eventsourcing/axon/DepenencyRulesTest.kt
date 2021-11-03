@@ -1,11 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon
 
-import com.novatecgmbh.eventsourcing.axon.company.company.command.Company
-import com.novatecgmbh.eventsourcing.axon.company.employee.command.Employee
 import com.novatecgmbh.eventsourcing.axon.project.participant.command.Participant
 import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
-import com.novatecgmbh.eventsourcing.axon.project.task.command.Task
-import com.novatecgmbh.eventsourcing.axon.user.command.User
 import com.tngtech.archunit.base.DescribedPredicate.alwaysTrue
 import com.tngtech.archunit.core.domain.JavaClass
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage
@@ -33,12 +29,8 @@ class DependencyRulesTest {
           .should()
           .notDependOnEachOther()
           .ignoreDependency(alwaysTrue(), resideInAPackage("..api.."))
-          .ignoreDependency(Project::class.java, Participant::class.java) // required to create first participant
-          .ignoreDependency(Participant::class.java, User::class.java) // TODO fix dependency
-          .ignoreDependency(Participant::class.java, Company::class.java) // TODO fix dependency
-          .ignoreDependency(Employee::class.java, User::class.java) // TODO fix dependency
-          .ignoreDependency(Employee::class.java, Company::class.java) // TODO fix dependency?
-          .ignoreDependency(Task::class.java, Project::class.java) // TODO fix dependency?
+          .ignoreDependency(
+              Project::class.java, Participant::class.java) // required to create first participant
 
   @ArchTest
   val contexts: ArchRule =
@@ -53,9 +45,6 @@ class DependencyRulesTest {
           // transitively on user context
           .ignoreDependency(
               resideInAPackage("..axon.application.."), resideInAPackage("..axon.user.."))
-          .ignoreDependency(Participant::class.java, User::class.java) // TODO fix dependency
-          .ignoreDependency(Participant::class.java, Company::class.java) // TODO fix dependency
-          .ignoreDependency(Employee::class.java, User::class.java) // TODO fix dependency
 
   companion object {
     val commandQueryWebPackages =

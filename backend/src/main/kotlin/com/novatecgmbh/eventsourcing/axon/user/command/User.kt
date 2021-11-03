@@ -39,7 +39,7 @@ class User : BaseAggregate() {
             lastname = command.lastname),
         MetaData(
             mutableMapOf(AUDIT_USER_ID_META_DATA_KEY to command.aggregateIdentifier.identifier)),
-        sequenceIdentifier = command.aggregateIdentifier.identifier)
+        rootContextId = command.aggregateIdentifier.identifier)
     return command.aggregateIdentifier
   }
 
@@ -76,5 +76,5 @@ class User : BaseAggregate() {
     lastname = event.lastname
   }
 
-  override fun getSequenceIdentifier() = aggregateIdentifier.identifier
+  override fun getRootContextId() = aggregateIdentifier.identifier
 }

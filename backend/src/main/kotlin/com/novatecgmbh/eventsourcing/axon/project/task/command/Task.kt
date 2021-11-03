@@ -3,7 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.command
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
-import com.novatecgmbh.eventsourcing.axon.project.project.command.Project
+import com.novatecgmbh.eventsourcing.axon.application.references.ReferenceCheckerService
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import java.time.LocalDate
@@ -11,9 +11,7 @@ import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
 import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateNotFoundException
 import org.axonframework.modelling.command.CreationPolicy
-import org.axonframework.modelling.command.Repository
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -31,10 +29,10 @@ class Task : BaseAggregate() {
   @CreationPolicy(CREATE_IF_MISSING)
   fun handle(
       command: CreateTaskCommand,
-      @Autowired projectRepository: Repository<Project>
+      @Autowired referenceCheckerService: ReferenceCheckerService
   ): TaskId {
     assertAggregateDoesNotExistYet()
-    assertProjectExists(projectRepository, command.projectId)
+    referenceCheckerService.assertProjectExists(command.projectId)
     assertStartDateBeforeEndDate(command.startDate, command.endDate)
     apply(
         TaskCreatedEvent(
@@ -44,7 +42,7 @@ class Task : BaseAggregate() {
             description = command.description,
             startDate = command.startDate,
             endDate = command.endDate),
-        sequenceIdentifier = command.projectId.identifier)
+        rootContextId = command.projectId.identifier)
     return command.identifier
   }
 
@@ -119,14 +117,6 @@ class Task : BaseAggregate() {
     return aggregateIdentifier
   }
 
-  private fun assertProjectExists(projectRepository: Repository<Project>, projectId: ProjectId) {
-    try {
-      projectRepository.load(projectId.identifier)
-    } catch (ex: AggregateNotFoundException) {
-      throw IllegalArgumentException("Referenced Project does not exist")
-    }
-  }
-
   private fun assertStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate) {
     if (startDate.isAfter(endDate)) {
       throw IllegalArgumentException("Start date can't be after end date")
@@ -165,5 +155,5 @@ class Task : BaseAggregate() {
     status = COMPLETED
   }
 
-  override fun getSequenceIdentifier() = projectId.identifier
+  override fun getRootContextId() = projectId.identifier
 }

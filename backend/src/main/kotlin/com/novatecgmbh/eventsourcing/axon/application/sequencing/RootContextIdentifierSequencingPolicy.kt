@@ -11,6 +11,6 @@ class RootContextIdentifierSequencingPolicy(
           ?: fallbackSequencingPolicy.getSequenceIdentifierFor(event)
 
   companion object {
-    const val ROOT_CONTEXT_IDENTIFIER_META_DATA_KEY = "sequenceIdentifier"
+    const val ROOT_CONTEXT_IDENTIFIER_META_DATA_KEY = "rootContextId"
   }
 }
