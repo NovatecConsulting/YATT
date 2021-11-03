@@ -9,10 +9,10 @@ import javax.persistence.EnumType.STRING
 
 @Embeddable
 class ProjectAclKey(
-  @Enumerated(STRING) var aggregateType: AuthorizableAggregateTypesEnum,
-  var aggregateIdentifier: String,
-  @Embedded var userId: UserId,
-  @Enumerated(STRING) var permission: PermissionEnum
+    @Enumerated(STRING) var aggregateType: AuthorizableAggregateTypesEnum,
+    var aggregateIdentifier: String,
+    @Embedded var userId: UserId,
+    @Enumerated(STRING) var permission: PermissionEnum
 ) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

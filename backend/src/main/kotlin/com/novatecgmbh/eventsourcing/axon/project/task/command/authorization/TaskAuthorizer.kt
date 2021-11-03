@@ -39,7 +39,7 @@ class TaskAuthorizer(
         is ChangeTaskDescriptionCommand -> authorize(payload, userId)
         is StartTaskCommand -> authorize(payload, userId)
         is CompleteTaskCommand -> authorize(payload, userId)
-        else -> IllegalStateException("Authorization rule missing for command")
+        else -> throw IllegalStateException("Authorization rule missing for command")
       }
     }
     return interceptorChain.proceed()
@@ -54,35 +54,35 @@ class TaskAuthorizer(
   fun authorize(command: RescheduleTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
-      throw IllegalAccessException("Not authorized to create task in this project")
+      throw IllegalAccessException("Not authorized to reschedule task in this project")
     }
   }
 
   fun authorize(command: RenameTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
-      throw IllegalAccessException("Not authorized to create task in this project")
+      throw IllegalAccessException("Not authorized to rename task in this project")
     }
   }
 
   fun authorize(command: ChangeTaskDescriptionCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
-      throw IllegalAccessException("Not authorized to create task in this project")
+      throw IllegalAccessException("Not authorized to change task description in this project")
     }
   }
 
   fun authorize(command: StartTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
-      throw IllegalAccessException("Not authorized to create task in this project")
+      throw IllegalAccessException("Not authorized to start task in this project")
     }
   }
 
   fun authorize(command: CompleteTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId, projectAclIdMappingRepository.findProjectOfTask(command.identifier.toString()))) {
-      throw IllegalAccessException("Not authorized to create task in this project")
+      throw IllegalAccessException("Not authorized to complete task in this project")
     }
   }
 }

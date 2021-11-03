@@ -14,25 +14,25 @@ import org.springframework.stereotype.Component
 class ExceptionWrappingQueryMessageHandlerInterceptor :
     MessageHandlerInterceptor<QueryMessage<*, *>?> {
 
-    @Throws(Exception::class)
-    override fun handle(
-        unitOfWork: UnitOfWork<out QueryMessage<*, *>>,
-        interceptorChain: InterceptorChain
-    ): Any? =
-        try {
-            interceptorChain.proceed()
-        } catch (e: Throwable) {
-            throw QueryExecutionException(e.message, e, exceptionDetails(e))
-        }
+  @Throws(Exception::class)
+  override fun handle(
+      unitOfWork: UnitOfWork<out QueryMessage<*, *>>,
+      interceptorChain: InterceptorChain
+  ): Any? =
+      try {
+        interceptorChain.proceed()
+      } catch (e: Throwable) {
+        throw QueryExecutionException(e.message, e, exceptionDetails(e))
+      }
 
-    private fun exceptionDetails(throwable: Throwable) =
-        when (throwable) {
-            is IllegalAccessException -> ExceptionStatusCode.ACCESS_DENIED
-            else -> ExceptionStatusCode.UNKNOWN
-        }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
+  private fun exceptionDetails(throwable: Throwable) =
+      when (throwable) {
+        is IllegalAccessException -> ExceptionStatusCode.ACCESS_DENIED
+        else -> ExceptionStatusCode.UNKNOWN
+      }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
 
-    companion object {
-        val LOGGER: Logger =
-            LoggerFactory.getLogger(ExceptionWrappingQueryMessageHandlerInterceptor::class.java)
-    }
+  companion object {
+    val LOGGER: Logger =
+        LoggerFactory.getLogger(ExceptionWrappingQueryMessageHandlerInterceptor::class.java)
+  }
 }

@@ -35,7 +35,7 @@ class ProjectAuthorizer(
         is UpdateProjectCommand -> authorize(payload, userId)
         is RescheduleProjectCommand -> authorize(payload, userId)
         is RenameProjectCommand -> authorize(payload, userId)
-        else -> IllegalStateException("Authorization rule missing for project command")
+        else -> throw IllegalStateException("Authorization rule missing for project command")
       }
     }
     return interceptorChain.proceed()
