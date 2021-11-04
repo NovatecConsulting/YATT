@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: project-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/axon_db
+    username: admin
+    password: 1234
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+      platform: postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
+          jwk-set-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/certs
+
+logging:
+  level:
+    ROOT: warn
+    org.springframework.boot: info
+
+axon:
+  serializer:
+    events: jackson
+  eventhandling:
+    processors:
+      participant-unique-key-projector:
+        mode: subscribing
