@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.command.authorization
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
 import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.project.command.UpdateActualScheduleInternalCommand
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import javax.annotation.PostConstruct
 import org.axonframework.commandhandling.CommandBus
@@ -35,6 +36,7 @@ class ProjectAuthorizer(
         is UpdateProjectCommand -> authorize(payload, userId)
         is RescheduleProjectCommand -> authorize(payload, userId)
         is RenameProjectCommand -> authorize(payload, userId)
+        is UpdateActualScheduleInternalCommand -> {}
         else -> throw IllegalStateException("Authorization rule missing for project command")
       }
     }
