@@ -2,9 +2,9 @@ spring:
   application:
     name: project-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/axon_db
-    username: admin
-    password: 1234
+    url: jdbc:postgresql://localhost:5432/projectdb
+    username: projectapp
+    password: axon
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -29,7 +29,10 @@ spring:
 logging:
   level:
     ROOT: warn
-    org.springframework.boot: info
+    org:
+      axonframework.eventhandling.pooled.Coordinator: info
+      flywaydb.core.internal.command: info
+      springframework.boot: info
 
 axon:
   serializer:

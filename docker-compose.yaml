@@ -2,10 +2,13 @@ version: '3.3'
 services:
   db:
     image: postgres:13.3-alpine
+    restart: always
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     environment:
-      POSTGRES_DB: axon_db
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
     ports:
       - "5432:5432"
 

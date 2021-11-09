@@ -9,13 +9,6 @@ create sequence hibernate_sequence start with 1 increment by 1;
         primary key (id)
     );
 
-    create table company (
-       identifier varchar(255) not null,
-        name varchar(255) not null,
-        version bigint not null,
-        primary key (identifier)
-    );
-
     create table domain_event_entry (
        global_index bigint not null,
         event_identifier varchar(255) not null,
@@ -28,25 +21,6 @@ create sequence hibernate_sequence start with 1 increment by 1;
         sequence_number bigint not null,
         type varchar(255),
         primary key (global_index)
-    );
-
-    create table employee (
-       identifier varchar(255) not null,
-        company_id varchar(255) not null,
-        is_admin boolean not null,
-        is_project_manager boolean not null,
-        user_first_name varchar(255),
-        user_id varchar(255) not null,
-        user_last_name varchar(255),
-        version bigint not null,
-        primary key (identifier)
-    );
-
-    create table employee_unique_key (
-       identifier varchar(255) not null,
-        company_id varchar(255) not null,
-        user_id varchar(255) not null,
-        primary key (identifier)
     );
 
     create table participant (
@@ -166,20 +140,6 @@ create sequence hibernate_sequence start with 1 increment by 1;
         token_type varchar(255),
         primary key (processor_name, segment)
     );
-
-    create table user_unique_key (
-       identifier varchar(255) not null,
-        external_user_id varchar(255) not null,
-        primary key (identifier)
-    );
-
-    create table users (
-       identifier varchar(255) not null,
-        external_user_id varchar(255) not null,
-        firstname varchar(255) not null,
-        lastname varchar(255) not null,
-        primary key (identifier)
-    );
 create index IDXk45eqnxkgd8hpdn6xixn8sgft on association_value_entry (saga_type, association_key, association_value);
 create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, saga_type);
 
@@ -189,14 +149,8 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
     alter table domain_event_entry 
        add constraint UK_fwe6lsa8bfo6hyas6ud3m8c7x unique (event_identifier);
 
-    alter table employee_unique_key 
-       add constraint UKikkx651fvk6yi9iymk7620mgp unique (company_id, user_id);
-
     alter table participant_unique_key 
        add constraint participant_unique_key_constraint unique (project_id, company_id, user_id);
 
     alter table snapshot_event_entry 
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
-
-    alter table user_unique_key 
-       add constraint UK_hbn7ykwddd2spkc6buayh0lm1 unique (external_user_id);

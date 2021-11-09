@@ -6,6 +6,5 @@ create table employee_unique_key
     primary key (identifier)
 );
 
-
 alter table if exists employee_unique_key
     add constraint UKikkx651fvk6yi9iymk7620mgp unique (company_id, user_id);
