@@ -28,8 +28,10 @@ spring:
 
 logging:
   level:
-    ROOT: warn
-    org.springframework.boot: info
+    ROOT: WARN
+    org:
+      axonframework.eventhandling.pooled.Coordinator: info
+      springframework.boot: info
 
 axon:
   serializer:

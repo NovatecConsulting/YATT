@@ -26,6 +26,11 @@
                   <project path="$PROJECT_DIR$/backend/build-logic/web-module" />
                 </projects>
               </build>
+              <build path="$PROJECT_DIR$/backend/api-gateway" name="api-gateway">
+                <projects>
+                  <project path="$PROJECT_DIR$/backend/api-gateway" />
+                </projects>
+              </build>
               <build path="$PROJECT_DIR$/backend/common" name="common">
                 <projects>
                   <project path="$PROJECT_DIR$/backend/common" />
@@ -67,10 +72,10 @@
         </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/backend" />
+            <option value="$PROJECT_DIR$/backend/api-gateway" />
             <option value="$PROJECT_DIR$/backend/build-logic" />
             <option value="$PROJECT_DIR$/backend/build-logic/api-module" />
             <option value="$PROJECT_DIR$/backend/build-logic/axon-spring-boot-application" />
