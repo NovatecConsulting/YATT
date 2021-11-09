@@ -1,6 +1,6 @@
 // This is an empty umbrella build including all the component builds.
 // This build is not necessarily needed. The component builds work independently.
-rootProject.name = "my-composite"
+rootProject.name = "backend"
 
 includeBuild("platforms")
 includeBuild("build-logic")
