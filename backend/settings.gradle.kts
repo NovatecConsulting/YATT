@@ -5,6 +5,7 @@ rootProject.name = "my-composite"
 includeBuild("platforms")
 includeBuild("build-logic")
 
+includeBuild("api-gateway")
 includeBuild("common")
 includeBuild("company")
 includeBuild("project")
