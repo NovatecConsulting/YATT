@@ -1,5 +1,5 @@
 plugins {
-  id("com.novatecgmbh.axon-spring-boot-application")
+  id("com.novatecgmbh.web-module")
 }
 
 group = "${group}.user"
@@ -10,6 +10,7 @@ dependencies {
   implementation(project(":web"))
 
   implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
+  implementation("com.novatecgmbh.eventsourcing.axon.common:web")
 
   implementation("org.flywaydb:flyway-core")
   implementation("org.postgresql:postgresql")

@@ -23,12 +23,15 @@
                   <project path="$PROJECT_DIR$/backend/build-logic/command-query-module" />
                   <project path="$PROJECT_DIR$/backend/build-logic/commons-java" />
                   <project path="$PROJECT_DIR$/backend/build-logic/commons-kotlin" />
+                  <project path="$PROJECT_DIR$/backend/build-logic/spring-boot" />
                   <project path="$PROJECT_DIR$/backend/build-logic/web-module" />
                 </projects>
               </build>
               <build path="$PROJECT_DIR$/backend/api-gateway" name="api-gateway">
                 <projects>
                   <project path="$PROJECT_DIR$/backend/api-gateway" />
+                  <project path="$PROJECT_DIR$/backend/api-gateway/axon" />
+                  <project path="$PROJECT_DIR$/backend/api-gateway/spring-cloud" />
                 </projects>
               </build>
               <build path="$PROJECT_DIR$/backend/common" name="common">
@@ -76,12 +79,15 @@
           <set>
             <option value="$PROJECT_DIR$/backend" />
             <option value="$PROJECT_DIR$/backend/api-gateway" />
+            <option value="$PROJECT_DIR$/backend/api-gateway/axon" />
+            <option value="$PROJECT_DIR$/backend/api-gateway/spring-cloud" />
             <option value="$PROJECT_DIR$/backend/build-logic" />
             <option value="$PROJECT_DIR$/backend/build-logic/api-module" />
             <option value="$PROJECT_DIR$/backend/build-logic/axon-spring-boot-application" />
             <option value="$PROJECT_DIR$/backend/build-logic/command-query-module" />
             <option value="$PROJECT_DIR$/backend/build-logic/commons-java" />
             <option value="$PROJECT_DIR$/backend/build-logic/commons-kotlin" />
+            <option value="$PROJECT_DIR$/backend/build-logic/spring-boot" />
             <option value="$PROJECT_DIR$/backend/build-logic/web-module" />
             <option value="$PROJECT_DIR$/backend/common" />
             <option value="$PROJECT_DIR$/backend/common/api" />
