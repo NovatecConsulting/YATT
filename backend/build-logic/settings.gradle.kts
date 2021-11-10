@@ -11,6 +11,7 @@ include("commons-java")
 include("commons-kotlin")
 
 include("axon-spring-boot-application")
+include("spring-boot")
 
 include("api-module")
 include("command-query-module")

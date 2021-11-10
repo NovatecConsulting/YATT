@@ -11,6 +11,7 @@ java {
 }
 
 dependencies {
+    implementation(platform("com.novatecgmbh.platform:plugins-platform"))
     implementation(platform("com.novatecgmbh.platform:product-platform"))
 
     testImplementation(platform("com.novatecgmbh.platform:test-platform"))
