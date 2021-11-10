@@ -8,9 +8,9 @@ group = "com.novatecgmbh.platform"
 javaPlatform.allowDependencies()
 
 dependencies {
-    api(platform("org.springframework.boot:spring-boot-dependencies:2.5.3"))
+    api(platform("org.springframework.boot:spring-boot-dependencies:2.5.6"))
     api(platform("org.springframework.cloud:spring-cloud-dependencies:2020.0.4"))
-    api(platform("org.axonframework:axon-bom:4.5.3"))
+    api(platform("org.axonframework:axon-bom:4.5.5"))
 
     constraints {
         api("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:3.2.2")
