@@ -17,9 +17,7 @@ class SecurityConfig(val userDetailsService: UserDetailsService) : WebSecurityCo
 
   @Throws(Exception::class)
   override fun configure(http: HttpSecurity) {
-    http.cors()
-        .and()
-        .headers()
+    http.headers()
         .httpStrictTransportSecurity()
         .disable()
         .and()
