@@ -19,5 +19,6 @@ includeBuild("../common")
 rootProject.name = "user"
 include("api")
 include("application")
+include("application-without-web")
 include("command-query")
 include("web")

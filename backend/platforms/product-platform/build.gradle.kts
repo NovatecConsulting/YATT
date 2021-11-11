@@ -13,6 +13,7 @@ dependencies {
     api(platform("org.axonframework:axon-bom:4.5.5"))
 
     constraints {
+        api("io.opentracing.contrib:opentracing-spring-jaeger-starter:3.2.2")
         api("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:3.2.2")
         api("io.projectreactor:reactor-core:3.4.8")
         api("javax.persistence:javax.persistence-api:2.2")
