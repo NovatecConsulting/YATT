@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="User Service without web" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="User Service without web" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="Routing with Axon Command / Query Bus">
     <module name="user.application-without-web.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.AxonApplication" />
     <option name="ALTERNATIVE_JRE_PATH" />

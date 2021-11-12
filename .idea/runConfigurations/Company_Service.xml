@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Company Service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="Company Service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="Routing with Spring Cloud Gateway">
     <module name="company.application.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.AxonApplication" />
     <option name="PROGRAM_PARAMETERS" value="--server.port=8082" />
