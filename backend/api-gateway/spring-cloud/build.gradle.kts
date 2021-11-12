@@ -1,7 +1,6 @@
-plugins {
-    id("com.novatecgmbh.spring-boot")
-}
+plugins { id("com.novatecgmbh.spring-boot") }
 
 dependencies {
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+  implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter")
+  implementation("org.springframework.cloud:spring-cloud-starter-gateway")
 }
