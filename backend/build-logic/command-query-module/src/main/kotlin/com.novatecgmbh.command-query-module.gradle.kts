@@ -1,6 +1,5 @@
 plugins {
   id("com.novatecgmbh.commons-kotlin")
-  id("org.springframework.boot")
   id("io.spring.dependency-management")
   kotlin("plugin.spring")
   kotlin("plugin.jpa")
