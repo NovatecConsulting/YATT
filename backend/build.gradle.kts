@@ -1,0 +1,17 @@
+tasks.register("buildAll") {
+  dependsOn(gradle.includedBuild("user").task(":api:build"))
+  dependsOn(gradle.includedBuild("user").task(":application:build"))
+  dependsOn(gradle.includedBuild("user").task(":application-without-web:build"))
+  dependsOn(gradle.includedBuild("user").task(":command-query:build"))
+  dependsOn(gradle.includedBuild("user").task(":web:build"))
+  dependsOn(gradle.includedBuild("company").task(":api:build"))
+  dependsOn(gradle.includedBuild("company").task(":application:build"))
+  dependsOn(gradle.includedBuild("company").task(":application-without-web:build"))
+  dependsOn(gradle.includedBuild("company").task(":command-query:build"))
+  dependsOn(gradle.includedBuild("company").task(":web:build"))
+  dependsOn(gradle.includedBuild("project").task(":api:build"))
+  dependsOn(gradle.includedBuild("project").task(":application:build"))
+  dependsOn(gradle.includedBuild("project").task(":application-without-web:build"))
+  dependsOn(gradle.includedBuild("project").task(":command-query:build"))
+  dependsOn(gradle.includedBuild("project").task(":web:build"))
+}
