@@ -8,6 +8,8 @@ logging:
           gateway: TRACE
 
 spring:
+  application:
+    name: spring-cloud-gateway
   cloud:
     gateway:
       globalcors:
