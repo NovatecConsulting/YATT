@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  api-gateway:
-    name: Build api-gateways with gradle
+  backend:
+    name: Build backend with gradle
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
@@ -22,84 +22,20 @@ jobs:
       - name: Grant execute permission for gradlew
         working-directory: ./backend
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build api-gateway with Gradle
         working-directory: ./backend/api-gateway
         run: ../gradlew build
-
-  common:
-    name: Build common with gradle
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
-      - name: Grant execute permission for gradlew
-        working-directory: ./backend
-        run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build common with Gradle
         working-directory: ./backend/common
         run: ../gradlew build
-
-  user:
-    name: Build user with gradle
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
-      - name: Grant execute permission for gradlew
-        working-directory: ./backend
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        working-directory: ./backend/user
-        run: ../gradlew build
-
-  company:
-    name: Build company with gradle
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
-      - name: Grant execute permission for gradlew
-        working-directory: ./backend
-        run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build company context with Gradle
         working-directory: ./backend/company
         run: ../gradlew build
-
-  project:
-    name: Build common with gradle
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
-      - name: Grant execute permission for gradlew
-        working-directory: ./backend
-        run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build project context with Gradle
         working-directory: ./backend/project
+        run: ../gradlew build
+      - name: Build user context with Gradle
+        working-directory: ./backend/user
         run: ../gradlew build
 
   frontend:
