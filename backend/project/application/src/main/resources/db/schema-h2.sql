@@ -119,6 +119,13 @@ create sequence hibernate_sequence start with 1 increment by 1;
         primary key (identifier)
     );
 
+    create table task_projection_todos (
+       task_projection_identifier varchar(255) not null,
+        description varchar(255),
+        is_done boolean not null,
+        todo_id varchar(255) not null
+    );
+
     create table tasks (
        identifier varchar(255) not null,
         description varchar(255),
@@ -154,3 +161,11 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
 
     alter table snapshot_event_entry 
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
+
+    alter table task_projection_todos 
+       add constraint FK4gx1mavjncoi5m5e6xxqcdefc 
+       foreign key (task_projection_identifier) 
+       references tasks;
+
+create index IX_TaskProjTodo_TaskProjIden on task_projection_todos (task_projection_identifier);
+

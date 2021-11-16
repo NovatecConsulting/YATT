@@ -159,12 +159,12 @@ class Task : BaseAggregate() {
 
   @CommandHandler
   fun handle(command: AddTodoCommand) {
-    apply(TodoAddedEvent(command.identifier, command.todoId, command.description))
+    apply(TodoAddedEvent(command.identifier, command.todoId, command.description, isDone = false))
   }
 
   @EventSourcingHandler
   fun on(event: TodoAddedEvent) {
-    todos.add(Todo(event.todoId, event.description))
+    todos.add(Todo(event.todoId, event.description, event.isDone))
   }
 
   override fun getRootContextId() = projectId.identifier

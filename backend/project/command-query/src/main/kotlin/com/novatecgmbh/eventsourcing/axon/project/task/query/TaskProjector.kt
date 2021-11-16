@@ -27,7 +27,8 @@ class TaskProjector(
             description = event.description,
             startDate = event.startDate,
             endDate = event.endDate,
-            status = PLANNED))
+            status = PLANNED,
+            todos = emptyList()))
   }
 
   @EventHandler
@@ -67,6 +68,14 @@ class TaskProjector(
   fun on(event: TaskCompletedEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
       it.status = COMPLETED
+      it.version = aggregateVersion
+    }
+  }
+
+  @EventHandler
+  fun on(event: TodoAddedEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
+      it.todos = it.todos.plus(Todo(event.todoId, event.description, event.isDone))
       it.version = aggregateVersion
     }
   }
