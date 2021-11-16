@@ -13,7 +13,7 @@ data class TaskId(@get:JsonValue val identifier: String) : Serializable {
 }
 
 @Embeddable
-data class TodoId(@get:JsonValue val identifier: String) : Serializable {
+data class TodoId(@get:JsonValue var identifier: String) : Serializable {
   constructor() : this(UUID.randomUUID().toString())
 
   override fun toString(): String = identifier

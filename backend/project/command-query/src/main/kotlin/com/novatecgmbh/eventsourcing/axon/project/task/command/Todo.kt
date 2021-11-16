@@ -11,7 +11,7 @@ import org.axonframework.modelling.command.EntityId
 class Todo(
     @EntityId(routingKey = "todoId") private val entityIdentifier: TodoId,
     private var description: String,
-    private var isDone: Boolean = false
+    private var isDone: Boolean
 ) {
   @CommandHandler
   fun handle(command: MarkTodoAsDoneCommand) {

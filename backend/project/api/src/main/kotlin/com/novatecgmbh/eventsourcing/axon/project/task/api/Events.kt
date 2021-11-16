@@ -33,7 +33,8 @@ data class TaskCompletedEvent(override val identifier: TaskId) : TaskEvent(ident
 data class TodoAddedEvent(
     override val identifier: TaskId,
     val todoId: TodoId,
-    val description: String
+    val description: String,
+    val isDone: Boolean,
 ) : TaskEvent(identifier)
 
 data class TodoMarkedAsDoneEvent(
