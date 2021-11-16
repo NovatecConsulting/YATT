@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.web
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
+import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.AddTodoDto
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.CreateTaskDto
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RenameTaskDto
 import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RescheduleTaskDto
@@ -52,6 +53,18 @@ class TaskController(
 
     return query.initialResult().concatWith(query.updates()).doFinally { query.cancel() }
   }
+
+  @PostMapping("/v2/tasks/{taskId}/todos")
+  fun getTaskById(
+      @PathVariable("taskId") taskId: TaskId,
+      @RequestBody body: AddTodoDto
+  ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
+
+  @PostMapping("/v2/tasks/{taskId}/todos/{todoId}/markDone")
+  fun getTaskById(
+      @PathVariable("taskId") taskId: TaskId,
+      @PathVariable("todoId") todoId: TodoId
+  ): CompletableFuture<String> = commandGateway.send(MarkTodoAsDoneCommand(taskId, todoId))
 
   @GetMapping("/v2/projects/{projectId}/tasks")
   fun getTasksByProject(

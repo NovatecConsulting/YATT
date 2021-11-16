@@ -11,6 +11,7 @@ import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
 import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateMember
 import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ class Task : BaseAggregate() {
   private lateinit var startDate: LocalDate
   private lateinit var endDate: LocalDate
   private lateinit var status: TaskStatusEnum
+  @AggregateMember private var todos: MutableList<Todo> = mutableListOf()
 
   @CommandHandler
   @CreationPolicy(CREATE_IF_MISSING)
@@ -153,6 +155,16 @@ class Task : BaseAggregate() {
   @EventSourcingHandler
   fun on(event: TaskCompletedEvent) {
     status = COMPLETED
+  }
+
+  @CommandHandler
+  fun handle(command: AddTodoCommand) {
+    apply(TodoAddedEvent(command.identifier, command.todoId, command.description))
+  }
+
+  @EventSourcingHandler
+  fun on(event: TodoAddedEvent) {
+    todos.add(Todo(event.todoId, event.description))
   }
 
   override fun getRootContextId() = projectId.identifier
