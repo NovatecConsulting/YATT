@@ -12,6 +12,13 @@ data class TaskId(@get:JsonValue val identifier: String) : Serializable {
   override fun toString(): String = identifier
 }
 
+@Embeddable
+data class TodoId(@get:JsonValue val identifier: String) : Serializable {
+  constructor() : this(UUID.randomUUID().toString())
+
+  override fun toString(): String = identifier
+}
+
 enum class TaskStatusEnum {
   PLANNED,
   STARTED,

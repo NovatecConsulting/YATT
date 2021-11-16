@@ -38,3 +38,14 @@ data class StartTaskCommand(@TargetAggregateIdentifier override val identifier: 
 
 data class CompleteTaskCommand(@TargetAggregateIdentifier override val identifier: TaskId) :
     TaskCommand(identifier)
+
+data class AddTodoCommand(
+    @TargetAggregateIdentifier override val identifier: TaskId,
+    val todoId: TodoId,
+    val description: String
+) : TaskCommand(identifier)
+
+data class MarkTodoAsDoneCommand(
+    @TargetAggregateIdentifier override val identifier: TaskId,
+    val todoId: TodoId
+) : TaskCommand(identifier)

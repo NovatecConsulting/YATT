@@ -29,3 +29,14 @@ data class TaskRescheduledEvent(
 data class TaskStartedEvent(override val identifier: TaskId) : TaskEvent(identifier)
 
 data class TaskCompletedEvent(override val identifier: TaskId) : TaskEvent(identifier)
+
+data class TodoAddedEvent(
+    override val identifier: TaskId,
+    val todoId: TodoId,
+    val description: String
+) : TaskEvent(identifier)
+
+data class TodoMarkedAsDoneEvent(
+    override val identifier: TaskId,
+    val todoId: TodoId
+) : TaskEvent(identifier)
