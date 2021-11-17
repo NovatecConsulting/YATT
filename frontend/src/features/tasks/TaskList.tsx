@@ -17,19 +17,22 @@ import {
     useStartTaskMutation
 } from "./taskSlice";
 import {useHistory, useParams} from "react-router-dom";
-import {useAppSelector} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
 import {Scaffold} from "../../components/Scaffold";
-import React from "react";
+import React, {useEffect} from "react";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {selectProjectById} from "../projects/projectsSlice";
 import {useStore} from "react-redux";
 import {EditableTableCell} from "../../components/EditableTableCell";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
+import {TodosDrawer} from "./TodosDrawer";
+import {closeTodoDrawer, taskSelected} from "./todoSlice";
 
 export function TaskList() {
     const history = useHistory();
+    const dispatch = useAppDispatch();
     const {id: projectId} = useParams<{ id: string }>();
     const store = useStore();
     const project = selectProjectById(store.getState(), projectId)
@@ -41,6 +44,12 @@ export function TaskList() {
         isError,
         error
     } = useGetTasksByProjectQuery(projectId, {selectFromResult: selectIdsFromResult});
+
+    useEffect(() => {
+        return () => {
+            dispatch(closeTodoDrawer());
+        };
+    })
 
     const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasks/new`)
 
@@ -81,7 +90,7 @@ export function TaskList() {
     }
 
     return (
-        <Scaffold>
+        <Scaffold alignItems='start' aside={<TodosDrawer/>}>
             {content}
         </Scaffold>
     );
@@ -89,6 +98,7 @@ export function TaskList() {
 
 function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityId }) {
     const task = useAppSelector((state) => selectTaskByProjectIdAndTaskId(state, projectId, taskId));
+    const dispatch = useAppDispatch();
 
     const [rescheduleTask] = useRescheduleTaskMutation();
 
@@ -100,11 +110,13 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
         }).unwrap();
     }
 
+    const showTodos = () => dispatch(taskSelected(task!.identifier))
+
     if (task) {
         const canEditDates = task.status !== 'COMPLETED';
         return (
             <React.Fragment>
-                <TableRow hover>
+                <TableRow hover onClick={showTodos}>
                     <TaskNameCell task={task}/>
                     <EditableDateTableCells
                         canEdit={canEditDates}

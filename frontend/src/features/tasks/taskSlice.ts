@@ -11,6 +11,13 @@ export interface Task {
     startDate: string;
     endDate: string;
     status: string;
+    todos: Todo[],
+}
+
+export interface Todo {
+    todoId: string;
+    description: string;
+    isDone: boolean;
 }
 
 export interface CreateTaskDto {
@@ -29,6 +36,16 @@ export interface RescheduleTaskDto {
     identifier: string,
     startDate: string;
     endDate: string;
+}
+
+export interface MarkTodoAsDoneDto {
+    taskId: string;
+    todoId: string;
+}
+
+export interface AddTodoDto {
+    taskId: string;
+    description: string;
 }
 
 export const taskAdapter = createEntityAdapter<Task>({
@@ -108,6 +125,19 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 body: patch,
             }),
         }),
+        addTodo: builder.mutation<string, AddTodoDto>({
+            query: ({taskId, ...body}) => ({
+                url: `/tasks/${taskId}/todos`,
+                method: 'POST',
+                body: body
+            }),
+        }),
+        markTodoAsDone: builder.mutation<string, MarkTodoAsDoneDto>({
+            query: ({taskId, todoId}) => ({
+                url: `/tasks/${taskId}/todos/${todoId}/markDone`,
+                method: 'POST',
+            }),
+        }),
     })
 });
 
@@ -118,6 +148,8 @@ export const {
     useStartTaskMutation,
     useCompleteTaskMutation,
     useRescheduleTaskMutation,
+    useMarkTodoAsDoneMutation,
+    useAddTodoMutation
 } = taskApiSlice;
 
 const selectGetTasksByProjectResult

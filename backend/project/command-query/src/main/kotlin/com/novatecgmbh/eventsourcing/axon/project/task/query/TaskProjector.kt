@@ -80,6 +80,21 @@ class TaskProjector(
     }
   }
 
+  @EventHandler
+  fun on(event: TodoMarkedAsDoneEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
+      it.todos =
+          it.todos.map { todo ->
+            if (todo.todoId == event.todoId) {
+              todo.apply { isDone = true }
+            } else {
+              todo
+            }
+          }
+      it.version = aggregateVersion
+    }
+  }
+
   private fun updateProjection(identifier: TaskId, stateChanges: (TaskProjection) -> Unit) {
     repository.findById(identifier).get().also {
       stateChanges.invoke(it)

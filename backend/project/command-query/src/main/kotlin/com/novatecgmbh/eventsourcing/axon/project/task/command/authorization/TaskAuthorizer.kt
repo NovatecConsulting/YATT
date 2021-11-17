@@ -39,7 +39,8 @@ class TaskAuthorizer(
         is ChangeTaskDescriptionCommand -> authorize(payload, userId)
         is StartTaskCommand -> authorize(payload, userId)
         is CompleteTaskCommand -> authorize(payload, userId)
-          is AddTodoCommand -> {} // TODO
+        is AddTodoCommand -> {} // TODO
+        is MarkTodoAsDoneCommand -> {} // TODO
         else -> throw IllegalStateException("Authorization rule missing for command")
       }
     }

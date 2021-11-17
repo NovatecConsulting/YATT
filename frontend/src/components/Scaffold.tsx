@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactChild, ReactNode} from "react";
 import {
     AppBar, Avatar,
     Box,
@@ -59,6 +59,7 @@ interface Props {
     title?: string;
     alignItems?: Property.AlignItems;
     showNav?: boolean;
+    aside?: ReactChild | null;
 }
 
 const drawerWidth = 240;
@@ -71,7 +72,11 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
         <Box sx={{display: 'flex', width: '100vw', height: '100vh'}}>
             <AppBar
                 position="fixed"
-                sx={{width: `calc(100% - ${showNav ? drawerWidth : 0}px)`, ml: `${showNav ? drawerWidth : 0}px`}}
+                sx={{
+                    width: `calc(100% - ${showNav ? drawerWidth : 0}px)`,
+                    ml: `${showNav ? drawerWidth : 0}px`,
+                    zIndex: (theme) => theme.zIndex.drawer + 1
+                }}
             >
                 <Toolbar>
                     <CustomBreadcrumbs title={props.title}/>
@@ -111,6 +116,9 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
             >
                 <Toolbar/>
                 {props.children}
+            </Box>
+            <Box component="aside">
+                {props.aside}
             </Box>
         </Box>
     );
