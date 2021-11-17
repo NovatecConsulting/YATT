@@ -26,5 +26,5 @@ data class Todo(
     @AttributeOverride(name = "identifier", column = Column(name = "todoId", nullable = false))
     val todoId: TodoId,
     val description: String,
-    val isDone: Boolean
+    var isDone: Boolean
 ) : Serializable

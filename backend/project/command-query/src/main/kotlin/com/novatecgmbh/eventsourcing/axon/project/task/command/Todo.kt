@@ -16,13 +16,15 @@ class Todo(
   @CommandHandler
   fun handle(command: MarkTodoAsDoneCommand) {
     if (!isDone) {
-        // TODO
+      // TODO rootContextId
       AggregateLifecycle.apply(TodoMarkedAsDoneEvent(command.identifier, command.todoId))
     }
   }
 
   @EventSourcingHandler
   fun on(event: TodoMarkedAsDoneEvent) {
-    isDone = true
+    if (event.todoId == entityIdentifier) {
+      isDone = true
+    }
   }
 }
