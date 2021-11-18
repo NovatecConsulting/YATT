@@ -1,9 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.api
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
-import java.io.Serializable
 import java.time.LocalDate
-import javax.persistence.*
 
 data class TasksByProjectQuery(val projectId: ProjectId)
 
@@ -17,14 +15,7 @@ data class TaskQueryResult(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val status: TaskStatusEnum,
-    val todos: List<Todo>,
+    val todos: List<TodoQueryResult>,
 )
 
-@Embeddable
-data class Todo(
-    @Embedded
-    @AttributeOverride(name = "identifier", column = Column(name = "todoId", nullable = false))
-    val todoId: TodoId,
-    val description: String,
-    var isDone: Boolean
-) : Serializable
+data class TodoQueryResult(val todoId: TodoId, val description: String, var isDone: Boolean)

@@ -28,7 +28,7 @@ class TaskProjector(
             startDate = event.startDate,
             endDate = event.endDate,
             status = PLANNED,
-            todos = emptyList()))
+            todos = mutableListOf()))
   }
 
   @EventHandler
@@ -75,7 +75,7 @@ class TaskProjector(
   @EventHandler
   fun on(event: TodoAddedEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
-      it.todos = it.todos.plus(Todo(event.todoId, event.description, event.isDone))
+      it.todos.add(Todo(TodoKey(event.todoId, event.identifier), event.description, event.isDone))
       it.version = aggregateVersion
     }
   }
@@ -83,7 +83,7 @@ class TaskProjector(
   @EventHandler
   fun on(event: TodoRemovedEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
-      it.todos = it.todos.filterNot { todo -> todo.todoId == event.todoId }
+      it.todos.removeIf { todo -> todo.key.todoId == event.todoId }
       it.version = aggregateVersion
     }
   }
@@ -91,14 +91,7 @@ class TaskProjector(
   @EventHandler
   fun on(event: TodoMarkedAsDoneEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
-      it.todos =
-          it.todos.map { todo ->
-            if (todo.todoId == event.todoId) {
-              todo.apply { isDone = true }
-            } else {
-              todo
-            }
-          }
+      it.todos.first { todo -> todo.key.todoId == event.todoId }.isDone = true
       it.version = aggregateVersion
     }
   }
