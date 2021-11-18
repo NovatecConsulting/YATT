@@ -39,8 +39,8 @@ class TaskAuthorizer(
         is ChangeTaskDescriptionCommand -> authorize(payload, userId)
         is StartTaskCommand -> authorize(payload, userId)
         is CompleteTaskCommand -> authorize(payload, userId)
-        is AddTodoCommand -> {} // TODO
-        is MarkTodoAsDoneCommand -> {} // TODO
+        is AddTodoCommand -> authorize(payload, userId)
+        is MarkTodoAsDoneCommand -> authorize(payload, userId)
         else -> throw IllegalStateException("Authorization rule missing for command")
       }
     }
@@ -90,6 +90,22 @@ class TaskAuthorizer(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
       throw IllegalAccessException("Not authorized to complete task in this project")
+    }
+  }
+
+  fun authorize(command: AddTodoCommand, userId: UserId) {
+    if (!projectAclRepository.hasAccessToProject(
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
+      throw IllegalAccessException("Not authorized to add todos to tasks in this project")
+    }
+  }
+
+  fun authorize(command: MarkTodoAsDoneCommand, userId: UserId) {
+    if (!projectAclRepository.hasAccessToProject(
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
+      throw IllegalAccessException("Not authorized to mark todos as done in this project")
     }
   }
 }
