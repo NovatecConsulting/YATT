@@ -49,3 +49,8 @@ data class MarkTodoAsDoneCommand(
     @TargetAggregateIdentifier override val identifier: TaskId,
     val todoId: TodoId
 ) : TaskCommand(identifier)
+
+data class RemoveTodoCommand(
+    @TargetAggregateIdentifier override val identifier: TaskId,
+    val todoId: TodoId
+) : TaskCommand(identifier)

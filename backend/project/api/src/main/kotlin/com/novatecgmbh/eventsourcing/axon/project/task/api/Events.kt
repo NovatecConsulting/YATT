@@ -37,7 +37,8 @@ data class TodoAddedEvent(
     val isDone: Boolean,
 ) : TaskEvent(identifier)
 
-data class TodoMarkedAsDoneEvent(
-    override val identifier: TaskId,
-    val todoId: TodoId
-) : TaskEvent(identifier)
+data class TodoMarkedAsDoneEvent(override val identifier: TaskId, val todoId: TodoId) :
+    TaskEvent(identifier)
+
+data class TodoRemovedEvent(override val identifier: TaskId, val todoId: TodoId) :
+    TaskEvent(identifier)

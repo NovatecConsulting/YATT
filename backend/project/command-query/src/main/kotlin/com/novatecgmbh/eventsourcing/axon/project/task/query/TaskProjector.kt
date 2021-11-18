@@ -81,6 +81,14 @@ class TaskProjector(
   }
 
   @EventHandler
+  fun on(event: TodoRemovedEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
+      it.todos = it.todos.filterNot { todo -> todo.todoId == event.todoId }
+      it.version = aggregateVersion
+    }
+  }
+
+  @EventHandler
   fun on(event: TodoMarkedAsDoneEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
       it.todos =

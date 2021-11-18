@@ -38,7 +38,7 @@ export interface RescheduleTaskDto {
     endDate: string;
 }
 
-export interface MarkTodoAsDoneDto {
+export interface TaskAndTodoId {
     taskId: string;
     todoId: string;
 }
@@ -132,10 +132,16 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 body: body
             }),
         }),
-        markTodoAsDone: builder.mutation<string, MarkTodoAsDoneDto>({
+        markTodoAsDone: builder.mutation<string, TaskAndTodoId>({
             query: ({taskId, todoId}) => ({
                 url: `/tasks/${taskId}/todos/${todoId}/markDone`,
                 method: 'POST',
+            }),
+        }),
+        removeTodo: builder.mutation<string, TaskAndTodoId>({
+            query: ({taskId, todoId}) => ({
+                url: `/tasks/${taskId}/todos/${todoId}`,
+                method: 'DELETE',
             }),
         }),
     })
@@ -149,7 +155,8 @@ export const {
     useCompleteTaskMutation,
     useRescheduleTaskMutation,
     useMarkTodoAsDoneMutation,
-    useAddTodoMutation
+    useAddTodoMutation,
+    useRemoveTodoMutation
 } = taskApiSlice;
 
 const selectGetTasksByProjectResult
