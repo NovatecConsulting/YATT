@@ -8,11 +8,11 @@ import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.EntityId
 
-class Todo(
-    @EntityId(routingKey = "todoId") private val entityIdentifier: TodoId,
-    private var description: String,
-    isDone: Boolean
-) {
+class Todo(entityIdentifier: TodoId, private var description: String, isDone: Boolean) {
+  @EntityId(routingKey = "todoId")
+  internal var entityIdentifier: TodoId = entityIdentifier
+    private set
+
   internal var isDone: Boolean = isDone
     private set
 

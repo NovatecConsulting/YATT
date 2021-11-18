@@ -55,16 +55,22 @@ class TaskController(
   }
 
   @PostMapping("/v2/tasks/{taskId}/todos")
-  fun getTaskById(
+  fun addTodo(
       @PathVariable("taskId") taskId: TaskId,
       @RequestBody body: AddTodoDto
   ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
 
   @PostMapping("/v2/tasks/{taskId}/todos/{todoId}/markDone")
-  fun getTaskById(
+  fun markTodoAsDone(
       @PathVariable("taskId") taskId: TaskId,
       @PathVariable("todoId") todoId: TodoId
   ): CompletableFuture<String> = commandGateway.send(MarkTodoAsDoneCommand(taskId, todoId))
+
+  @DeleteMapping("/v2/tasks/{taskId}/todos/{todoId}")
+  fun removeTodo(
+      @PathVariable("taskId") taskId: TaskId,
+      @PathVariable("todoId") todoId: TodoId
+  ): CompletableFuture<String> = commandGateway.send(RemoveTodoCommand(taskId, todoId))
 
   @GetMapping("/v2/projects/{projectId}/tasks")
   fun getTasksByProject(

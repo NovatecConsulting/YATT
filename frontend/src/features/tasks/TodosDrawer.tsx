@@ -11,12 +11,18 @@ import {
 } from "@mui/material";
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../../app/hooks";
-import {selectTaskByProjectIdAndTaskId, useAddTodoMutation, useMarkTodoAsDoneMutation} from "./taskSlice";
+import {
+    selectTaskByProjectIdAndTaskId,
+    useAddTodoMutation,
+    useMarkTodoAsDoneMutation,
+    useRemoveTodoMutation
+} from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React from "react";
 import {selectSelectedTaskId} from "./todoSlice";
 import {useFormik} from "formik";
 import {useSnackbar} from "notistack";
+import {Delete} from "@mui/icons-material";
 
 const drawerWidth = 350;
 
@@ -27,6 +33,7 @@ export function TodosDrawer() {
     const task = useAppSelector((state) => selectTaskByProjectIdAndTaskId(state, projectId, taskId ?? ''));
     const [markDone] = useMarkTodoAsDoneMutation();
     const [addTodo] = useAddTodoMutation();
+    const [removeTodo] = useRemoveTodoMutation();
 
     const saveTodo = async (description: string) => {
         await addTodo({
@@ -88,7 +95,15 @@ export function TodosDrawer() {
                             {
                                 task.todos.map((todo) => {
                                     return (
-                                        <ListItem key={todo.todoId}>
+                                        <ListItem key={todo.todoId} secondaryAction={
+                                            task?.status === 'COMPLETED' ? null : (
+                                                <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
+                                                    taskId: taskId!,
+                                                    todoId: todo.todoId
+                                                })}>
+                                                    <Delete/>
+                                                </IconButton>)
+                                        }>
                                             <ListItemIcon>
                                                 <Checkbox
                                                     edge="start"

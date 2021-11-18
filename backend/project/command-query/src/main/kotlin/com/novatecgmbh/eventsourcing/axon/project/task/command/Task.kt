@@ -177,5 +177,18 @@ class Task : BaseAggregate() {
     todos.add(Todo(event.todoId, event.description, event.isDone))
   }
 
+  @CommandHandler
+  fun handle(command: RemoveTodoCommand) {
+    if (status == COMPLETED) {
+      throw IllegalArgumentException("Task is already completed. Todo can not be removed anymore.")
+    }
+    apply(TodoRemovedEvent(command.identifier, command.todoId))
+  }
+
+  @EventSourcingHandler
+  fun on(event: TodoRemovedEvent) {
+    todos.removeIf { it.entityIdentifier == event.todoId }
+  }
+
   override fun getRootContextId() = projectId.identifier
 }
