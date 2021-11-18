@@ -1,4 +1,4 @@
-import React, {ReactChild, ReactNode} from "react";
+import React, {ReactChild} from "react";
 import {
     AppBar, Avatar,
     Box,
