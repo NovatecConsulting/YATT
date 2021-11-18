@@ -12,7 +12,7 @@ import {
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../../app/hooks";
 import {
-    selectTaskByProjectIdAndTaskId,
+    selectTaskByProjectIdAndTaskId, Task, Todo,
     useAddTodoMutation,
     useMarkTodoAsDoneMutation,
     useRemoveTodoMutation
@@ -30,27 +30,17 @@ export function TodosDrawer() {
     const {id: projectId} = useParams<{ id: string }>();
     const taskId = useAppSelector(selectSelectedTaskId);
     const isTodosDrawerOpen = !!taskId;
-    const task = useAppSelector((state) => selectTaskByProjectIdAndTaskId(state, projectId, taskId ?? ''));
-    const [markDone] = useMarkTodoAsDoneMutation();
-    const [addTodo] = useAddTodoMutation();
-    const [removeTodo] = useRemoveTodoMutation();
+    const task = useAppSelector((state) => taskId ? selectTaskByProjectIdAndTaskId(state, projectId, taskId) : undefined);
 
-    const saveTodo = async (description: string) => {
-        await addTodo({
-            description: description,
-            taskId: taskId!
-        }).unwrap();
-    };
-
-    const [isTodoDialogOpen, setAddTodoDialog] = React.useState(false);
+    const [isAddTodoDialogOpen, setAddTodoDialogOpen] = React.useState(false);
 
     const openAddTodoDialog = (event: any) => {
         event.stopPropagation();
-        setAddTodoDialog(true);
+        setAddTodoDialogOpen(true);
     };
 
-    const handleCloseAddTodoDialog = () => {
-        setAddTodoDialog(false);
+    const closeAddTodoDialog = () => {
+        setAddTodoDialogOpen(false);
     };
 
     return (
@@ -69,78 +59,98 @@ export function TodosDrawer() {
                 task ? (
                     <Box sx={{overflow: 'auto'}}>
                         <List
-                            subheader={<ListSubheader>{
-                                <Toolbar disableGutters={true}>
-                                    <Typography
-                                        sx={{flex: '1 1 100%'}}
-                                        color="inherit"
-                                        variant="inherit"
-                                        component="div"
-                                    >
-                                        {`Todos for Task "${task.name}"`}
-                                    </Typography>
-                                    {
-                                        task.status === 'COMPLETED' ? null : (
-                                            <Tooltip title={"Add Todo"}>
-                                                <IconButton onClick={openAddTodoDialog}>
-                                                    <AddIcon fontSize={"large"}/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        )
-                                    }
-                                </Toolbar>
-                            }</ListSubheader>}
+                            subheader={<TodoListHeader task={task} handleOpenAddTodoDialog={openAddTodoDialog}/>}
                             dense={true}
                         >
                             {
-                                task.todos.map((todo) => {
-                                    return (
-                                        <ListItem key={todo.todoId} secondaryAction={
-                                            task?.status === 'COMPLETED' ? null : (
-                                                <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
-                                                    taskId: taskId!,
-                                                    todoId: todo.todoId
-                                                })}>
-                                                    <Delete/>
-                                                </IconButton>)
-                                        }>
-                                            <ListItemIcon>
-                                                <Checkbox
-                                                    edge="start"
-                                                    checked={todo.isDone}
-                                                    onClick={todo.isDone ? undefined : () => markDone({
-                                                        todoId: todo.todoId,
-                                                        taskId: taskId!
-                                                    })}
-                                                    tabIndex={-1}
-                                                    disabled={todo.isDone}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText primary={todo.description}/>
-                                        </ListItem>
-                                    );
-                                })
+                                task.todos.map((todo) => <TodoListItem todo={todo} task={task}/>)
                             }
                         </List>
                     </Box>
                 ) : null
             }
-            <AddTodoDialog open={isTodoDialogOpen}
-                           onClose={handleCloseAddTodoDialog}
-                           onSave={saveTodo}/>
+            <AddTodoDialog open={isAddTodoDialogOpen} onClose={closeAddTodoDialog}/>
         </Drawer>
     );
 }
 
+interface TodoListHeaderProps {
+    task: Task;
+    handleOpenAddTodoDialog: (event: any) => void;
+}
+
+function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
+    return (
+        <ListSubheader>{
+            <Toolbar disableGutters={true}>
+                <Typography
+                    sx={{flex: '1 1 100%'}}
+                    color="inherit"
+                    variant="inherit"
+                    component="div"
+                >
+                    {`Todos for Task "${task.name}"`}
+                </Typography>
+                {
+                    task.status === 'COMPLETED' ? null : (
+                        <Tooltip title={"Add Todo"}>
+                            <IconButton edge='end' onClick={handleOpenAddTodoDialog}>
+                                <AddIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    )
+                }
+            </Toolbar>
+        }</ListSubheader>
+    );
+}
+
+
+interface TodoListItemProps {
+    todo: Todo;
+    task: Task;
+}
+
+function TodoListItem({todo, task}: TodoListItemProps) {
+    const [markDone] = useMarkTodoAsDoneMutation();
+    const [removeTodo] = useRemoveTodoMutation();
+
+    return (
+        <ListItem key={todo.todoId} secondaryAction={
+            task.status === 'COMPLETED' ? null : (
+                <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
+                    taskId: task.identifier,
+                    todoId: todo.todoId
+                })}>
+                    <Delete/>
+                </IconButton>)
+        }>
+            <ListItemIcon>
+                <Checkbox
+                    edge="start"
+                    checked={todo.isDone}
+                    onClick={todo.isDone ? undefined : () => markDone({
+                        todoId: todo.todoId,
+                        taskId: task.identifier
+                    })}
+                    tabIndex={-1}
+                    disabled={todo.isDone}
+                />
+            </ListItemIcon>
+            <ListItemText primary={todo.description}/>
+        </ListItem>
+    );
+}
 
 interface AddTodoDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (description: string) => Promise<void>;
 }
 
 function AddTodoDialog(props: AddTodoDialogProps) {
     const {enqueueSnackbar} = useSnackbar();
+    const taskId = useAppSelector(selectSelectedTaskId)!;
+    const [addTodo] = useAddTodoMutation();
 
     const formik = useFormik({
         initialValues: {
@@ -154,11 +164,12 @@ function AddTodoDialog(props: AddTodoDialogProps) {
                 };
             }
         },
-        onSubmit: async (values, formikHelpers) => {
+        onSubmit: async (values, _) => {
             try {
-                await props.onSave(
-                    values.description
-                );
+                await addTodo({
+                    description: values.description,
+                    taskId: taskId
+                }).unwrap();
                 props.onClose();
                 formik.resetForm();
             } catch (e) {
