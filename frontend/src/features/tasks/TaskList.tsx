@@ -138,18 +138,21 @@ function TaskStatusCell({taskStatus, taskId}: { taskStatus: string, taskId: Enti
     const [completeTask, {isLoading: isLoadingComplete}] = useCompleteTaskMutation();
     const isLoading = isLoadingStart || isLoadingComplete;
 
-    let handleClick = () => {
+    let taskStateChangeAction: (taskId: string) => void;
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
+        taskStateChangeAction(taskId.toString());
     };
     let buttonTitle = '';
     let showButton = true;
     switch (taskStatus) {
         case 'PLANNED':
             buttonTitle = 'Start Task';
-            handleClick = () => startTask(taskId.toString());
+            taskStateChangeAction = startTask;
             break;
         case 'STARTED':
             buttonTitle = 'Complete Task';
-            handleClick = () => completeTask(taskId.toString());
+            taskStateChangeAction = completeTask;
             break;
         case 'COMPLETED':
         default:

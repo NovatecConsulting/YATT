@@ -113,11 +113,18 @@ class Task : BaseAggregate() {
   fun handle(command: CompleteTaskCommand): TaskId {
     when (status) {
       PLANNED -> throw IllegalStateException("Task has not yet been started.")
-      STARTED -> apply(TaskCompletedEvent(aggregateIdentifier))
+      STARTED -> {
+        if (isAnyTodoNotDone()) {
+          throw IllegalStateException("Can't complete task if not all todos are done.")
+        }
+        apply(TaskCompletedEvent(aggregateIdentifier))
+      }
       COMPLETED -> {}
     }
     return aggregateIdentifier
   }
+
+  private fun isAnyTodoNotDone() = todos.any { !it.isDone }
 
   private fun assertStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate) {
     if (startDate.isAfter(endDate)) {
@@ -159,6 +166,9 @@ class Task : BaseAggregate() {
 
   @CommandHandler
   fun handle(command: AddTodoCommand) {
+    if (status == COMPLETED) {
+      throw IllegalArgumentException("Task is already completed. Todo can not be added anymore.")
+    }
     apply(TodoAddedEvent(command.identifier, command.todoId, command.description, isDone = false))
   }
 

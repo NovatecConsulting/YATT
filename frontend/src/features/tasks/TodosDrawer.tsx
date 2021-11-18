@@ -72,11 +72,15 @@ export function TodosDrawer() {
                                     >
                                         {`Todos for Task "${task.name}"`}
                                     </Typography>
-                                    <Tooltip title={"Add Todo"}>
-                                        <IconButton onClick={openAddTodoDialog}>
-                                            <AddIcon fontSize={"large"}/>
-                                        </IconButton>
-                                    </Tooltip>
+                                    {
+                                        task.status === 'COMPLETED' ? null : (
+                                            <Tooltip title={"Add Todo"}>
+                                                <IconButton onClick={openAddTodoDialog}>
+                                                    <AddIcon fontSize={"large"}/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                    }
                                 </Toolbar>
                             }</ListSubheader>}
                             dense={true}
