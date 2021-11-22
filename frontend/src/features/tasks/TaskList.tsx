@@ -60,7 +60,7 @@ export function TaskList() {
         content = (
             <TableContainer sx={{maxWidth: 1000}} component={Paper}>
                 <TableToolbar
-                    title={`Task for Project "${project?.name}"`}
+                    title={`Tasks for Project "${project?.name}"`}
                     tooltip={'Create Task'}
                     onClick={navigateToTaskCreateForm}
                 />
