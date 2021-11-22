@@ -27,6 +27,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
     '/projects': 'Projects',
     '/projects/new': 'New',
     '/projects/tasks': 'Tasks',
+    '/projects/tasks/gantt-chart': 'Gantt Chart',
     '/projects/participants': 'Participants',
     '/projects/tasks/new': 'New',
     '/companies': 'Companies',
@@ -69,7 +70,7 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
     const {showNav = true} = props;
 
     return (
-        <Box sx={{display: 'flex', width: '100vw', height: '100vh'}}>
+        <Box sx={{display: 'flex', width: '100%', height: '100%'}}>
             <AppBar
                 position="fixed"
                 sx={{

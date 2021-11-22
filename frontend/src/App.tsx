@@ -31,6 +31,7 @@ import {ProjectDetailsPage} from "./features/projects/ProjectDetailsPage";
 import {ParticipantList} from "./features/participants/ParticipantList";
 import {CreateParticipantForm} from "./features/participants/CreateParticipantForm";
 import {ProfilePage} from "./features/auth/ProfilePage";
+import {TasksGanttChart} from "./features/tasks/TasksGanttChart";
 
 
 function App() {
@@ -102,6 +103,7 @@ function App() {
                                 <PrivateRoute exact path={"/projects/:id/participants"} component={ParticipantList}/>
                                 <PrivateRoute exact path={"/projects/:id/participants/new"} component={CreateParticipantForm}/>
                                 <PrivateRoute exact path={"/projects/:id/tasks"} component={TaskList}/>
+                                <PrivateRoute exact path={"/projects/:id/tasks/gantt-chart"} component={TasksGanttChart}/>
                                 <PrivateRoute exact path={"/projects/:id/tasks/new"} component={CreateTaskForm}/>
                                 <PrivateRoute exact path={"/companies"} component={CompanyList}/>
                                 <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>

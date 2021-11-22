@@ -11,6 +11,7 @@ export function ProjectDetailsPage() {
 
     const result = useGetProjectDetailsQuery(projectId);
     const navigateToTaskList = () => history.push(`/projects/${projectId}/tasks`)
+    const navigateToTaskGanttChart = () => history.push(`/projects/${projectId}/tasks/gantt-chart`)
     const navigateToParticipantList = () => history.push(`/projects/${projectId}/participants`)
 
     let taskCardContent: ReactJSXElement | null = null;
@@ -47,7 +48,8 @@ export function ProjectDetailsPage() {
                         {taskCardContent}
                     </CardContent>
                     <CardActions>
-                        <Button onClick={navigateToTaskList}>View Tasks</Button>
+                        <Button onClick={navigateToTaskList}>View Task List</Button>
+                        <Button onClick={navigateToTaskGanttChart}>View Gantt Chart</Button>
                     </CardActions>
                 </Card>
                 <Card sx={{width: 300, display: 'flex', flexDirection: 'column'}}>
