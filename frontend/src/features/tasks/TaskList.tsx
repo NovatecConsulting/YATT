@@ -1,6 +1,5 @@
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
-    Button,
     CircularProgress,
     Paper,
     Table,
@@ -11,10 +10,9 @@ import {
     TableRow
 } from "@mui/material";
 import {
-    selectTaskByProjectIdAndTaskId, Task, useCompleteTaskMutation,
+    selectTaskByProjectIdAndTaskId, Task,
     useGetTasksByProjectQuery,
     useRenameTaskMutation, useRescheduleTaskMutation,
-    useStartTaskMutation
 } from "./taskSlice";
 import {useHistory, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
@@ -25,10 +23,11 @@ import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {selectProjectById} from "../projects/projectsSlice";
 import {useStore} from "react-redux";
-import {EditableTableCell} from "../../components/EditableTableCell";
+import {EditableText} from "../../components/EditableText";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 import {TodosDrawer} from "./TodosDrawer";
 import {closeTodoDrawer, taskSelected} from "./todoSlice";
+import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
 
 export function TaskList() {
     const history = useHistory();
@@ -134,47 +133,10 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
 }
 
 function TaskStatusCell({taskStatus, taskId}: { taskStatus: string, taskId: EntityId }) {
-    const [startTask, {isLoading: isLoadingStart}] = useStartTaskMutation();
-    const [completeTask, {isLoading: isLoadingComplete}] = useCompleteTaskMutation();
-    const isLoading = isLoadingStart || isLoadingComplete;
-
-    let taskStateChangeAction: (taskId: string) => void;
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event.stopPropagation();
-        taskStateChangeAction(taskId.toString());
-    };
-    let buttonTitle = '';
-    let showButton = true;
-    switch (taskStatus) {
-        case 'PLANNED':
-            buttonTitle = 'Start Task';
-            taskStateChangeAction = startTask;
-            break;
-        case 'STARTED':
-            buttonTitle = 'Complete Task';
-            taskStateChangeAction = completeTask;
-            break;
-        case 'COMPLETED':
-        default:
-            showButton = false;
-            break;
-    }
-
     return (
         <TableCell>
             {taskStatus}
-            {
-                showButton ? (
-                    <Button
-                        sx={{ml: 2}}
-                        onClick={handleClick}
-                        disabled={isLoading}
-                    >
-                        {buttonTitle}
-                    </Button>
-                ) : null
-            }
-
+            <UpdateTaskStatusButton sx={{ml: 2}} taskId={taskId} taskStatus={taskStatus}/>
         </TableCell>
     );
 }
@@ -192,6 +154,8 @@ function TaskNameCell({task}: { task: Task }) {
     };
 
     return (
-        <EditableTableCell initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
+        <TableCell>
+            <EditableText initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
+        </TableCell>
     );
 }

@@ -1,6 +1,6 @@
 import {
     Box, Button,
-    Checkbox, Dialog, DialogActions, DialogContent, DialogTitle,
+    Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider,
     Drawer, IconButton,
     List,
     ListItem,
@@ -15,14 +15,18 @@ import {
     selectTaskByProjectIdAndTaskId, Task, Todo,
     useAddTodoMutation,
     useMarkTodoAsDoneMutation,
-    useRemoveTodoMutation
+    useRemoveTodoMutation, useRenameTaskMutation, useRescheduleTaskMutation
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React from "react";
 import {closeTodoDrawer, selectSelectedTaskId} from "./todoSlice";
 import {useFormik} from "formik";
 import {useSnackbar} from "notistack";
-import {ChevronRight, Delete} from "@mui/icons-material";
+import {Close, Delete, Edit} from "@mui/icons-material";
+import dayjs from "dayjs";
+import {RescheduleDialog} from "../../components/EditableDatesTableCell";
+import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
+import {EditableText} from "../../components/EditableText";
 
 const drawerWidth = 350;
 
@@ -45,6 +49,7 @@ export function TodosDrawer() {
 
     return (
         <Drawer
+            key={task?.identifier}
             anchor="right"
             variant="persistent"
             open={isTodosDrawerOpen}
@@ -58,12 +63,17 @@ export function TodosDrawer() {
             {
                 task ? (
                     <Box sx={{overflow: 'auto'}}>
+                        <List subheader={<TaskDetailsHeader task={task}/>}>
+                            <StatusListItem key={"task-status"} task={task}/>
+                            <DatesListItem key={"task-dates"} task={task}/>
+                        </List>
+                        <Divider/>
                         <List
                             subheader={<TodoListHeader task={task} handleOpenAddTodoDialog={openAddTodoDialog}/>}
                             dense={true}
                         >
                             {
-                                task.todos.map((todo) => <TodoListItem todo={todo} task={task}/>)
+                                task.todos.map((todo) => <TodoListItem key={todo.todoId} todo={todo} task={task}/>)
                             }
                         </List>
                     </Box>
@@ -80,16 +90,9 @@ interface TodoListHeaderProps {
 }
 
 function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
-    const dispatch = useAppDispatch();
-
     return (
         <ListSubheader>{
             <Toolbar disableGutters={true}>
-                <Tooltip title={"Close Drawer"}>
-                    <IconButton edge='start' onClick={() => dispatch(closeTodoDrawer())}>
-                        <ChevronRight/>
-                    </IconButton>
-                </Tooltip>
                 <Typography
                     sx={{flex: '1 1 100%'}}
                     color="inherit"
@@ -112,6 +115,44 @@ function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
     );
 }
 
+function TaskDetailsHeader({task}: { task: Task }) {
+    const dispatch = useAppDispatch();
+    const [saveName] = useRenameTaskMutation();
+
+    const canEditName = task.status !== 'COMPLETED';
+
+    const onSave = async (name: string) => {
+        await saveName({
+            identifier: task.identifier.toString(),
+            name: name,
+        }).unwrap();
+    };
+
+    return (
+        <ListSubheader>{
+            <Toolbar disableGutters={true}>
+                <EditableText
+                    typographyProps={{
+                        color: "inherit",
+                        variant: "h5",
+                        component: "div"
+                    }}
+                    initialValue={task.name}
+                    label={'Name'}
+                    canEdit={canEditName}
+                    onSave={onSave}
+                />
+                <Box sx={{flexGrow: 1}}/>
+                <Tooltip title={"Close"}>
+                    <IconButton edge='end' onClick={() => dispatch(closeTodoDrawer())}>
+                        <Close/>
+                    </IconButton>
+                </Tooltip>
+            </Toolbar>
+        }</ListSubheader>
+    );
+}
+
 
 interface TodoListItemProps {
     todo: Todo;
@@ -123,14 +164,17 @@ function TodoListItem({todo, task}: TodoListItemProps) {
     const [removeTodo] = useRemoveTodoMutation();
 
     return (
-        <ListItem key={todo.todoId} secondaryAction={
+        <ListItem secondaryAction={
             task.status === 'COMPLETED' ? null : (
-                <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
-                    taskId: task.identifier,
-                    todoId: todo.todoId
-                })}>
-                    <Delete/>
-                </IconButton>)
+                <Tooltip title={"Remove Todo"}>
+                    <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
+                        taskId: task.identifier,
+                        todoId: todo.todoId
+                    })}>
+                        <Delete/>
+                    </IconButton>
+                </Tooltip>
+            )
         }>
             <ListItemIcon>
                 <Checkbox
@@ -209,3 +253,63 @@ function AddTodoDialog(props: AddTodoDialogProps) {
         </Dialog>
     );
 }
+
+function StatusListItem(props: { task: Task }) {
+    return <ListItem secondaryAction={
+        <UpdateTaskStatusButton sx={{ml: 2}} taskId={props.task.identifier} taskStatus={props.task.status}/>
+    }>
+        <ListItemText
+            primary={"Status"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
+            secondary={props.task.status}
+            secondaryTypographyProps={{variant: "body1", color: "black"}}
+        />
+    </ListItem>;
+}
+
+function DatesListItem({task}: { task: Task }) {
+    const [isDialogOpen, setDialogOpen] = React.useState(false);
+    const [rescheduleTask] = useRescheduleTaskMutation();
+    const canEditDates = task.status !== 'COMPLETED';
+
+    const onSave = async (startDate: string, endDate: string) => {
+        await rescheduleTask({
+            identifier: task.identifier,
+            startDate: startDate,
+            endDate: endDate,
+        }).unwrap();
+    };
+
+    const openDialog = () => {
+        setDialogOpen(true);
+    };
+
+    const closeDialog = () => {
+        setDialogOpen(false);
+    };
+
+    return (
+        <React.Fragment>
+            <ListItem secondaryAction={
+                canEditDates ? (
+                    <IconButton edge={"end"} sx={{ml: 1}} onClick={openDialog}>
+                        <Edit/>
+                    </IconButton>
+                ) : null
+            }>
+                <ListItemText
+                    primary={"Start/End Date"}
+                    primaryTypographyProps={{variant: "caption", color: "#00000099"}}
+                    secondary={`${dayjs(task.startDate).format('L')}  -  ${dayjs(task.endDate).format('L')}`}
+                    secondaryTypographyProps={{variant: "body1", color: "black"}}
+                />
+            </ListItem>
+            <RescheduleDialog key={task.identifier}
+                              initialStartDate={task.startDate}
+                              initialEndDate={task.endDate}
+                              open={isDialogOpen}
+                              onClose={closeDialog}
+                              onSave={onSave}/>
+        </React.Fragment>
+    );
+}
+

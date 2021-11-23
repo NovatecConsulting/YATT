@@ -33,6 +33,11 @@ logging:
       axonframework.eventhandling.pooled.Coordinator: info
       flywaydb.core.internal.command: info
       springframework.boot: info
+      #Configure logging for sql parameters
+#      hibernate:
+#        type.descriptor.sql.BasicBinder: TRACE
+#        SQL: debug
+
 
 axon:
   serializer:

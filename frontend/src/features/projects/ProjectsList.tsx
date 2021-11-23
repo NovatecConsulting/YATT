@@ -24,7 +24,7 @@ import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {TableToolbar} from "../../components/TableToolbar";
-import {EditableTableCell} from "../../components/EditableTableCell";
+import {EditableText} from "../../components/EditableText";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 import dayjs from "dayjs";
 
@@ -153,6 +153,6 @@ function ProjectNameCell({project}: { project: Project }) {
     };
 
     return (
-        <EditableTableCell initialValue={project.name} label={'Name'} canEdit={true} onSave={onSave}/>
+        <EditableText initialValue={project.name} label={'Name'} canEdit={true} onSave={onSave}/>
     );
 }
