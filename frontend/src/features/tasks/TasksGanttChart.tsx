@@ -52,6 +52,7 @@ export function TasksGanttChart() {
     } else if (isSuccess && tasks) {
         const legendHeight = 40;
         const trackHeight = 30;
+        const heightOfMouseOverPopup = 122;
         content = (
             <Card sx={{width: '100%'}}>
                 <TableToolbar
@@ -63,7 +64,7 @@ export function TasksGanttChart() {
                     {
                         tasks.length === 0 ? null : (<Chart
                             width={'100%'}
-                            height={tasks.length * trackHeight + legendHeight}
+                            height={Math.max(tasks.length * trackHeight + legendHeight, heightOfMouseOverPopup)}
                             chartType="Gantt"
                             loader={<CircularProgress/>}
                             chartEvents={chartEvents}

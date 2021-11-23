@@ -65,7 +65,7 @@ export function EditableDateTableCells(props: EditableDateTableCellsProps) {
     );
 }
 
-interface RescheduleDialogProps {
+export interface RescheduleDialogProps {
     open: boolean;
     onClose: () => void;
     initialStartDate: string;
@@ -73,7 +73,7 @@ interface RescheduleDialogProps {
     onSave: (startDate: string, endDate: string) => Promise<void>;
 }
 
-function RescheduleDialog(props: RescheduleDialogProps) {
+export function RescheduleDialog(props: RescheduleDialogProps) {
     const formik = useFormik({
         initialValues: {
             startDate: dayjs(props.initialStartDate),
