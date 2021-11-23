@@ -10,7 +10,7 @@ import {
     Toolbar, Tooltip, Typography
 } from "@mui/material";
 import {useParams} from "react-router-dom";
-import {useAppSelector} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectTaskByProjectIdAndTaskId, Task, Todo,
     useAddTodoMutation,
@@ -19,10 +19,10 @@ import {
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React from "react";
-import {selectSelectedTaskId} from "./todoSlice";
+import {closeTodoDrawer, selectSelectedTaskId} from "./todoSlice";
 import {useFormik} from "formik";
 import {useSnackbar} from "notistack";
-import {Delete} from "@mui/icons-material";
+import {ChevronRight, Delete} from "@mui/icons-material";
 
 const drawerWidth = 350;
 
@@ -80,9 +80,16 @@ interface TodoListHeaderProps {
 }
 
 function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
+    const dispatch = useAppDispatch();
+
     return (
         <ListSubheader>{
             <Toolbar disableGutters={true}>
+                <Tooltip title={"Close Drawer"}>
+                    <IconButton edge='start' onClick={() => dispatch(closeTodoDrawer())}>
+                        <ChevronRight/>
+                    </IconButton>
+                </Tooltip>
                 <Typography
                     sx={{flex: '1 1 100%'}}
                     color="inherit"
