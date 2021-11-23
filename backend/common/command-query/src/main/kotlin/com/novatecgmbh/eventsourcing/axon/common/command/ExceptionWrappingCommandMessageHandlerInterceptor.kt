@@ -10,7 +10,6 @@ import org.axonframework.modelling.command.AggregateNotFoundException
 import org.axonframework.modelling.command.ConflictingAggregateVersionException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
 
 class ExceptionWrappingCommandMessageHandlerInterceptor :
     MessageHandlerInterceptor<CommandMessage<*>?> {
@@ -34,6 +33,7 @@ class ExceptionWrappingCommandMessageHandlerInterceptor :
         is IllegalArgumentException -> ILLEGAL_ARGUMENT
         is IllegalStateException -> ILLEGAL_STATE
         is IllegalAccessException -> ACCESS_DENIED
+        is PreconditionFailedException -> PRECONDITION_FAILED
         else -> UNKNOWN
       }.also { LOGGER.info("Mapped ${throwable::class} to status code $it") }
 

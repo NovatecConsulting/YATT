@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.common.web
 import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode
 import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode.*
 import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode.NOT_FOUND
+import com.novatecgmbh.eventsourcing.axon.common.api.ExceptionStatusCode.PRECONDITION_FAILED
 import org.axonframework.commandhandling.CommandExecutionException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -31,6 +32,7 @@ class WebExceptionHandler : ResponseEntityExceptionHandler() {
                 NOT_FOUND -> ResponseEntity(HttpStatus.NOT_FOUND)
                 UNKNOWN -> ResponseEntity(INTERNAL_SERVER_ERROR)
                 ACCESS_DENIED -> ResponseEntity(FORBIDDEN)
+                PRECONDITION_FAILED -> ResponseEntity(HttpStatus.PRECONDITION_FAILED)
               }
           else -> ResponseEntity(INTERNAL_SERVER_ERROR)
         }
