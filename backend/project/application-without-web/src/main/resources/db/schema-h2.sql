@@ -164,7 +164,7 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
 
     alter table task_todos 
-       add constraint FKee9grystvvxmh4cld1gditxnu 
+       add constraint FK_TaskTodo_taskId 
        foreign key (task_id) 
        references tasks;
 
