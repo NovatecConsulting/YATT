@@ -22,7 +22,7 @@ class TaskProjection(
     @Column(nullable = false) var endDate: LocalDate,
     @Column(nullable = false) var status: TaskStatusEnum,
     @OneToMany(cascade = [ALL], orphanRemoval = true, fetch = EAGER)
-    @JoinColumn(name = "taskId")
+    @JoinColumn(name = "taskId", foreignKey = ForeignKey(name = "FK_TaskTodo_taskId"))
     var todos: MutableList<Todo>
 ) {
   fun toQueryResult() =
