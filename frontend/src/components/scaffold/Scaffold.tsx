@@ -1,4 +1,4 @@
-import React, {ReactChild} from "react";
+import React, {ReactChild, useState} from "react";
 import {
     AppBar, Avatar,
     Box,
@@ -14,13 +14,14 @@ import {
     Toolbar, Tooltip,
     Typography
 } from "@mui/material";
-import {Logout, Settings} from "@mui/icons-material";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
-import {logout} from "../features/auth/authSlice";
+import {ChevronLeft, Logout, Menu as MenuIcon, Settings} from "@mui/icons-material";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {logout} from "../../features/auth/authSlice";
 import {useKeycloak} from "@react-keycloak/web";
 import {Link as RouterLink, useHistory, useLocation, useParams} from 'react-router-dom';
 import {Property} from "csstype";
-import {selectCurrentUser} from "../features/auth/usersSlice";
+import {selectCurrentUser} from "../../features/auth/usersSlice";
+import {closeNavDrawer, openNavDrawer, selectIsNavDrawerOpen} from "./scaffoldSlice";
 
 const breadcrumbNameMap: { [key: string]: string } = {
     '/profile': 'My Profile',
@@ -67,19 +68,48 @@ const drawerWidth = 240;
 
 export function Scaffold(props: React.PropsWithChildren<Props>) {
     const history = useHistory();
+    const dispatch = useAppDispatch();
     const {showNav = true} = props;
+    const isNavDrawerOpen = useAppSelector(selectIsNavDrawerOpen);
+
+    const handleDrawerOpen = () => {
+        dispatch(openNavDrawer());
+    };
+
+    const handleDrawerClose = () => {
+        dispatch(closeNavDrawer());
+    };
 
     return (
         <Box sx={{display: 'flex', width: '100%', height: '100%'}}>
             <AppBar
                 position="fixed"
                 sx={{
-                    width: `calc(100% - ${showNav ? drawerWidth : 0}px)`,
-                    ml: `${showNav ? drawerWidth : 0}px`,
-                    zIndex: (theme) => theme.zIndex.drawer + 1
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    transition: (theme) => theme.transitions.create(['margin', 'width'], {
+                        easing: theme.transitions.easing.sharp,
+                        duration: theme.transitions.duration.leavingScreen,
+                    }),
+                    ...(isNavDrawerOpen && {
+                        width: `calc(100% - ${drawerWidth}px)`,
+                        marginLeft: `${drawerWidth}px`,
+                        transition: (theme) => theme.transitions.create(['margin', 'width'], {
+                            easing: theme.transitions.easing.easeOut,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                    }),
                 }}
             >
                 <Toolbar>
+                    {showNav ? (
+                        <IconButton
+                            color="inherit"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={{mr: 2, ...(isNavDrawerOpen && {display: 'none'})}}
+                        >
+                            <MenuIcon/>
+                        </IconButton>) : null}
                     <CustomBreadcrumbs title={props.title}/>
                     <Box sx={{flexGrow: 1}}/>
                     <AccountAvatar/>
@@ -88,6 +118,7 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
             {
                 showNav ? (
                     <Drawer
+                        open={isNavDrawerOpen}
                         sx={{
                             width: drawerWidth,
                             flexShrink: 0,
@@ -96,10 +127,17 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                                 boxSizing: 'border-box',
                             },
                         }}
-                        variant="permanent"
+                        variant="persistent"
                         anchor="left"
                     >
-                        <Toolbar/>
+                        <Toolbar>
+                            <Box sx={{flexGrow: 1}}/>
+                            <Tooltip title={"Close Drawer"}>
+                                <IconButton edge='end' onClick={handleDrawerClose}>
+                                    <ChevronLeft/>
+                                </IconButton>
+                            </Tooltip>
+                        </Toolbar>
                         <Divider/>
                         <List>
                             {topLevelDestinations.map((destination, index) => (
@@ -113,7 +151,21 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
             }
             <Box
                 component="main"
-                sx={{flexGrow: 1, p: 3, alignItems: props.alignItems}}
+                sx={{
+                    flexGrow: 1, p: 3, alignItems: props.alignItems,
+                    transition: (theme) => theme.transitions.create('margin', {
+                        easing: theme.transitions.easing.sharp,
+                        duration: theme.transitions.duration.leavingScreen,
+                    }),
+                    marginLeft: `-${drawerWidth}px`,
+                    ...(isNavDrawerOpen && {
+                        transition: (theme) => theme.transitions.create('margin', {
+                            easing: theme.transitions.easing.easeOut,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                        marginLeft: 0,
+                    }),
+                }}
             >
                 <Toolbar/>
                 {props.children}

@@ -1,6 +1,6 @@
 import {useHistory} from "react-router-dom";
 import {useFormik} from "formik";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {
     Box,
     Button,

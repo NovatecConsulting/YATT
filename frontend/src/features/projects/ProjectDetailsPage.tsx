@@ -1,4 +1,4 @@
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {Box, Button, Card, CardActions, CardContent, CardHeader, Skeleton, Typography} from "@mui/material";
 import {useHistory, useParams} from "react-router-dom";
 import {useGetProjectDetailsQuery} from "./projectsSlice";

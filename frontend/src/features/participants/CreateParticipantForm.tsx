@@ -2,7 +2,7 @@ import React from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {useSnackbar} from "notistack";
 import {useFormik} from "formik";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {
     Box,
     Button,

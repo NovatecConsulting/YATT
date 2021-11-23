@@ -1,4 +1,4 @@
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import { useAppSelector} from "../../app/hooks";
 import {
     RenameUserDto,

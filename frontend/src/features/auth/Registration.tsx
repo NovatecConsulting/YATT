@@ -1,7 +1,7 @@
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {registered, selectIsRegistered} from "./authSlice";
 import {Redirect, useHistory} from "react-router-dom";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {useFormik} from "formik";
 import {Button, Card, CardContent, TextField} from "@mui/material";
 import {RegisterUserDto, useRegisterUserMutation} from "./usersSlice";

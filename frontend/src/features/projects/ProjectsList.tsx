@@ -19,7 +19,7 @@ import {
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import React from "react";
 import {useHistory} from "react-router-dom";
