@@ -7,5 +7,6 @@ enum class ExceptionStatusCode {
   ILLEGAL_STATE,
   NOT_FOUND,
   UNKNOWN,
-  ACCESS_DENIED
+  ACCESS_DENIED,
+  PRECONDITION_FAILED
 }

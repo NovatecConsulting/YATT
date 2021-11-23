@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.command
 
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
+import com.novatecgmbh.eventsourcing.axon.common.command.PreconditionFailedException
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.references.ReferenceCheckerService
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
@@ -115,7 +116,7 @@ class Task : BaseAggregate() {
       PLANNED -> throw IllegalStateException("Task has not yet been started.")
       STARTED -> {
         if (isAnyTodoNotDone()) {
-          throw IllegalStateException("Can't complete task if not all todos are done.")
+          throw PreconditionFailedException("Can't complete task if not all todos are done.")
         }
         apply(TaskCompletedEvent(aggregateIdentifier))
       }
