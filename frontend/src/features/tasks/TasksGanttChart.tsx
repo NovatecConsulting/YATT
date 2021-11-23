@@ -1,4 +1,4 @@
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {Chart} from "react-google-charts";
 import {useHistory, useParams} from "react-router-dom";
 import {useAppDispatch, useWindowDimensions} from "../../app/hooks";

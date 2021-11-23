@@ -3,7 +3,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {useSnackbar} from "notistack";
 import {useCreateEmployeeMutation} from "./employeeSlice";
 import {useFormik} from "formik";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {
     Box,
     Button,

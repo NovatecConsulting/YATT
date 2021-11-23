@@ -19,7 +19,7 @@ import {
 import {useHistory, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import React, {useEffect} from "react";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";

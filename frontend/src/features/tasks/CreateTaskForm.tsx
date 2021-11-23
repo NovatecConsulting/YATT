@@ -1,6 +1,6 @@
 import {useHistory, useParams} from "react-router-dom";
 import {useFormik} from "formik";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {Box, Button, Card, CardContent, TextField, TextFieldProps} from "@mui/material";
 import DatePicker from '@mui/lab/DatePicker';
 import React from "react";

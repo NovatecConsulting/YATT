@@ -1,5 +1,5 @@
 import {Company, selectCompanyById, useGetCompaniesQuery} from "./companySlice";
-import {Scaffold} from "../../components/Scaffold";
+import {Scaffold} from "../../components/scaffold/Scaffold";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
     CircularProgress,
