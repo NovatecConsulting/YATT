@@ -18,7 +18,7 @@ import {
     useRemoveTodoMutation, useRenameTaskMutation, useRescheduleTaskMutation
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
-import React from "react";
+import React, {useState} from "react";
 import {closeTaskDrawer, selectSelectedTaskId} from "./taskDrawerSlice";
 import {useFormik} from "formik";
 import {useSnackbar} from "notistack";
@@ -118,6 +118,7 @@ function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
 function TaskDetailsHeader({task}: { task: Task }) {
     const dispatch = useAppDispatch();
     const [saveName] = useRenameTaskMutation();
+    const [isMouseEntered, setIsMouseEntered] = useState(false);
 
     const canEditName = task.status !== 'COMPLETED';
 
@@ -129,7 +130,8 @@ function TaskDetailsHeader({task}: { task: Task }) {
     };
 
     return (
-        <ListSubheader>{
+        <ListSubheader onMouseEnter={() => setIsMouseEntered(true)}
+                       onMouseLeave={() => setIsMouseEntered(false)}>{
             <Toolbar disableGutters={true}>
                 <EditableText
                     typographyProps={{
@@ -139,7 +141,7 @@ function TaskDetailsHeader({task}: { task: Task }) {
                     }}
                     initialValue={task.name}
                     label={'Name'}
-                    canEdit={canEditName}
+                    canEdit={canEditName && isMouseEntered}
                     onSave={onSave}
                 />
                 <Box sx={{flexGrow: 1}}/>
@@ -162,20 +164,25 @@ interface TodoListItemProps {
 function TodoListItem({todo, task}: TodoListItemProps) {
     const [markDone] = useMarkTodoAsDoneMutation();
     const [removeTodo] = useRemoveTodoMutation();
+    const [isMouseEntered, setIsMouseEntered] = useState(false);
 
     return (
-        <ListItem secondaryAction={
-            task.status === 'COMPLETED' ? null : (
-                <Tooltip title={"Remove Todo"}>
-                    <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
-                        taskId: task.identifier,
-                        todoId: todo.todoId
-                    })}>
-                        <Delete/>
-                    </IconButton>
-                </Tooltip>
-            )
-        }>
+        <ListItem
+            secondaryAction={
+                task.status === 'COMPLETED' || !isMouseEntered ? null : (
+                    <Tooltip title={"Remove Todo"}>
+                        <IconButton edge="end" aria-label="delete" onClick={() => removeTodo({
+                            taskId: task.identifier,
+                            todoId: todo.todoId
+                        })}>
+                            <Delete sx={{color: "red"}}/>
+                        </IconButton>
+                    </Tooltip>
+                )
+            }
+            onMouseEnter={() => setIsMouseEntered(true)}
+            onMouseLeave={() => setIsMouseEntered(false)}
+        >
             <ListItemIcon>
                 <Checkbox
                     edge="start"
@@ -255,9 +262,17 @@ function AddTodoDialog(props: AddTodoDialogProps) {
 }
 
 function StatusListItem(props: { task: Task }) {
-    return <ListItem secondaryAction={
-        <UpdateTaskStatusButton sx={{ml: 2}} taskId={props.task.identifier} taskStatus={props.task.status}/>
-    }>
+    const [isMouseEntered, setIsMouseEntered] = useState(false);
+
+    return <ListItem
+        secondaryAction={
+            isMouseEntered ? <UpdateTaskStatusButton sx={{ml: 2}}
+                                                     taskId={props.task.identifier}
+                                                     taskStatus={props.task.status}/> : null
+        }
+        onMouseEnter={() => setIsMouseEntered(true)}
+        onMouseLeave={() => setIsMouseEntered(false)}
+    >
         <ListItemText
             primary={"Status"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
             secondary={props.task.status}
@@ -269,6 +284,7 @@ function StatusListItem(props: { task: Task }) {
 function DatesListItem({task}: { task: Task }) {
     const [isDialogOpen, setDialogOpen] = React.useState(false);
     const [rescheduleTask] = useRescheduleTaskMutation();
+    const [isMouseEntered, setIsMouseEntered] = useState(false);
     const canEditDates = task.status !== 'COMPLETED';
 
     const onSave = async (startDate: string, endDate: string) => {
@@ -289,13 +305,17 @@ function DatesListItem({task}: { task: Task }) {
 
     return (
         <React.Fragment>
-            <ListItem secondaryAction={
-                canEditDates ? (
-                    <IconButton edge={"end"} sx={{ml: 1}} onClick={openDialog}>
-                        <Edit/>
-                    </IconButton>
-                ) : null
-            }>
+            <ListItem
+                secondaryAction={
+                    canEditDates && isMouseEntered ? (
+                        <IconButton edge={"end"} sx={{ml: 1}} onClick={openDialog}>
+                            <Edit/>
+                        </IconButton>
+                    ) : null
+                }
+                onMouseEnter={() => setIsMouseEntered(true)}
+                onMouseLeave={() => setIsMouseEntered(false)}
+            >
                 <ListItemText
                     primary={"Start/End Date"}
                     primaryTypographyProps={{variant: "caption", color: "#00000099"}}
