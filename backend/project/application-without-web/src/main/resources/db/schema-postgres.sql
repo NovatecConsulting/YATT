@@ -120,11 +120,10 @@ create sequence hibernate_sequence start 1 increment 1;
     );
 
     create table task_todos (
-       task_id varchar(255) not null,
-        todo_id varchar(255) not null,
-        description varchar(255),
+       task_identifier varchar(255) not null,
+        description varchar(255) not null,
         is_done boolean not null,
-        primary key (task_id, todo_id)
+        identifier varchar(255)
     );
 
     create table tasks (
@@ -164,9 +163,12 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
 
     alter table if exists task_todos 
-       add constraint FK_TaskTodo_taskId 
-       foreign key (task_id) 
+       add constraint UK_TaskTodos_Identifier unique (identifier, task_identifier);
+
+    alter table if exists task_todos 
+       add constraint FK_TaskTodos_TaskIdentifier 
+       foreign key (task_identifier) 
        references tasks;
 
-create index IX_TaskTodo_Task on task_todos (task_id);
+create index IX_TaskTodo_TaskIden on task_todos (task_identifier);
 

@@ -5,7 +5,6 @@ import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import java.io.Serializable
 import java.time.LocalDate
 import javax.persistence.*
-import javax.persistence.CascadeType.ALL
 import javax.persistence.FetchType.EAGER
 
 @Entity
@@ -21,8 +20,19 @@ class TaskProjection(
     @Column(nullable = false) var startDate: LocalDate,
     @Column(nullable = false) var endDate: LocalDate,
     @Column(nullable = false) var status: TaskStatusEnum,
-    @OneToMany(cascade = [ALL], orphanRemoval = true, fetch = EAGER)
-    @JoinColumn(name = "taskId", foreignKey = ForeignKey(name = "FK_TaskTodo_taskId"))
+    @ElementCollection(fetch = EAGER)
+    @CollectionTable(
+        name = "task_todos",
+        foreignKey = ForeignKey(name = "FK_TaskTodos_TaskIdentifier"),
+        joinColumns = [JoinColumn(name = "task_identifier")],
+        uniqueConstraints =
+            [
+                UniqueConstraint(
+                    name = "UK_TaskTodos_Identifier",
+                    columnNames = ["identifier", "task_identifier"],
+                ),
+            ],
+    )
     var todos: MutableList<Todo>
 ) {
   fun toQueryResult() =
@@ -37,18 +47,11 @@ class TaskProjection(
           todos.map { it.toQueryResult() })
 }
 
-@Entity
-@Table(name = "task_todos")
-class Todo(@EmbeddedId var key: TodoKey, var description: String, var isDone: Boolean) {
-  fun toQueryResult() = TodoQueryResult(key.todoId, description, isDone)
-}
-
 @Embeddable
-data class TodoKey(
-    @Embedded
-    @AttributeOverride(name = "identifier", column = Column(name = "todoId", nullable = false))
-    var todoId: TodoId,
-    @Embedded
-    @AttributeOverride(name = "identifier", column = Column(name = "taskId", nullable = false))
-    var taskId: TaskId,
-) : Serializable
+data class Todo(
+    @Embedded @Column(nullable = false) val todoId: TodoId,
+    @Column(nullable = false) val description: String,
+    @Column(nullable = false) var isDone: Boolean
+) : Serializable {
+  fun toQueryResult() = TodoQueryResult(todoId, description, isDone)
+}
