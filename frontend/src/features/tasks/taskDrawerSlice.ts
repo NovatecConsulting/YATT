@@ -6,20 +6,20 @@ export interface TodoDrawerState {
 }
 
 export const slice = createSlice({
-    name: "todoDrawer",
+    name: "taskDrawer",
     initialState: {} as TodoDrawerState,
     reducers: {
         taskSelected(state, action: PayloadAction<string>) {
             state.selectedTaskId = action.payload;
         },
-        closeTodoDrawer(state, _: PayloadAction) {
+        closeTaskDrawer(state, _: PayloadAction) {
             state.selectedTaskId = undefined;
         }
     }
 });
 
-export const {taskSelected, closeTodoDrawer} = slice.actions;
+export const {taskSelected, closeTaskDrawer} = slice.actions;
 
-export const selectSelectedTaskId = (state: RootState) => state.todoDrawer.selectedTaskId;
+export const selectSelectedTaskId = (state: RootState) => state.taskDrawer.selectedTaskId;
 
 export default slice.reducer;

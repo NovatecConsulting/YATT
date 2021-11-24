@@ -11,9 +11,9 @@ import {
     Card, CardContent,
     CircularProgress,
 } from "@mui/material";
-import {TodosDrawer} from "./TodosDrawer";
+import {TaskDrawer} from "./TaskDrawer";
 import React from "react";
-import {taskSelected} from "./todoSlice";
+import {taskSelected} from "./taskDrawerSlice";
 import {TableToolbar} from "../../components/TableToolbar";
 import {ReactGoogleChartEvent} from "react-google-charts/dist/types";
 
@@ -111,7 +111,7 @@ export function TasksGanttChart() {
     }
 
     return (
-        <Scaffold alignItems='start' aside={<TodosDrawer/>}>
+        <Scaffold alignItems='start' aside={<TaskDrawer/>}>
             {content}
         </Scaffold>
     );

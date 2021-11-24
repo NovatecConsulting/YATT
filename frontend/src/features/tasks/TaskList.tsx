@@ -25,8 +25,8 @@ import {selectProjectById} from "../projects/projectsSlice";
 import {useStore} from "react-redux";
 import {EditableText} from "../../components/EditableText";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
-import {TodosDrawer} from "./TodosDrawer";
-import {closeTodoDrawer, taskSelected} from "./todoSlice";
+import {TaskDrawer} from "./TaskDrawer";
+import {closeTaskDrawer, taskSelected} from "./taskDrawerSlice";
 import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
 
 export function TaskList() {
@@ -46,7 +46,7 @@ export function TaskList() {
 
     useEffect(() => {
         return () => {
-            dispatch(closeTodoDrawer());
+            dispatch(closeTaskDrawer());
         };
     })
 
@@ -89,7 +89,7 @@ export function TaskList() {
     }
 
     return (
-        <Scaffold alignItems='start' aside={<TodosDrawer/>}>
+        <Scaffold alignItems='start' aside={<TaskDrawer/>}>
             {content}
         </Scaffold>
     );

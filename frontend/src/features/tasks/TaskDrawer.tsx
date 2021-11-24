@@ -19,7 +19,7 @@ import {
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React from "react";
-import {closeTodoDrawer, selectSelectedTaskId} from "./todoSlice";
+import {closeTaskDrawer, selectSelectedTaskId} from "./taskDrawerSlice";
 import {useFormik} from "formik";
 import {useSnackbar} from "notistack";
 import {Close, Delete, Edit} from "@mui/icons-material";
@@ -30,7 +30,7 @@ import {EditableText} from "../../components/EditableText";
 
 const drawerWidth = 350;
 
-export function TodosDrawer() {
+export function TaskDrawer() {
     const {id: projectId} = useParams<{ id: string }>();
     const taskId = useAppSelector(selectSelectedTaskId);
     const isTodosDrawerOpen = !!taskId;
@@ -144,7 +144,7 @@ function TaskDetailsHeader({task}: { task: Task }) {
                 />
                 <Box sx={{flexGrow: 1}}/>
                 <Tooltip title={"Close"}>
-                    <IconButton edge='end' onClick={() => dispatch(closeTodoDrawer())}>
+                    <IconButton edge='end' onClick={() => dispatch(closeTaskDrawer())}>
                         <Close/>
                     </IconButton>
                 </Tooltip>
