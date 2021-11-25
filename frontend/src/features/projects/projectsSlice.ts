@@ -1,8 +1,10 @@
 import {apiSlice} from "../api/apiSlice";
-import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
+import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {subscribe} from "../../app/api";
 import {CancelCallback} from "can-ndjson-stream";
+import {QueryDefinition} from "@reduxjs/toolkit/query";
+import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 
 export interface Project {
     identifier: string;
@@ -52,7 +54,7 @@ export interface RenameProjectDto {
     name: string;
 }
 
-const projectsAdapter = createEntityAdapter<Project>({
+export const projectsAdapter = createEntityAdapter<Project>({
     selectId: model => model.identifier,
     sortComparer: (a, b) => {
         const comparingName = a.name.localeCompare(b.name);
@@ -174,3 +176,11 @@ const selectProjectsData = createSelector(
 export const {selectAll: selectAllProjects, selectById: selectProjectById} = projectsAdapter.getSelectors<RootState>(
     state => selectProjectsData(state) ?? projectsAdapter.getInitialState()
 )
+
+export const selectProjectByIdFromResult = (result: UseQueryStateDefaultResult<QueryDefinition<any, any, any, EntityState<Project>>>, projectId: EntityId) => {
+    const {data, ...rest} = result;
+    return {
+        ...rest,
+        data: data ? projectsAdapter.getSelectors().selectById(data, projectId) : undefined
+    };
+}

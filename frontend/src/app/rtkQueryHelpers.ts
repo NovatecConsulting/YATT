@@ -44,7 +44,7 @@ type UseQueryStateBaseResult<D extends QueryDefinition<any, any, any, any>> =
     isError: false
 }
 
-type UseQueryStateDefaultResult<D extends QueryDefinition<any, any, any, any>> =
+export type UseQueryStateDefaultResult<D extends QueryDefinition<any, any, any, any>> =
     Id<| Override<Extract<UseQueryStateBaseResult<D>,
         { status: QueryStatus.uninitialized }>,
         { isUninitialized: true }>
