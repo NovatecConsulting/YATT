@@ -153,6 +153,8 @@ function ProjectNameCell({project}: { project: Project }) {
     };
 
     return (
-        <EditableText initialValue={project.name} label={'Name'} canEdit={true} onSave={onSave}/>
+        <TableCell>
+            <EditableText initialValue={project.name} label={'Name'} canEdit={true} onSave={onSave}/>
+        </TableCell>
     );
 }
