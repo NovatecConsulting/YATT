@@ -34,7 +34,7 @@ export function EditableText(props: EditableTextProps) {
 
     return !isEditing ? (
         <React.Fragment>
-            <Typography variant={"body2"} {...props.typographyProps}>
+            <Typography variant={"body2"} component={"span"} {...props.typographyProps}>
                 {props.initialValue}
             </Typography>
             {
