@@ -23,7 +23,7 @@ interface Values {
 }
 
 export function CreateEmployeeForm() {
-    const {id: companyId} = useParams<{ id: string }>()
+    const {companyId} = useParams<{ companyId: string }>()
 
     const usersResult = useGetAllUsersQuery(); // TODO filter out users who are already employee
     const {enqueueSnackbar} = useSnackbar();

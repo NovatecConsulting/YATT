@@ -15,7 +15,7 @@ interface Values {
 }
 
 export function CreateTaskForm() {
-    const {id: projectId} = useParams<{ id: string }>()
+    const {projectId} = useParams<{ projectId: string }>()
 
     const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();

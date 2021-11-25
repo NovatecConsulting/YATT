@@ -28,7 +28,7 @@ import {
 
 export function EmployeeList() {
     const history = useHistory();
-    const {id: companyId} = useParams<{ id: string }>();
+    const {companyId} = useParams<{ companyId: string }>();
 
     const {
         data: employeeIds,

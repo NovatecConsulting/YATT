@@ -20,7 +20,7 @@ import {parseDate} from "../../app/utils";
 export function TasksGanttChart() {
     const history = useHistory();
     const dispatch = useAppDispatch();
-    const {id: projectId} = useParams<{ id: string }>();
+    const {projectId} = useParams<{ projectId: string }>();
     // TODO quick workaround to keep subscribed to query
     const {data: project} = useGetProjectsQuery(undefined, {
         selectFromResult: (result) => selectProjectByIdFromResult(result, projectId)

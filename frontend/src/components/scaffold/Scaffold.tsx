@@ -22,6 +22,8 @@ import {Link as RouterLink, useHistory, useLocation, useParams} from 'react-rout
 import {Property} from "csstype";
 import {selectCurrentUser} from "../../features/auth/usersSlice";
 import {closeNavDrawer, openNavDrawer, selectIsNavDrawerOpen} from "./scaffoldSlice";
+import {selectProjectByIdFromResult, useGetProjectsQuery} from "../../features/projects/projectsSlice";
+import {selectCompanyByIdFromResult, useGetCompaniesQuery} from "../../features/company/companySlice";
 
 const breadcrumbNameMap: { [key: string]: string } = {
     '/profile': 'My Profile',
@@ -178,9 +180,17 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
 }
 
 function CustomBreadcrumbs({title}: { title?: string }) {
-    const {id} = useParams<{ id: string }>();
+    const {projectId} = useParams<{ projectId: string }>();
+    const {companyId} = useParams<{ companyId: string }>();
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter((path) => path);
+// TODO quick workaround
+    const {data: project} = useGetProjectsQuery(undefined, {
+        selectFromResult: (result) => selectProjectByIdFromResult(result, projectId)
+    });
+    const {data: company} = useGetCompaniesQuery(undefined, {
+        selectFromResult: (result) => selectCompanyByIdFromResult(result, companyId)
+    });
 
     if (title) {
         return (
@@ -195,19 +205,20 @@ function CustomBreadcrumbs({title}: { title?: string }) {
                 separator={<Typography variant="h6" component="div">/</Typography>}
             >
                 {pathnames.map((value, index) => {
-                    const last = index === pathnames.length - 1;
+                    let isLinkDisabled = index === pathnames.length - 1;
                     const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-                    let text = breadcrumbNameMap[to.replace(`/${id}`, '')];
-                    if (value === id && to.startsWith('/projects')) {
-                        text = value;
-                    } else if (value === id) {
-                        return null;
+                    let text = breadcrumbNameMap[to.replace(`/${projectId}`, '')];
+                    if (value === projectId) {
+                        text = project?.name ?? value;
+                    } else if (value === companyId) {
+                        text = company?.name ?? value;
+                        isLinkDisabled = true;
                     }
                     if (text === undefined) {
                         text = value.charAt(0).toUpperCase() + value.slice(1);
                     }
 
-                    return last ? (
+                    return isLinkDisabled ? (
                         <Typography variant="h6" color="primary.contrastText" component="div" key={to}>
                             {text}
                         </Typography>
