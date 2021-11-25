@@ -25,7 +25,7 @@ export function CreateTaskForm() {
         initialValues: {
             name: '',
             startDate: dayjs(),
-            endDate: dayjs(),
+            endDate: dayjs().add(1, "day"),
         } as Values,
         validateOnChange: true,
         validate: values => {
@@ -87,7 +87,7 @@ export function CreateTaskForm() {
                         />}
                     />
                     <DatePicker
-                        minDate={formik.values.startDate}
+                        minDate={formik.values.startDate.add(1, "day")}
                         label="End Date"
                         value={formik.values.endDate}
                         mask={"__.__.____"}

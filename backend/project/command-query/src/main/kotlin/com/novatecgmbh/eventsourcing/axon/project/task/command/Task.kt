@@ -91,6 +91,7 @@ class Task : BaseAggregate() {
       throw IllegalArgumentException(
           "Task has already started. The start date can not be changed anymore")
     } else {
+      assertStartDateBeforeEndDate(command.startDate, command.endDate)
       apply(
           TaskRescheduledEvent(
               identifier = command.identifier,
@@ -128,8 +129,8 @@ class Task : BaseAggregate() {
   private fun isAnyTodoNotDone() = todos.any { !it.isDone }
 
   private fun assertStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate) {
-    if (startDate.isAfter(endDate)) {
-      throw IllegalArgumentException("Start date can't be after end date")
+    if (!startDate.isBefore(endDate)) {
+      throw IllegalArgumentException("End date must be after start date")
     }
   }
 

@@ -124,7 +124,7 @@ export function RescheduleDialog(props: RescheduleDialogProps) {
                     />}
                 />
                 <DatePicker
-                    minDate={formik.values.startDate}
+                    minDate={formik.values.startDate.add(1, "day")}
                     label="End Date"
                     value={formik.values.endDate}
                     mask={"__.__.____"}

@@ -40,7 +40,7 @@ export function CreateProjectForm() {
         initialValues: {
             name: '',
             startDate: dayjs(),
-            deadline: dayjs(),
+            deadline: dayjs().add(1, "day"),
             companyId: ''
         } as Values,
         validateOnChange: true,
@@ -126,7 +126,7 @@ export function CreateProjectForm() {
                         />}
                     />
                     <DatePicker
-                        minDate={formik.values.startDate}
+                        minDate={formik.values.startDate.add(1, "day")}
                         label="Deadline"
                         value={formik.values.deadline}
                         mask={"__.__.____"}
