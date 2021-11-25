@@ -23,7 +23,7 @@ interface Values {
 }
 
 export function CreateParticipantForm() {
-    const {id: projectId} = useParams<{ id: string }>()
+    const {projectId} = useParams<{ projectId: string }>()
 
     const employeesResult = useGetAllEmployeesQuery(); // TODO filter out users who are already participant
     const {enqueueSnackbar} = useSnackbar();

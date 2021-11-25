@@ -31,7 +31,7 @@ import {EditableText} from "../../components/EditableText";
 const drawerWidth = 350;
 
 export function TaskDrawer() {
-    const {id: projectId} = useParams<{ id: string }>();
+    const {projectId} = useParams<{ projectId: string }>();
     const taskId = useAppSelector(selectSelectedTaskId);
     const isTodosDrawerOpen = !!taskId;
     const task = useAppSelector((state) => taskId ? selectTaskByProjectIdAndTaskId(state, projectId, taskId) : undefined);

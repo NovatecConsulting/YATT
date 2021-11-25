@@ -1,8 +1,10 @@
 import {apiSlice} from "../api/apiSlice";
-import {createEntityAdapter, createSelector, EntityState} from "@reduxjs/toolkit";
+import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {CancelCallback} from "can-ndjson-stream";
 import {subscribe} from "../../app/api";
+import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
+import {QueryDefinition} from "@reduxjs/toolkit/query";
 
 export interface Company {
     identifier: string;
@@ -53,7 +55,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
-        createCompany: builder.mutation<string,CreateCompanyDto>({
+        createCompany: builder.mutation<string, CreateCompanyDto>({
             query: (companyDto) => ({
                 url: `/companies`,
                 method: 'POST',
@@ -63,7 +65,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
     })
 })
 
-export const {useGetCompaniesQuery,useCreateCompanyMutation} = extendedApiSlice;
+export const {useGetCompaniesQuery, useCreateCompanyMutation} = extendedApiSlice;
 
 const selectCompaniesResult = extendedApiSlice.endpoints.getCompanies.select();
 
@@ -75,3 +77,11 @@ const selectCompaniesData = createSelector(
 export const {selectById: selectCompanyById} = companiesAdapter.getSelectors<RootState>(
     state => selectCompaniesData(state) ?? companiesAdapter.getInitialState()
 )
+
+export const selectCompanyByIdFromResult = (result: UseQueryStateDefaultResult<QueryDefinition<any, any, any, EntityState<Company>>>, companyId: EntityId) => {
+    const {data, ...rest} = result;
+    return {
+        ...rest,
+        data: data ? companiesAdapter.getSelectors().selectById(data, companyId) : undefined
+    };
+}

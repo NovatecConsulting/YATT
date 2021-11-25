@@ -7,7 +7,7 @@ import React from "react";
 
 export function ProjectDetailsPage() {
     const history = useHistory();
-    const {id: projectId} = useParams<{ id: string }>();
+    const {projectId} = useParams<{ projectId: string }>();
 
     const result = useGetProjectDetailsQuery(projectId);
     const navigateToTaskList = () => history.push(`/projects/${projectId}/tasks`)
