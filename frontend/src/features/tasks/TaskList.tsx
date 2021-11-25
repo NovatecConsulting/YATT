@@ -21,8 +21,10 @@ import {Scaffold} from "../../components/scaffold/Scaffold";
 import React, {useEffect} from "react";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
-import {selectProjectById} from "../projects/projectsSlice";
-import {useStore} from "react-redux";
+import {
+    selectProjectByIdFromResult,
+    useGetProjectsQuery
+} from "../projects/projectsSlice";
 import {EditableText} from "../../components/EditableText";
 import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 import {TaskDrawer} from "./TaskDrawer";
@@ -33,8 +35,10 @@ export function TaskList() {
     const history = useHistory();
     const dispatch = useAppDispatch();
     const {id: projectId} = useParams<{ id: string }>();
-    const store = useStore();
-    const project = selectProjectById(store.getState(), projectId)
+    // TODO quick workaround to keep subscribed to query
+    const {data: project} = useGetProjectsQuery(undefined, {
+        selectFromResult: (result) => selectProjectByIdFromResult(result, projectId)
+    });
 
     const {
         data: taskIds,

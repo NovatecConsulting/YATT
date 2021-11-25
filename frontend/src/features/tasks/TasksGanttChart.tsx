@@ -2,8 +2,7 @@ import {Scaffold} from "../../components/scaffold/Scaffold";
 import {Chart} from "react-google-charts";
 import {useHistory, useParams} from "react-router-dom";
 import {useAppDispatch, useWindowDimensions} from "../../app/hooks";
-import {useStore} from "react-redux";
-import {selectProjectById} from "../projects/projectsSlice";
+import {selectProjectByIdFromResult, useGetProjectsQuery} from "../projects/projectsSlice";
 import {useGetTasksByProjectQuery} from "./taskSlice";
 import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
@@ -22,8 +21,10 @@ export function TasksGanttChart() {
     const history = useHistory();
     const dispatch = useAppDispatch();
     const {id: projectId} = useParams<{ id: string }>();
-    const store = useStore();
-    const project = selectProjectById(store.getState(), projectId)
+    // TODO quick workaround to keep subscribed to query
+    const {data: project} = useGetProjectsQuery(undefined, {
+        selectFromResult: (result) => selectProjectByIdFromResult(result, projectId)
+    });
     const {width} = useWindowDimensions();
 
     const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasks/new`)

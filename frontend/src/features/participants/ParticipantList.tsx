@@ -11,14 +11,15 @@ import {Scaffold} from "../../components/scaffold/Scaffold";
 import React from "react";
 import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
-import {selectProjectById} from "../projects/projectsSlice";
-import {useStore} from "react-redux";
+import {selectProjectByIdFromResult, useGetProjectsQuery} from "../projects/projectsSlice";
 
 export function ParticipantList() {
     const history = useHistory();
     const {id: projectId} = useParams<{ id: string }>();
-    const store = useStore();
-    const project = selectProjectById(store.getState(), projectId)
+    // TODO quick workaround to keep subscribed to query
+    const {data: project} = useGetProjectsQuery(undefined, {
+        selectFromResult: (result) => selectProjectByIdFromResult(result, projectId)
+    });
 
     const {
         data: ids,
