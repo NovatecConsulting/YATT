@@ -33,7 +33,7 @@ class Project : BaseAggregate() {
   @CreationPolicy(CREATE_IF_MISSING)
   fun handle(command: CreateProjectCommand, @AuditUserId userId: String): ProjectId {
     assertAggregateDoesNotExistYet()
-    assertDeadlineIsAfterStartDate(command.plannedStartDate, command.deadline)
+    assertStartDateBeforeDeadline(command.plannedStartDate, command.deadline)
     apply(
         ProjectCreatedEvent(
             aggregateIdentifier = command.aggregateIdentifier,
@@ -57,9 +57,9 @@ class Project : BaseAggregate() {
     }
   }
 
-  private fun assertDeadlineIsAfterStartDate(start: LocalDate, deadline: LocalDate) {
-    if (start.isAfter(deadline)) {
-      throw IllegalArgumentException("Start date can't be after deadline")
+  private fun assertStartDateBeforeDeadline(start: LocalDate, deadline: LocalDate) {
+    if (!start.isBefore(deadline)) {
+      throw IllegalArgumentException("Deadline must be after start date")
     }
   }
 
@@ -89,7 +89,7 @@ class Project : BaseAggregate() {
           (command.newStartDate != plannedStartDate || command.newDeadline != deadline)
     }
 
-    assertDeadlineIsAfterStartDate(command.newStartDate, command.newDeadline)
+    assertStartDateBeforeDeadline(command.newStartDate, command.newDeadline)
     if (projectWasRescheduled(command.newStartDate, command.newDeadline)) {
       apply(
           ProjectRescheduledEvent(

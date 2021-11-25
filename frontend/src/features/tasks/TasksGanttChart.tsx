@@ -16,6 +16,7 @@ import React from "react";
 import {taskSelected} from "./taskDrawerSlice";
 import {TableToolbar} from "../../components/TableToolbar";
 import {ReactGoogleChartEvent} from "react-google-charts/dist/types";
+import {parseDate} from "../../app/utils";
 
 export function TasksGanttChart() {
     const history = useHistory();
@@ -85,8 +86,8 @@ export function TasksGanttChart() {
                                     return [
                                         task.identifier,
                                         task.name,
-                                        new Date(task.startDate),
-                                        new Date(new Date(task.endDate).getTime() + 60 * 60 * 24 * 1000),
+                                        parseDate(task.startDate),
+                                        parseDate(task.endDate),
                                         null,
                                         todosCompletedPercent.toFixed(2),
                                         null
