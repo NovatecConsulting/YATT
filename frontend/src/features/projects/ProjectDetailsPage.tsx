@@ -40,7 +40,7 @@ export function ProjectDetailsPage() {
     }
 
     return (
-        <Scaffold alignItems='start'>
+        <Scaffold>
             <Box className='row'>
                 <Card sx={{width: 300, display: 'flex', flexDirection: 'column'}}>
                     <CardHeader title='Tasks'/>

@@ -19,7 +19,7 @@ export function ProfilePage() {
     }
 
     return (
-        <Scaffold>
+        <Scaffold alignItems="center">
             <Avatar sx={{width: 128, height: 128}}/>
             {
                 isEditing ? (

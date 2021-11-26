@@ -113,7 +113,7 @@ export function TasksGanttChart() {
     }
 
     return (
-        <Scaffold alignItems='start'>
+        <Scaffold>
             {content}
             <TaskDrawer/>
         </Scaffold>

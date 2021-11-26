@@ -93,7 +93,7 @@ export function TaskList() {
     }
 
     return (
-        <Scaffold alignItems='start'>
+        <Scaffold>
             {content}
             <TaskDrawer/>
         </Scaffold>

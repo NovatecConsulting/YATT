@@ -36,7 +36,7 @@ export function Registration() {
     }
 
     return (
-        <Scaffold title={"Registration"} showNav={false}>
+        <Scaffold title={"Registration"} showNav={false} alignItems="center">
             <Card><CardContent>
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
