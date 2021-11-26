@@ -63,7 +63,6 @@ interface Props {
     title?: string;
     alignItems?: Property.AlignItems;
     showNav?: boolean;
-    aside?: ReactChild | null;
 }
 
 const drawerWidth = 240;
@@ -171,9 +170,6 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
             >
                 <Toolbar/>
                 {props.children}
-            </Box>
-            <Box component="aside">
-                {props.aside}
             </Box>
         </Box>
     );

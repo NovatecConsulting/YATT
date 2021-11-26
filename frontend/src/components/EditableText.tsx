@@ -30,6 +30,7 @@ export function EditableText(props: EditableTextProps) {
                 console.log("edit failed");
             }
         },
+        enableReinitialize: true,
     });
 
     return !isEditing ? (

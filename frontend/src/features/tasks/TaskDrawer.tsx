@@ -49,7 +49,6 @@ export function TaskDrawer() {
 
     return (
         <Drawer
-            key={task?.identifier}
             anchor="right"
             variant="persistent"
             open={isTodosDrawerOpen}
