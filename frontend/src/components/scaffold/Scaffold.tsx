@@ -116,44 +116,40 @@ export function Scaffold(props: React.PropsWithChildren<Props>) {
                     <AccountAvatar/>
                 </Toolbar>
             </AppBar>
-            {
-                showNav ? (
-                    <Drawer
-                        open={isNavDrawerOpen}
-                        sx={{
-                            width: drawerWidth,
-                            flexShrink: 0,
-                            '& .MuiDrawer-paper': {
-                                width: drawerWidth,
-                                boxSizing: 'border-box',
-                            },
-                        }}
-                        variant="persistent"
-                        anchor="left"
-                    >
-                        <Toolbar>
-                            <Box sx={{flexGrow: 1}}/>
-                            <Tooltip title={"Close Drawer"}>
-                                <IconButton edge='end' onClick={handleDrawerClose}>
-                                    <ChevronLeft/>
-                                </IconButton>
-                            </Tooltip>
-                        </Toolbar>
-                        <Divider/>
-                        <List>
-                            {topLevelDestinations.map((destination, index) => (
-                                <ListItem button key={destination.path} onClick={() => history.push(destination.path)}>
-                                    <ListItemText primary={destination.title}/>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Drawer>
-                ) : null
-            }
+            <Drawer
+                open={isNavDrawerOpen}
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
+                }}
+                variant="persistent"
+                anchor="left"
+            >
+                <Toolbar>
+                    <Box sx={{flexGrow: 1}}/>
+                    <Tooltip title={"Close Drawer"}>
+                        <IconButton edge='end' onClick={handleDrawerClose}>
+                            <ChevronLeft/>
+                        </IconButton>
+                    </Tooltip>
+                </Toolbar>
+                <Divider/>
+                <List>
+                    {topLevelDestinations.map((destination, index) => (
+                        <ListItem button key={destination.path} onClick={() => history.push(destination.path)}>
+                            <ListItemText primary={destination.title}/>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
             <Box
                 component="main"
                 sx={{
-                    flexGrow: 1, p: 3, alignItems: props.alignItems,
+                    flexGrow: 1, p: 3, alignItems: props.alignItems ?? 'start',
                     transition: (theme) => theme.transitions.create('margin', {
                         easing: theme.transitions.easing.sharp,
                         duration: theme.transitions.duration.leavingScreen,
