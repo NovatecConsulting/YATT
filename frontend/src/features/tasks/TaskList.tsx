@@ -93,8 +93,9 @@ export function TaskList() {
     }
 
     return (
-        <Scaffold alignItems='start' aside={<TaskDrawer/>}>
+        <Scaffold alignItems='start'>
             {content}
+            <TaskDrawer/>
         </Scaffold>
     );
 }
