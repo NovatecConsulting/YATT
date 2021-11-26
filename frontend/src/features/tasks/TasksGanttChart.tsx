@@ -27,7 +27,7 @@ export function TasksGanttChart() {
     });
     const {width} = useWindowDimensions();
 
-    const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasks/new`)
+    const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/taskcalendar/new`)
 
     const {
         data: tasks,

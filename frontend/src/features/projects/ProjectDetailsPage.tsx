@@ -10,8 +10,8 @@ export function ProjectDetailsPage() {
     const {projectId} = useParams<{ projectId: string }>();
 
     const result = useGetProjectDetailsQuery(projectId);
-    const navigateToTaskList = () => history.push(`/projects/${projectId}/tasks`)
-    const navigateToTaskGanttChart = () => history.push(`/projects/${projectId}/tasks/gantt-chart`)
+    const navigateToTaskList = () => history.push(`/projects/${projectId}/tasklist`)
+    const navigateToTaskGanttChart = () => history.push(`/projects/${projectId}/taskcalendar`)
     const navigateToParticipantList = () => history.push(`/projects/${projectId}/participants`)
 
     let taskCardContent: ReactJSXElement | null = null;

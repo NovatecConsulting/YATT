@@ -1,6 +1,7 @@
-import React, {ReactChild} from "react";
+import React from "react";
 import {
-    AppBar, Avatar,
+    AppBar,
+    Avatar,
     Box,
     Breadcrumbs,
     Divider,
@@ -9,9 +10,13 @@ import {
     Link,
     LinkProps,
     List,
-    ListItem, ListItemIcon,
-    ListItemText, Menu, MenuItem,
-    Toolbar, Tooltip,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Toolbar,
+    Tooltip,
     Typography
 } from "@mui/material";
 import {ChevronLeft, Logout, Menu as MenuIcon, Settings} from "@mui/icons-material";
@@ -29,8 +34,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
     '/profile': 'My Profile',
     '/projects': 'Projects',
     '/projects/new': 'New',
-    '/projects/tasks': 'Tasks',
-    '/projects/tasks/gantt-chart': 'Gantt Chart',
+    '/projects/tasklist': 'Task List',
+    '/projects/taskcalendar': 'Calendar',
     '/projects/participants': 'Participants',
     '/projects/tasks/new': 'New',
     '/companies': 'Companies',
