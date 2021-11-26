@@ -54,7 +54,7 @@ export function TaskList() {
         };
     })
 
-    const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasks/new`)
+    const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasklist/new`)
 
     let content: ReactJSXElement;
     if (isLoading) {

@@ -100,11 +100,17 @@ function App() {
                                 <PrivateRoute exact path={"/projects"} component={ProjectsList}/>
                                 <PrivateRoute exact path={"/projects/new"} component={CreateProjectForm}/>
                                 <PrivateRoute exact path={"/projects/:projectId"} component={ProjectDetailsPage}/>
-                                <PrivateRoute exact path={"/projects/:projectId/participants"} component={ParticipantList}/>
-                                <PrivateRoute exact path={"/projects/:projectId/participants/new"} component={CreateParticipantForm}/>
-                                <PrivateRoute exact path={"/projects/:projectId/tasks"} component={TaskList}/>
-                                <PrivateRoute exact path={"/projects/:projectId/tasks/gantt-chart"} component={TasksGanttChart}/>
-                                <PrivateRoute exact path={"/projects/:projectId/tasks/new"} component={CreateTaskForm}/>
+                                <PrivateRoute exact path={"/projects/:projectId/participants"}
+                                              component={ParticipantList}/>
+                                <PrivateRoute exact path={"/projects/:projectId/participants/new"}
+                                              component={CreateParticipantForm}/>
+                                <PrivateRoute exact path={"/projects/:projectId/tasklist"} component={TaskList}/>
+                                <PrivateRoute exact path={"/projects/:projectId/tasklist/new"}
+                                              component={CreateTaskForm}/>
+                                <PrivateRoute exact path={"/projects/:projectId/taskcalendar"}
+                                              component={TasksGanttChart}/>
+                                <PrivateRoute exact path={"/projects/:projectId/taskcalendar/new"}
+                                              component={CreateTaskForm}/>
                                 <PrivateRoute exact path={"/companies"} component={CompanyList}/>
                                 <PrivateRoute exact path={"/companies/new"} component={CreateCompanyForm}/>
                                 <PrivateRoute exact path={"/companies/:companyId/employees"} component={EmployeeList}/>
