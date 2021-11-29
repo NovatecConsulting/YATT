@@ -3,8 +3,8 @@ package com.novatecgmbh.eventsourcing.axon
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication class MainApplication
+@SpringBootApplication class DataImporterApplication
 
 fun main(args: Array<String>) {
-  runApplication<MainApplication>(*args)
+  runApplication<DataImporterApplication>(*args)
 }
