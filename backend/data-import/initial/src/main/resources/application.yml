@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: data-importer
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+logging:
+  level:
+    ROOT: warn
+    org:
+      springframework.boot: info
