@@ -5,6 +5,8 @@ rootProject.name = "backend"
 includeBuild("platforms")
 includeBuild("build-logic")
 
+includeBuild("data-import")
+
 includeBuild("api-gateway")
 includeBuild("common")
 includeBuild("company")
