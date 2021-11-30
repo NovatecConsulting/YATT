@@ -85,18 +85,16 @@ class TaskController(
   @GetMapping("/v2/projects/{projectId}/tasks", produces = [MediaType.APPLICATION_NDJSON_VALUE])
   fun getTasksByProjectAndUpdates(
       @PathVariable("projectId") projectId: ProjectId
-  ): Flux<TaskQueryResult> {
+  ): Flux<List<TaskQueryResult>> {
     val query =
         queryGateway.subscriptionQuery(
             TasksByProjectQuery(projectId),
             ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
             ResponseTypes.instanceOf(TaskQueryResult::class.java))
 
-    return query
-        .initialResult()
-        .flatMapMany { Flux.fromIterable(it) }
-        .concatWith(query.updates())
-        .doFinally { query.cancel() }
+    return query.initialResult().concatWith(query.updates().map(::listOf)).doFinally {
+      query.cancel()
+    }
   }
 
   @PostMapping("/v2/tasks/{taskId}/rename")

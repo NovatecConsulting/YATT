@@ -50,14 +50,7 @@ export interface AddTodoDto {
 
 export const taskAdapter = createEntityAdapter<Task>({
     selectId: model => model.identifier,
-    sortComparer: (a, b) => {
-        const comparingName = a.name.localeCompare(b.name);
-        if (comparingName !== 0) {
-            return comparingName
-        } else {
-            return a.identifier.localeCompare(b.identifier);
-        }
-    }
+    sortComparer: (a, b) => a.identifier.localeCompare(b.identifier)
 });
 
 export const taskApiSlice = apiSlice.injectEndpoints({
@@ -70,27 +63,30 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                     response
                 );
             },
-            // async onCacheEntryAdded(projectId, api): Promise<void> {
-            //     let cancel: CancelCallback | undefined;
-            //     try {
-            //         await api.cacheDataLoaded;
-            //
-            //         cancel = await subscribe<Task>(`/projects/${projectId}/tasks`, update => {
-            //             api.updateCachedData(draft => {
-            //                 if (draft) {
-            //                     taskAdapter.upsertOne(draft, update);
-            //                 }
-            //             });
-            //         });
-            //     } catch {
-            //         // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
-            //         // in which case `cacheDataLoaded` will throw
-            //     }
-            //     await api.cacheEntryRemoved;
-            //     if (cancel) {
-            //         await cancel("cacheEntryRemoved");
-            //     }
-            // }
+            async onCacheEntryAdded(projectId, api): Promise<void> {
+                let cancel: CancelCallback | undefined;
+                try {
+                    await api.cacheDataLoaded;
+
+                    cancel = await subscribe<Task[]>(`/projects/${projectId}/tasks`, update => {
+                        api.updateCachedData(draft => {
+                            if (draft) {
+                                taskAdapter.updateMany(draft, update.map(task => ({
+                                    id: task.identifier,
+                                    changes: task
+                                })));
+                            }
+                        });
+                    });
+                } catch {
+                    // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
+                    // in which case `cacheDataLoaded` will throw
+                }
+                await api.cacheEntryRemoved;
+                if (cancel) {
+                    await cancel("cacheEntryRemoved");
+                }
+            }
         }),
         createTask: builder.mutation<string, CreateTaskDto>({
             query: (taskDto) => ({
