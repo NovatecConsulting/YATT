@@ -1,5 +1,6 @@
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
+    Box,
     CircularProgress, IconButton,
     Paper,
 } from "@mui/material";
@@ -19,7 +20,7 @@ import {
     useGetProjectsQuery
 } from "../projects/projectsSlice";
 import {EditableText} from "../../components/EditableText";
-import { RescheduleDialog} from "../../components/EditableDatesTableCell";
+import {RescheduleDialog} from "../../components/EditableDatesTableCell";
 import {TaskDrawer} from "./TaskDrawer";
 import {closeTaskDrawer, taskSelected} from "./taskDrawerSlice";
 import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
@@ -63,46 +64,49 @@ export function TaskList() {
         content = <CircularProgress/>;
     } else if (isSuccess && tasks) {
         content = (
-            <Paper sx={{width: 1000, height: 500}}>
-                {/*<TableToolbar*/}
-                {/*    title={`Tasks for Project "${project?.name}"`}*/}
-                {/*    tooltip={'Create Task'}*/}
-                {/*    onClick={navigateToTaskCreateForm}*/}
-                {/*/>*/}
-                <VirtualizedTable
-                    rowHeight={64}
-                    rowCount={tasks.length}
-                    rowGetter={(index) => tasks[index.index]}
-                    onRowClick={(row) => showTodos((row.rowData as Task).identifier)}
-                    columns={[
-                        {
-                            width: 120,
-                            label: "Name",
-                            dataKey: "name",
-                            cellRenderer: (cellProps) => <TaskNameCell task={cellProps.rowData as Task}/>
-                        },
-                        {
-                            width: 120,
-                            label: "Start Date",
-                            dataKey: "startDate",
-                            cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task} isStartDate={true}
-                                                                   onEdit={setTaskToReschedule}/>
-                        },
-                        {
-                            width: 120,
-                            label: "End Date",
-                            dataKey: "endDate",
-                            cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
-                                                                   onEdit={setTaskToReschedule}/>
-                        },
-                        {
-                            width: 120,
-                            label: "Status",
-                            dataKey: "status",
-                            cellRenderer: (cellProps) => <TaskStatusCell task={cellProps.rowData as Task}/>
-                        }
-                    ]}
+            <Paper sx={{width: 1000, height: 500, display: "flex", flexFlow: "column"}}>
+                <TableToolbar
+                    title={`Tasks for Project "${project?.name}"`}
+                    tooltip={'Create Task'}
+                    onClick={navigateToTaskCreateForm}
                 />
+                <Box sx={{flex: "1 1 auto"}}>
+                    <VirtualizedTable
+                        rowHeight={64}
+                        rowCount={tasks.length}
+                        rowGetter={(index) => tasks[index.index]}
+                        onRowClick={(row) => showTodos((row.rowData as Task).identifier)}
+                        columns={[
+                            {
+                                width: 120,
+                                label: "Name",
+                                dataKey: "name",
+                                cellRenderer: (cellProps) => <TaskNameCell task={cellProps.rowData as Task}/>
+                            },
+                            {
+                                width: 120,
+                                label: "Start Date",
+                                dataKey: "startDate",
+                                cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
+                                                                       isStartDate={true}
+                                                                       onEdit={setTaskToReschedule}/>
+                            },
+                            {
+                                width: 120,
+                                label: "End Date",
+                                dataKey: "endDate",
+                                cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
+                                                                       onEdit={setTaskToReschedule}/>
+                            },
+                            {
+                                width: 120,
+                                label: "Status",
+                                dataKey: "status",
+                                cellRenderer: (cellProps) => <TaskStatusCell task={cellProps.rowData as Task}/>
+                            }
+                        ]}
+                    />
+                </Box>
             </Paper>
         );
     } else if (isError) {
