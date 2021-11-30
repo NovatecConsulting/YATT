@@ -1,20 +1,17 @@
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
-    CircularProgress,
+    CircularProgress, IconButton,
     Paper,
-    TableCell,
-    TableRow
 } from "@mui/material";
 import {
-    selectTaskByProjectIdAndTaskId, Task,
+    Task,
     useGetTasksByProjectQuery,
     useRenameTaskMutation, useRescheduleTaskMutation,
 } from "./taskSlice";
 import {useHistory, useParams} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {EntityId} from "@reduxjs/toolkit";
+import {useAppDispatch} from "../../app/hooks";
 import {Scaffold} from "../../components/scaffold/Scaffold";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {
@@ -22,12 +19,13 @@ import {
     useGetProjectsQuery
 } from "../projects/projectsSlice";
 import {EditableText} from "../../components/EditableText";
-import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
+import { RescheduleDialog} from "../../components/EditableDatesTableCell";
 import {TaskDrawer} from "./TaskDrawer";
 import {closeTaskDrawer, taskSelected} from "./taskDrawerSlice";
 import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
 import {VirtualizedTable} from "../../components/VirtualizedTable";
 import dayjs from "dayjs";
+import {Edit} from "@mui/icons-material";
 
 export function TaskList() {
     const history = useHistory();
@@ -51,6 +49,10 @@ export function TaskList() {
             dispatch(closeTaskDrawer());
         };
     }, [dispatch])
+
+    const [taskToReschedule, setTaskToReschedule] = useState<Task | undefined>(undefined);
+
+    const closeRescheduleDialog = () => setTaskToReschedule(undefined);
 
     const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasklist/new`)
 
@@ -83,13 +85,15 @@ export function TaskList() {
                             width: 120,
                             label: "Start Date",
                             dataKey: "startDate",
-                            cellRenderer: (cellProps) => dayjs(cellProps.cellData).format('L')
+                            cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task} isStartDate={true}
+                                                                   onEdit={setTaskToReschedule}/>
                         },
                         {
                             width: 120,
                             label: "End Date",
                             dataKey: "endDate",
-                            cellRenderer: (cellProps) => dayjs(cellProps.cellData).format('L')
+                            cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
+                                                                   onEdit={setTaskToReschedule}/>
                         },
                         {
                             width: 120,
@@ -111,45 +115,33 @@ export function TaskList() {
         <Scaffold>
             {content}
             <TaskDrawer/>
+            <TaskRescheduleDialog
+                key={taskToReschedule?.identifier}
+                task={taskToReschedule}
+                handleClose={closeRescheduleDialog}
+            />
         </Scaffold>
     );
 }
 
-function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityId }) {
-    const task = useAppSelector((state) => selectTaskByProjectIdAndTaskId(state, projectId, taskId));
-    const dispatch = useAppDispatch();
+function DateCell({task, isStartDate, onEdit}: { task: Task, isStartDate?: boolean, onEdit: (task: Task) => void }) {
+    const canEdit = task.status !== 'COMPLETED';
 
-    const [rescheduleTask] = useRescheduleTaskMutation();
-
-    const onSave = async (startDate: string, endDate: string) => {
-        await rescheduleTask({
-            identifier: task!.identifier,
-            startDate: startDate,
-            endDate: endDate,
-        }).unwrap();
-    }
-
-    const showTodos = () => dispatch(taskSelected(task!.identifier))
-
-    if (task) {
-        const canEditDates = task.status !== 'COMPLETED';
-        return (
-            <React.Fragment>
-                <TableRow hover onClick={showTodos}>
-                    <TaskNameCell task={task}/>
-                    <EditableDateTableCells
-                        canEdit={canEditDates}
-                        onSave={onSave}
-                        startDate={task.startDate}
-                        endDate={task.endDate}
-                    />
-                    <TaskStatusCell task={task}/>
-                </TableRow>
-            </React.Fragment>
-        );
-    } else {
-        return null;
-    }
+    return (
+        <React.Fragment>
+            {dayjs(isStartDate ? task.startDate : task.endDate).format('L')}
+            {
+                canEdit ? (
+                    <IconButton size='small' sx={{ml: 1}} onClick={(event) => {
+                        event.stopPropagation();
+                        onEdit(task);
+                    }}>
+                        <Edit fontSize="inherit"/>
+                    </IconButton>
+                ) : null
+            }
+        </React.Fragment>
+    );
 }
 
 function TaskStatusCell({task}: { task: Task }) {
@@ -175,5 +167,31 @@ function TaskNameCell({task}: { task: Task }) {
 
     return (
         <EditableText initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
+    );
+}
+
+interface TaskRescheduleDialogProps {
+    task?: Task;
+    handleClose: () => void;
+}
+
+function TaskRescheduleDialog({task, handleClose}: TaskRescheduleDialogProps) {
+    const [rescheduleTask] = useRescheduleTaskMutation();
+    const isOpen = !!task;
+
+    const onSave = async (startDate: string, endDate: string) => {
+        await rescheduleTask({
+            identifier: task!.identifier,
+            startDate: startDate,
+            endDate: endDate,
+        }).unwrap();
+    }
+
+    return (
+        <RescheduleDialog initialStartDate={task?.startDate ?? ""}
+                          initialEndDate={task?.endDate ?? ""}
+                          open={isOpen}
+                          onClose={handleClose}
+                          onSave={onSave}/>
     );
 }
