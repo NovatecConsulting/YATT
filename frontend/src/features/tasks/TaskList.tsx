@@ -2,11 +2,7 @@ import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
     CircularProgress,
     Paper,
-    Table,
-    TableBody,
     TableCell,
-    TableContainer,
-    TableHead,
     TableRow
 } from "@mui/material";
 import {
@@ -19,7 +15,7 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {EntityId} from "@reduxjs/toolkit";
 import {Scaffold} from "../../components/scaffold/Scaffold";
 import React, {useEffect} from "react";
-import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
+import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {
     selectProjectByIdFromResult,
@@ -30,6 +26,8 @@ import {EditableDateTableCells} from "../../components/EditableDatesTableCell";
 import {TaskDrawer} from "./TaskDrawer";
 import {closeTaskDrawer, taskSelected} from "./taskDrawerSlice";
 import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
+import {VirtualizedTable} from "../../components/VirtualizedTable";
+import dayjs from "dayjs";
 
 export function TaskList() {
     const history = useHistory();
@@ -41,50 +39,64 @@ export function TaskList() {
     });
 
     const {
-        data: taskIds,
+        data: tasks,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetTasksByProjectQuery(projectId, {selectFromResult: selectIdsFromResult});
+    } = useGetTasksByProjectQuery(projectId, {selectFromResult: selectEntitiesFromResult});
 
     useEffect(() => {
         return () => {
             dispatch(closeTaskDrawer());
         };
-    })
+    }, [dispatch])
 
     const navigateToTaskCreateForm = () => history.push(`/projects/${projectId}/tasklist/new`)
+
+    const showTodos = (taskId: string) => dispatch(taskSelected(taskId))
 
     let content: ReactJSXElement;
     if (isLoading) {
         content = <CircularProgress/>;
-    } else if (isSuccess && taskIds) {
+    } else if (isSuccess && tasks) {
         content = (
-            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
-                <TableToolbar
-                    title={`Tasks for Project "${project?.name}"`}
-                    tooltip={'Create Task'}
-                    onClick={navigateToTaskCreateForm}
-                />
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell width={300}>Name</TableCell>
-                            <TableCell>Start Date</TableCell>
-                            <TableCell>End Date</TableCell>
-                            <TableCell>Status</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+            <Paper sx={{width: 1000, height: 500}}>
+                {/*<TableToolbar*/}
+                {/*    title={`Tasks for Project "${project?.name}"`}*/}
+                {/*    tooltip={'Create Task'}*/}
+                {/*    onClick={navigateToTaskCreateForm}*/}
+                {/*/>*/}
+                <VirtualizedTable
+                    rowCount={tasks.length}
+                    rowGetter={(index) => tasks[index.index]}
+                    onRowClick={(row) => showTodos((row.rowData as Task).identifier)}
+                    columns={[
                         {
-                            taskIds.map(
-                                (taskId: EntityId) => <TaskListRow key={taskId} projectId={projectId} taskId={taskId}/>
-                            )
+                            width: 120,
+                            label: "Name",
+                            dataKey: "name"
+                        },
+                        {
+                            width: 120,
+                            label: "Start Date",
+                            dataKey: "startDate",
+                            cellRenderer: (cellProps) => dayjs(cellProps.cellData).format('L')
+                        },
+                        {
+                            width: 120,
+                            label: "End Date",
+                            dataKey: "endDate",
+                            cellRenderer: (cellProps) => dayjs(cellProps.cellData).format('L')
+                        },
+                        {
+                            width: 120,
+                            label: "Status",
+                            dataKey: "status"
                         }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                    ]}
+                />
+            </Paper>
         );
     } else if (isError) {
         content = <div>{error}</div>;
