@@ -70,27 +70,27 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                     response
                 );
             },
-            async onCacheEntryAdded(projectId, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
-                try {
-                    await api.cacheDataLoaded;
-
-                    cancel = await subscribe<Task>(`/projects/${projectId}/tasks`, update => {
-                        api.updateCachedData(draft => {
-                            if (draft) {
-                                taskAdapter.upsertOne(draft, update);
-                            }
-                        });
-                    });
-                } catch {
-                    // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
-                    // in which case `cacheDataLoaded` will throw
-                }
-                await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
-            }
+            // async onCacheEntryAdded(projectId, api): Promise<void> {
+            //     let cancel: CancelCallback | undefined;
+            //     try {
+            //         await api.cacheDataLoaded;
+            //
+            //         cancel = await subscribe<Task>(`/projects/${projectId}/tasks`, update => {
+            //             api.updateCachedData(draft => {
+            //                 if (draft) {
+            //                     taskAdapter.upsertOne(draft, update);
+            //                 }
+            //             });
+            //         });
+            //     } catch {
+            //         // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
+            //         // in which case `cacheDataLoaded` will throw
+            //     }
+            //     await api.cacheEntryRemoved;
+            //     if (cancel) {
+            //         await cancel("cacheEntryRemoved");
+            //     }
+            // }
         }),
         createTask: builder.mutation<string, CreateTaskDto>({
             query: (taskDto) => ({
