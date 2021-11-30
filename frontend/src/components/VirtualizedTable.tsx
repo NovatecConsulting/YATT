@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import {withStyles, WithStyles} from '@mui/styles';
-import {Theme, createTheme, styled} from '@mui/material/styles';
+import {Theme, createTheme} from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import {
     AutoSizer,
