@@ -68,6 +68,7 @@ export function TaskList() {
                 {/*    onClick={navigateToTaskCreateForm}*/}
                 {/*/>*/}
                 <VirtualizedTable
+                    rowHeight={64}
                     rowCount={tasks.length}
                     rowGetter={(index) => tasks[index.index]}
                     onRowClick={(row) => showTodos((row.rowData as Task).identifier)}
@@ -75,7 +76,8 @@ export function TaskList() {
                         {
                             width: 120,
                             label: "Name",
-                            dataKey: "name"
+                            dataKey: "name",
+                            cellRenderer: (cellProps) => <TaskNameCell task={cellProps.rowData as Task}/>
                         },
                         {
                             width: 120,
@@ -92,7 +94,8 @@ export function TaskList() {
                         {
                             width: 120,
                             label: "Status",
-                            dataKey: "status"
+                            dataKey: "status",
+                            cellRenderer: (cellProps) => <TaskStatusCell task={cellProps.rowData as Task}/>
                         }
                     ]}
                 />
@@ -140,7 +143,7 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
                         startDate={task.startDate}
                         endDate={task.endDate}
                     />
-                    <TaskStatusCell taskStatus={task.status} taskId={task.identifier}/>
+                    <TaskStatusCell task={task}/>
                 </TableRow>
             </React.Fragment>
         );
@@ -149,12 +152,12 @@ function TaskListRow({projectId, taskId}: { projectId: EntityId, taskId: EntityI
     }
 }
 
-function TaskStatusCell({taskStatus, taskId}: { taskStatus: string, taskId: EntityId }) {
+function TaskStatusCell({task}: { task: Task }) {
     return (
-        <TableCell>
-            {taskStatus}
-            <UpdateTaskStatusButton sx={{ml: 2}} taskId={taskId} taskStatus={taskStatus}/>
-        </TableCell>
+        <React.Fragment>
+            {task.status}
+            <UpdateTaskStatusButton sx={{ml: 2}} taskId={task.identifier} taskStatus={task.status}/>
+        </React.Fragment>
     );
 }
 
@@ -171,8 +174,6 @@ function TaskNameCell({task}: { task: Task }) {
     };
 
     return (
-        <TableCell>
-            <EditableText initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
-        </TableCell>
+        <EditableText initialValue={task.name} label={'Name'} canEdit={canEditName} onSave={onSave}/>
     );
 }
