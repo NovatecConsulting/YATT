@@ -39,6 +39,7 @@ interface ColumnData {
     dataKey: string;
     label: string;
     numeric?: boolean;
+    flexGrow?: number;
     width: number;
     cellRenderer?: TableCellRenderer;
 }
@@ -130,7 +131,6 @@ class MuiVirtualizedTable<T> extends React.PureComponent<MuiVirtualizedTableProp
                         {columns.map(({dataKey, ...other}, index) => {
                             return (
                                 <Column
-                                    flexGrow={1}
                                     key={dataKey}
                                     headerRenderer={(headerProps) =>
                                         this.headerRenderer({

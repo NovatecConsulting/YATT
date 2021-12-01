@@ -53,22 +53,26 @@ export function EmployeeList() {
                         columns={[
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "First Name",
                                 dataKey: "userFirstName",
                             },
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "Last Name",
                                 dataKey: "userLastName",
                             },
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "Is Admin",
                                 dataKey: "isAdmin",
                                 cellRenderer: (cellProps) => <IsAdminCell employee={cellProps.rowData as Employee}/>
                             },
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "Is Project Manager",
                                 dataKey: "isProjectManager",
                                 cellRenderer: (cellProps) => <IsProjectManagerCell
