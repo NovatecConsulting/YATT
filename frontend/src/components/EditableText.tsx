@@ -9,7 +9,7 @@ export interface EditableTextProps {
     label: string;
     canEdit: boolean;
     onSave: (text: string) => Promise<void>;
-    typographyProps?: TypographyProps & { component: string };
+    typographyProps?: TypographyProps & { component?: string };
 }
 
 export function EditableText(props: EditableTextProps) {
@@ -34,8 +34,9 @@ export function EditableText(props: EditableTextProps) {
     });
 
     return !isEditing ? (
-        <Box>
-            <Typography variant={"body2"} component={"span"} {...props.typographyProps}>
+        <Box sx={{display: "flex", alignItems: "center"}}>
+            <Typography variant={"body2"} component={"span"} {...props.typographyProps}
+                        sx={{wordBreak: "break-word", boxSizing: "border-box"}}>
                 {props.initialValue}
             </Typography>
             {
@@ -48,10 +49,9 @@ export function EditableText(props: EditableTextProps) {
                     </IconButton>
                 ) : null
             }
-
         </Box>
     ) : (
-        <React.Fragment>
+        <Box sx={{display: "flex", alignItems: "center"}}>
             <TextField
                 margin='none'
                 size='small'
@@ -76,6 +76,6 @@ export function EditableText(props: EditableTextProps) {
             }}>
                 <Clear/>
             </IconButton>
-        </React.Fragment>
+        </Box>
     );
 }

@@ -92,14 +92,15 @@ function TodoListHeader({task, handleOpenAddTodoDialog}: TodoListHeaderProps) {
     return (
         <ListSubheader>{
             <Toolbar disableGutters={true}>
-                <Typography
-                    sx={{flex: '1 1 100%'}}
-                    color="inherit"
-                    variant="inherit"
-                    component="div"
-                >
-                    {`Todos for Task "${task.name}"`}
-                </Typography>
+                <Box sx={{flex: '1 1 100%', wordBreak: "break-word", boxSizing: "border-box"}}>
+                    <Typography
+                        color="inherit"
+                        variant="inherit"
+                        component="span"
+                    >
+                        {`Todos for Task "${task.name}"`}
+                    </Typography>
+                </Box>
                 {
                     task.status === 'COMPLETED' ? null : (
                         <Tooltip title={"Add Todo"}>
@@ -132,18 +133,18 @@ function TaskDetailsHeader({task}: { task: Task }) {
         <ListSubheader onMouseEnter={() => setIsMouseEntered(true)}
                        onMouseLeave={() => setIsMouseEntered(false)}>{
             <Toolbar disableGutters={true}>
-                <EditableText
-                    typographyProps={{
-                        color: "inherit",
-                        variant: "h5",
-                        component: "div"
-                    }}
-                    initialValue={task.name}
-                    label={'Name'}
-                    canEdit={canEditName && isMouseEntered}
-                    onSave={onSave}
-                />
-                <Box sx={{flexGrow: 1}}/>
+                <Box sx={{flexGrow: 1}}>
+                    <EditableText
+                        typographyProps={{
+                            color: "inherit",
+                            variant: "h5"
+                        }}
+                        initialValue={task.name}
+                        label={'Name'}
+                        canEdit={canEditName && isMouseEntered}
+                        onSave={onSave}
+                    />
+                </Box>
                 <Tooltip title={"Close"}>
                     <IconButton edge='end' onClick={() => dispatch(closeTaskDrawer())}>
                         <Close/>
