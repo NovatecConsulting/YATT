@@ -61,18 +61,20 @@ export function ProjectsList() {
                         columns={[
                             {
                                 width: 120,
+                                flexGrow: 2,
                                 label: "Name",
                                 dataKey: "name",
                                 cellRenderer: (cellProps) => <ProjectNameCell project={cellProps.rowData as Project}/>
                             },
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "Company",
                                 dataKey: "companyReference",
                                 cellRenderer: (cellProps) => <CompanyNameCell project={cellProps.rowData as Project}/>
                             },
                             {
-                                width: 120,
+                                width: 150,
                                 label: "Planned Start Date",
                                 dataKey: "startDate",
                                 cellRenderer: (cellProps) => <DateCell project={cellProps.rowData as Project}
@@ -80,7 +82,7 @@ export function ProjectsList() {
                                                                        onEdit={setProjectToReschedule}/>
                             },
                             {
-                                width: 120,
+                                width: 150,
                                 label: "Deadline",
                                 dataKey: "deadline",
                                 cellRenderer: (cellProps) => <DateCell project={cellProps.rowData as Project}

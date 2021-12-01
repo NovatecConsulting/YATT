@@ -79,12 +79,13 @@ export function TaskList() {
                         columns={[
                             {
                                 width: 120,
+                                flexGrow: 1,
                                 label: "Name",
                                 dataKey: "name",
                                 cellRenderer: (cellProps) => <TaskNameCell task={cellProps.rowData as Task}/>
                             },
                             {
-                                width: 120,
+                                width: 150,
                                 label: "Start Date",
                                 dataKey: "startDate",
                                 cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
@@ -92,14 +93,14 @@ export function TaskList() {
                                                                        onEdit={setTaskToReschedule}/>
                             },
                             {
-                                width: 120,
+                                width: 150,
                                 label: "End Date",
                                 dataKey: "endDate",
                                 cellRenderer: (cellProps) => <DateCell task={cellProps.rowData as Task}
                                                                        onEdit={setTaskToReschedule}/>
                             },
                             {
-                                width: 120,
+                                width: 300,
                                 label: "Status",
                                 dataKey: "status",
                                 cellRenderer: (cellProps) => <TaskStatusCell task={cellProps.rowData as Task}/>
