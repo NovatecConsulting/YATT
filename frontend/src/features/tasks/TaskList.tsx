@@ -64,7 +64,7 @@ export function TaskList() {
         content = <CircularProgress/>;
     } else if (isSuccess && tasks) {
         content = (
-            <Paper sx={{width: 1000, height: 500, display: "flex", flexFlow: "column"}}>
+            <Paper sx={{width: 1000, height: 500, display: "flex", flexFlow: "column", flex: "1 1 auto"}}>
                 <TableToolbar
                     title={`Tasks for Project "${project?.name}"`}
                     tooltip={'Create Task'}

@@ -13,12 +13,12 @@ export function Login() {
     }
 
     return (
-        <Box component="main" sx={{mt: '20px'}}>
+        <Box component="main">
             <Typography
                 variant='h4'
                 color='#ededed'
                 sx={{
-                    p: '62px 10px 20px',
+                    p: '82px 10px 20px',
                     fontWeight: 400,
                     fontSize: '29px',
                     textAlign: 'center',
