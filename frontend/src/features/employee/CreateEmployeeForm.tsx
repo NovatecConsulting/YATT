@@ -71,7 +71,8 @@ export function CreateEmployeeForm() {
                             onChange={formik.handleChange}
                         >
                             {usersResult.data.map(user => (
-                                <MenuItem key={user.identifier} value={user.identifier}>{user.firstname}</MenuItem>
+                                <MenuItem key={user.identifier}
+                                          value={user.identifier}>{`${user.firstname} ${user.lastname}`}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
