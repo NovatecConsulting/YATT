@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useFormik} from "formik";
-import {IconButton, TextField, Typography} from "@mui/material";
+import {Box, IconButton, TextField, Typography} from "@mui/material";
 import {Check, Clear, Edit} from "@mui/icons-material";
 import {TypographyProps} from "@mui/material/Typography/Typography";
 
@@ -34,7 +34,7 @@ export function EditableText(props: EditableTextProps) {
     });
 
     return !isEditing ? (
-        <React.Fragment>
+        <Box>
             <Typography variant={"body2"} component={"span"} {...props.typographyProps}>
                 {props.initialValue}
             </Typography>
@@ -49,7 +49,7 @@ export function EditableText(props: EditableTextProps) {
                 ) : null
             }
 
-        </React.Fragment>
+        </Box>
     ) : (
         <React.Fragment>
             <TextField
