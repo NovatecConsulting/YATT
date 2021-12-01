@@ -8,7 +8,7 @@ import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
     Card, CardContent,
-    CircularProgress,
+    CircularProgress, List,
 } from "@mui/material";
 import {TaskDrawer} from "./TaskDrawer";
 import React from "react";
@@ -114,7 +114,9 @@ export function TasksGanttChart() {
 
     return (
         <Scaffold>
-            {content}
+            <List sx={{width: "100%"}}>
+                {content}
+            </List>
             <TaskDrawer/>
         </Scaffold>
     );
