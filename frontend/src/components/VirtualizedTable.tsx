@@ -10,6 +10,7 @@ import {
     TableCellRenderer,
     TableHeaderProps,
 } from 'react-virtualized';
+import {Typography} from "@mui/material";
 
 const styles = (theme: Theme) =>
     ({
@@ -122,6 +123,9 @@ class MuiVirtualizedTable<T> extends React.PureComponent<MuiVirtualizedTableProp
                         headerHeight={headerHeight!}
                         {...tableProps}
                         rowClassName={this.getRowClassName}
+                        noRowsRenderer={() => {
+                            return <Typography align={"center"} marginTop={2}>No entries</Typography>
+                        }}
                     >
                         {columns.map(({dataKey, ...other}, index) => {
                             return (
