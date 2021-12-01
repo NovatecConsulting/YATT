@@ -1,59 +1,58 @@
-import {Company, selectCompanyById, useGetCompaniesQuery} from "./companySlice";
+import {Company, useGetCompaniesQuery} from "./companySlice";
 import {Scaffold} from "../../components/scaffold/Scaffold";
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
 import {
+    Box,
     CircularProgress,
     Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
 } from "@mui/material";
 import React from "react";
-import {selectIdsFromResult} from "../../app/rtkQueryHelpers";
-import {EntityId} from "@reduxjs/toolkit";
-import {useAppSelector} from "../../app/hooks";
+import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
 import {useHistory} from "react-router-dom";
+import {VirtualizedTable} from "../../components/VirtualizedTable";
 
 export function CompanyList() {
     const history = useHistory();
     const {
-        data: companyIds,
+        data: companies,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetCompaniesQuery(undefined, {selectFromResult: selectIdsFromResult});
+    } = useGetCompaniesQuery(undefined, {selectFromResult: selectEntitiesFromResult});
+
+    const navigateToCreateCompanyForm = () => history.push(`/companies/new`);
+
+    const navigateToEmployeeList = (companyId: string) => history.push(`/companies/${companyId}/employees`)
 
     let content: ReactJSXElement;
     if (isLoading) {
         content = <CircularProgress/>;
-    } else if (isSuccess && companyIds) {
+    } else if (isSuccess && companies) {
         content = (
-            <TableContainer sx={{maxWidth: 1000}} component={Paper}>
+            <Paper sx={{width: 1000, display: "flex", flexFlow: "column", flex: "1 1 auto"}}>
                 <TableToolbar
                     title={'All Companies'}
                     tooltip={'Create Company'}
-                    onClick={() => history.push(`/companies/new`)}
+                    onClick={navigateToCreateCompanyForm}
                 />
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            companyIds.map((companyId) => (
-                                <CompanyRow key={companyId} companyId={companyId}/>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                <Box sx={{flex: "1 1 auto"}}>
+                    <VirtualizedTable
+                        rowHeight={64}
+                        rowCount={companies.length}
+                        rowGetter={(index) => companies[index.index]}
+                        onRowClick={(row) => navigateToEmployeeList((row.rowData as Company).identifier)}
+                        columns={[
+                            {
+                                width: 1000,
+                                label: "Name",
+                                dataKey: "name",
+                            },
+                        ]}
+                    />
+                </Box>
+            </Paper>
         );
     } else if (isError) {
         content = <div>{error}</div>;
@@ -67,25 +66,4 @@ export function CompanyList() {
         </Scaffold>
     );
 
-}
-
-interface CompanyRowProps {
-    companyId: EntityId;
-}
-
-function CompanyRow(props: CompanyRowProps) {
-    const history = useHistory();
-    const company = useAppSelector(state => selectCompanyById(state, props.companyId))
-
-    const navigateToEmployeeList = (company: Company) => history.push(`/companies/${company.identifier}/employees`)
-
-    if (company) {
-        return (
-            <TableRow hover onClick={() => navigateToEmployeeList(company)}>
-                <TableCell>{company.name}</TableCell>
-            </TableRow>
-        );
-    } else {
-        return null;
-    }
 }
