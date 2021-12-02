@@ -71,10 +71,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                     cancel = await subscribe<Task[]>(`/projects/${projectId}/tasks`, update => {
                         api.updateCachedData(draft => {
                             if (draft) {
-                                taskAdapter.updateMany(draft, update.map(task => ({
-                                    id: task.identifier,
-                                    changes: task
-                                })));
+                                taskAdapter.upsertMany(draft, update);
                             }
                         });
                     });
