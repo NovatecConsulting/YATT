@@ -34,6 +34,8 @@ class SecurityConfig(val userDetailsService: UserDetailsService) : WebSecurityCo
         .exceptionHandling()
         .and()
         .authorizeRequests()
+        .antMatchers("/stomp")
+        .permitAll()
         .anyRequest()
         .authenticated()
         .and()
