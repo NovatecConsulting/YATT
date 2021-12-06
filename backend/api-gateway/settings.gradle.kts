@@ -33,4 +33,5 @@ includeBuild("../user")
 rootProject.name = "api-gateway"
 include("axon")
 include("spring-cloud")
+include("websocket-stomp")
 
