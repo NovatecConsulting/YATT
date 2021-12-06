@@ -1,10 +1,10 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {subscribe} from "../../app/api";
-import {CancelCallback} from "can-ndjson-stream";
+import {websocketClient} from "../../app/api";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
+import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Project {
     identifier: string;
@@ -77,11 +77,11 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
-
-                    cancel = await subscribe<Project>('/projects', update => {
+                    subscription = websocketClient.subscribe("/projects", message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
                                 projectsAdapter.upsertOne(draft, update);
@@ -93,9 +93,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe()
             }
         }),
         createProject: builder.mutation<string, CreateProjectDto>({
@@ -134,11 +132,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         getProjectDetails: builder.query<ProjectDetails, string>({
             query: (id) => `/projects/${id}/details`,
             async onCacheEntryAdded(id, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
-                    cancel = await subscribe<ProjectDetails>(`/projects/${id}/details`, update => {
+                    subscription = websocketClient.subscribe(`/projects/${id}/details`, message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             Object.keys(draft).forEach(key => {
                                 (draft as any)[key] = (update as any)[key];
@@ -150,9 +149,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe();
             }
         }),
     })

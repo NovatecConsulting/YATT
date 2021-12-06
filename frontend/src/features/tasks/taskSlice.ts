@@ -1,8 +1,8 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
-import {subscribe} from "../../app/api";
+import {websocketClient} from "../../app/api";
 import {RootState} from "../../app/store";
-import {CancelCallback} from "can-ndjson-stream";
+import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Task {
     identifier: string;
@@ -64,11 +64,12 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(projectId, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
-                    cancel = await subscribe<Task[]>(`/projects/${projectId}/tasks`, update => {
+                    subscription = websocketClient.subscribe(`/projects/${projectId}/tasks`, message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
                                 taskAdapter.upsertMany(draft, update);
@@ -80,9 +81,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe()
             }
         }),
         createTask: builder.mutation<string, CreateTaskDto>({
