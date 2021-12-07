@@ -1,8 +1,8 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
-import {subscribe} from "../../app/api";
+import {websocketClient} from "../../app/api";
 import {RootState} from "../../app/store";
-import {CancelCallback} from "can-ndjson-stream";
+import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Participant {
     identifier: string;
@@ -44,11 +44,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(projectId, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
-                    cancel = await subscribe<Participant>(`/projects/${projectId}/participants`, update => {
+                    subscription = websocketClient.subscribe(`/projects/${projectId}/participants`, message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
                                 entityAdapter.upsertOne(draft, update);
@@ -60,9 +61,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe()
             }
         }),
         createParticipant: builder.mutation<string, CreateParticipantDto>({

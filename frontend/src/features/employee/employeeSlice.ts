@@ -1,8 +1,8 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {CancelCallback} from "can-ndjson-stream";
-import {subscribe} from "../../app/api";
+import {websocketClient} from "../../app/api";
+import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Employee {
     identifier: string;
@@ -43,11 +43,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(companyId, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
-                    cancel = await subscribe<Employee>(`/companies/${companyId}/employees`, update => {
+                    subscription = websocketClient.subscribe(`/companies/${companyId}/employees`, message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
                                 employeesAdapter.upsertOne(draft, update);
@@ -59,9 +60,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe()
             }
         }),
         createEmployee: builder.mutation<string, CreateEmployeeDto>({
