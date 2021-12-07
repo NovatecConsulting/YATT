@@ -19,4 +19,9 @@ class CurrentUserSubscriptionQueries {
   fun remove(subscriptionId: String) {
     subscriptions.remove(subscriptionId)?.cancel()
   }
+
+  fun removeAll() {
+    subscriptions.forEach { (_, subscription) -> subscription.cancel() }
+    subscriptions.clear()
+  }
 }
