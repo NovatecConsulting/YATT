@@ -1,10 +1,10 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {CancelCallback} from "can-ndjson-stream";
-import {subscribe} from "../../app/api";
+import {websocketClient} from "../../app/api";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
+import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Company {
     identifier: string;
@@ -34,11 +34,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let cancel: CancelCallback | undefined;
+                let subscription: StompSubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
-                    cancel = await subscribe<Company>('/companies', update => {
+                    subscription = websocketClient.subscribe(`/companies`, message => {
+                        const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
                                 companiesAdapter.upsertOne(draft, update);
@@ -50,9 +51,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                if (cancel) {
-                    await cancel("cacheEntryRemoved");
-                }
+                subscription?.unsubscribe()
             }
         }),
         createCompany: builder.mutation<string, CreateCompanyDto>({
