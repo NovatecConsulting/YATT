@@ -1,8 +1,7 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
-import {websocketClient} from "../../app/api";
+import {Subscription, websocketClient} from "../../app/api";
 import {RootState} from "../../app/store";
-import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Participant {
     identifier: string;
@@ -44,7 +43,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(projectId, api): Promise<void> {
-                let subscription: StompSubscription | undefined;
+                let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
