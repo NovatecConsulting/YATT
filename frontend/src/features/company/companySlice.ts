@@ -1,10 +1,9 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {websocketClient} from "../../app/api";
+import {Subscription, websocketClient} from "../../app/api";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
-import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Company {
     identifier: string;
@@ -34,7 +33,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let subscription: StompSubscription | undefined;
+                let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 

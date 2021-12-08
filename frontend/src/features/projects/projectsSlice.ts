@@ -1,10 +1,9 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {websocketClient} from "../../app/api";
+import {Subscription, websocketClient} from "../../app/api";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
-import {StompSubscription} from "@stomp/stompjs/esm6/stomp-subscription";
 
 export interface Project {
     identifier: string;
@@ -77,7 +76,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let subscription: StompSubscription | undefined;
+                let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
                     subscription = websocketClient.subscribe("/projects", message => {
@@ -132,7 +131,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         getProjectDetails: builder.query<ProjectDetails, string>({
             query: (id) => `/projects/${id}/details`,
             async onCacheEntryAdded(id, api): Promise<void> {
-                let subscription: StompSubscription | undefined;
+                let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
 
