@@ -4,6 +4,9 @@ import {RootState} from "../../app/store";
 import {Subscription, websocketClient} from "../../app/api";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
+import {rsocket} from "../../app/rsocket";
+import {encodeRoute} from 'rsocket-core';
+import {ISubscription} from "rsocket-types";
 
 export interface Project {
     identifier: string;
@@ -76,23 +79,31 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let subscription: Subscription | undefined;
+                let subscription: ISubscription | undefined;
                 try {
                     await api.cacheDataLoaded;
-                    subscription = websocketClient.subscribe("/projects", message => {
-                        const update = JSON.parse(message.body);
-                        api.updateCachedData(draft => {
-                            if (draft) {
-                                projectsAdapter.upsertOne(draft, update);
-                            }
-                        });
-                    });
+                    rsocket.requestStream({
+                        metadata: encodeRoute("projects")
+                    }).subscribe({
+                        onNext(payload) {
+                            const update = payload.data
+                            api.updateCachedData(draft => {
+                                if (draft) {
+                                    projectsAdapter.upsertOne(draft, update);
+                                }
+                            });
+                        },
+                        onSubscribe(_subscription) {
+                            subscription = _subscription
+                            subscription.request(2147483647)
+                        },
+                    })
                 } catch {
                     // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                subscription?.unsubscribe()
+                subscription?.cancel();
             }
         }),
         createProject: builder.mutation<string, CreateProjectDto>({
