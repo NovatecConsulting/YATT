@@ -36,7 +36,6 @@ class WebsocketSecurityConfig(
             if (StompCommand.CONNECT == accessor.command) {
               val accessToken = accessor.getFirstNativeHeader("access-token")
               if (accessToken is String) {
-                // TODO validate jwt?
                 val jwt = JwtDecoders.fromIssuerLocation<JwtDecoder>(issuer).decode(accessToken)
                 accessor.user = authConverter.convert(jwt)
               } else {

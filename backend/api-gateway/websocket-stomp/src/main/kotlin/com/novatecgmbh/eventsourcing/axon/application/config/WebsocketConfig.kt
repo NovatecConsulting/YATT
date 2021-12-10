@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.application.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
@@ -8,7 +9,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-class WebsocketConfig : WebSocketMessageBrokerConfigurer {
+class WebsocketConfig(@Value("\${app.cors.allowed-origins}") val allowedOrigins: List<String>?) :
+    WebSocketMessageBrokerConfigurer {
 
   override fun configureMessageBroker(config: MessageBrokerRegistry) {
     config.enableSimpleBroker("/topic")
@@ -16,7 +18,12 @@ class WebsocketConfig : WebSocketMessageBrokerConfigurer {
   }
 
   override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-    registry.addEndpoint("/stomp").setAllowedOrigins("http://localhost:3000")
-    registry.addEndpoint("/stomp").setAllowedOrigins("http://localhost:3000").withSockJS()
+    registry
+        .addEndpoint("/stomp")
+        .setAllowedOrigins(*allowedOrigins?.toTypedArray() ?: emptyArray())
+    registry
+        .addEndpoint("/stomp")
+        .setAllowedOrigins(*allowedOrigins?.toTypedArray() ?: emptyArray())
+        .withSockJS()
   }
 }
