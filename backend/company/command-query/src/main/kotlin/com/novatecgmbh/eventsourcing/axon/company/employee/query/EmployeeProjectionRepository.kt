@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface EmployeeProjectionRepository : JpaRepository<EmployeeProjection, EmployeeId> {
   fun findAllByCompanyId(companyId: CompanyId): MutableIterable<EmployeeProjection>
+  fun findAllByCompanyIdIn(companyId: Set<CompanyId>): MutableIterable<EmployeeProjection>
 }

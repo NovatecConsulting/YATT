@@ -41,6 +41,19 @@ interface ProjectAclRepository : JpaRepository<ProjectAcl, ProjectAclKey> {
   ): Boolean
 
   @Query(
+      "select p.key.aggregateIdentifier from ProjectAcl p " +
+          "where p.key.aggregateType " +
+          "= com.novatecgmbh.eventsourcing.axon.project.authorization.acl.AuthorizableAggregateTypesEnum.PROJECT " +
+          "and p.key.aggregateIdentifier in :projectIds " +
+          "and p.key.permission " +
+          "= com.novatecgmbh.eventsourcing.axon.project.authorization.acl.PermissionEnum.ACCESS_PROJECT " +
+          "and p.key.userId = :userId")
+  fun filterProjectsWithAccess(
+      @Param("userId") userId: UserId,
+      @Param("projectIds") projectIds: Set<String>
+  ): List<String>
+
+  @Query(
       "select case when (count(p) > 0) then true else false end from ProjectAcl p " +
           "where p.key.aggregateType " +
           "= com.novatecgmbh.eventsourcing.axon.project.authorization.acl.AuthorizableAggregateTypesEnum.COMPANY " +

@@ -1,0 +1,112 @@
+extend type Query {
+    project(identifier: ID!): ProjectQueryResult
+    projects: [ProjectQueryResult]
+}
+
+extend type Mutation {
+    createProject(
+        projectName: String!,
+        plannedStartDate: Date!,
+        deadline: Date!,
+        companyId: String!): ID!
+    renameProject(
+        identifier: ID!,
+        version: Int!,
+        name: String!
+    ): Int!
+    rescheduleProject(
+        identifier: ID!,
+        version: Int!,
+        startDate: Date!
+        deadline: Date!
+    ): Int!
+    createParticipant(
+        projectIdentifier: ID!,
+        companyIdentifier: ID!,
+        userIdentifier: ID!
+    ): ID!
+    createTask(
+        projectIdentifier: ID!,
+        name: String!,
+        description: String,
+        startDate: Date!,
+        endDate: Date!
+    ): ID!
+    renameTask(
+        identifier: ID,
+        name: String!
+    ): Int!
+    rescheduleTask(
+        identifier: ID,
+        startDate: Date!,
+        endDate: Date!
+    ): Int!
+    changeDescriptionOfTask(
+        identifier: ID!,
+        description: String!
+    ): Int!
+    startTask(
+        identifier: ID!
+    ): Int!
+    completeTask(
+        identifier: ID!
+    ): Int!
+    addTodoToTask(
+        identifier: ID!,
+        description: String
+    ): ID!
+    markTodoAsDone(
+        identifier: ID!,
+        todoIdentifier: ID!
+    ): Int!
+    removeTodoFromTask(
+        identifier: ID!,
+        todoIdentifier: ID!
+    ): Int!
+}
+
+type ProjectQueryResult {
+    identifier: ID!
+    name: String!
+    startDate: String
+    deadline: String
+    companyReference: AggregateReference!
+    status: ProjectStatus
+    actualEndDate: String
+    tasks: [TaskQueryResult]
+    participants: [ParticipantQueryResult]
+}
+
+type TaskQueryResult {
+    identifier: ID!
+    name: String!
+    description: String
+    startDate: String
+    endDate: String
+    status: TaskStatus!
+    todos: [TodoQueryResult]
+}
+
+type TodoQueryResult {
+    todoId: ID!
+    description: String
+    isDone: Boolean!
+}
+
+type ParticipantQueryResult {
+    identifier: ID!
+    companyName: String!
+    userFirstName: String!
+    userLastName: String!
+}
+
+enum ProjectStatus {
+    ON_TIME
+    DELAYED
+}
+
+enum TaskStatus {
+    PLANNED
+    STARTED
+    COMPLETED
+}

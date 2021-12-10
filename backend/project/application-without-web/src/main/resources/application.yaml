@@ -23,6 +23,7 @@ spring:
 logging:
   level:
     ROOT: warn
+    # io.jaegertracing.internal.reporters.LoggingReporter: info
     org:
       axonframework.eventhandling.pooled.Coordinator: info
       flywaydb.core.internal.command: info

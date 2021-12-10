@@ -1,13 +1,11 @@
 package com.novatecgmbh.eventsourcing.axon.company.company.query
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.*
-import java.util.*
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
-import org.axonframework.queryhandling.QueryHandler
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
 
@@ -44,12 +42,4 @@ class CompanyProjector(
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
-
-  @QueryHandler
-  fun handle(query: CompanyQuery): Optional<CompanyQueryResult> =
-      repository.findById(query.companyId).map { it.toQueryResult() }
-
-  @QueryHandler
-  fun handle(query: AllCompaniesQuery): Iterable<CompanyQueryResult> =
-      repository.findAll().map { it.toQueryResult() }
 }

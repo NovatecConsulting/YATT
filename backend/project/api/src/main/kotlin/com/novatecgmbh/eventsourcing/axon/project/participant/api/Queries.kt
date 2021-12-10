@@ -6,6 +6,8 @@ import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 
 data class ParticipantByProjectQuery(val projectId: ProjectId)
 
+data class ParticipantByMultipleProjectsQuery(val projectIds: Set<ProjectId>)
+
 data class ParticipantQuery(val participantId: ParticipantId)
 
 data class ParticipantQueryResult(

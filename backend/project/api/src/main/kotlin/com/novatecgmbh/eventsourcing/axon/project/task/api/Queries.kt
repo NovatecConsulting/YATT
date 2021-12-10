@@ -5,6 +5,8 @@ import java.time.LocalDate
 
 data class TasksByProjectQuery(val projectId: ProjectId)
 
+data class TasksByMultipleProjectsQuery(val projectIds: Set<ProjectId>)
+
 data class TaskQuery(val taskId: TaskId)
 
 data class TaskQueryResult(

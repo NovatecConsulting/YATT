@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/graph-ql/api-gateway.graphql.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/graph-ql/api-gateway.graphql.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/graph-ql/api-gateway.graphql.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/graph-ql/api-gateway.graphql.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/event-sourcing-with-axon.iml" filepath="$PROJECT_DIR$/.idea/event-sourcing-with-axon.iml" />
     </modules>
   </component>

@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.participant.query
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAuthorizationService
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantByMultipleProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantByProjectQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
@@ -33,5 +34,14 @@ class ParticipantQueryHandler(
   ): Iterable<ParticipantQueryResult> =
       authService.runWhenAuthorizedForProject(UserId(userId), query.projectId) {
         repository.findAllByProjectId(query.projectId).map { it.toQueryResult() }
+      }
+
+  @QueryHandler
+  fun handle(
+      query: ParticipantByMultipleProjectsQuery,
+      @AuditUserId userId: String
+  ): Iterable<ParticipantQueryResult> =
+      authService.runWhenAuthorizedForAllProjects(UserId(userId), query.projectIds) {
+        repository.findAllByProjectIdIn(query.projectIds).map { it.toQueryResult() }
       }
 }

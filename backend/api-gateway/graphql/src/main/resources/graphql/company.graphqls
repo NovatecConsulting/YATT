@@ -1,0 +1,28 @@
+extend type Query {
+    company(identifier:ID!): CompanyQueryResult
+    companies: [CompanyQueryResult]
+    employee(identifier:ID!): EmployeeQueryResult
+}
+
+extend type Mutation {
+    createCompany(name: String!): ID!
+    createEmployee(companyId: ID!, userId: ID!): ID!
+    grantProjectManagerPermissionToEmployee(identifier: ID!): Int!
+    removeProjectManagerPermissionFromEmployee(identifier: ID!): Int!
+    grantAdminPermissionToEmployee(identifier: ID!): Int!
+    removeAdminPermissionFromEmployee(identifier: ID!): Int!
+}
+
+type CompanyQueryResult {
+    identifier: ID!
+    name: String!
+    employees: [EmployeeQueryResult]
+}
+
+type EmployeeQueryResult {
+    identifier: ID!,
+    userFirstName: String!
+    userLastName: String!
+    isAdmin: Boolean!
+    isProjectManager: Boolean!
+}

@@ -4,6 +4,7 @@ import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
 import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAuthorizationService
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByMultipleProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByProjectQuery
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.util.*
@@ -28,4 +29,13 @@ class TaskQueryHandler(
         authService.runWhenAuthorizedForProject(UserId(userId), it.get().projectId) { it }
       }
           ?: Optional.empty()
+
+  @QueryHandler
+  fun handle(
+      query: TasksByMultipleProjectsQuery,
+      @AuditUserId userId: String
+  ): Iterable<TaskQueryResult> =
+      authService.runWhenAuthorizedForAllProjects(UserId(userId), query.projectIds) {
+        repository.findAllByProjectIdIn(query.projectIds).map { it.toQueryResult() }
+      }
 }
