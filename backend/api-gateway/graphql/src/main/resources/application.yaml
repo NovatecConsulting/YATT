@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: graphql-api
+  graphql:
+    graphiql:
+      enabled: false
+    schema:
+      printer:
+        enabled: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
+          jwk-set-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/certs
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000
+
+logging:
+  level:
+    ROOT: warn
+    io.jaegertracing.internal.reporters.LoggingReporter: info
+    org:
+      axonframework.eventhandling.pooled.Coordinator: info
+      flywaydb.core.internal.command: info
+      springframework.boot: info

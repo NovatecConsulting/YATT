@@ -98,16 +98,4 @@ class EmployeeProjector(
   }
 
   @ResetHandler fun reset() = repository.deleteAll()
-
-  @QueryHandler
-  fun handle(query: EmployeeQuery): Optional<EmployeeQueryResult> =
-      repository.findById(query.employeeId).map { it.toQueryResult() }
-
-  @QueryHandler
-  fun handle(query: EmployeesByCompanyQuery): Iterable<EmployeeQueryResult> =
-      repository.findAllByCompanyId(query.companyId).map { it.toQueryResult() }
-
-  @QueryHandler
-  fun handle(query: AllEmployeesQuery): Iterable<EmployeeQueryResult> =
-      repository.findAll().map { it.toQueryResult() }
 }

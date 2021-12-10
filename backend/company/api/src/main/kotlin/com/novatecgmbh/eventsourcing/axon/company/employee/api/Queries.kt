@@ -7,6 +7,8 @@ class AllEmployeesQuery
 
 data class EmployeesByCompanyQuery(val companyId: CompanyId)
 
+data class EmployeesByMultipleCompaniesQuery(val companyIds: Set<CompanyId>)
+
 data class EmployeeQuery(val employeeId: EmployeeId)
 
 data class EmployeeQueryResult(

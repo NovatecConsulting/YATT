@@ -1,0 +1,21 @@
+type Query {
+    users: [UserQueryResult]
+}
+
+type Mutation {
+    registerUser(
+        firstname: String!
+        lastname: String!
+    ): ID!
+    renameUser(
+        identifier: ID!
+        firstname: String!
+        lastname: String!
+    ): Int!
+}
+
+type UserQueryResult {
+    identifier: ID!
+    firstname: String!
+    lastname: String!
+}

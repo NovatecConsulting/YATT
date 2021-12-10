@@ -1,0 +1,6 @@
+type AggregateReference {
+    identifier: String
+    displayName: String
+}
+
+scalar Date

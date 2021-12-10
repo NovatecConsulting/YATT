@@ -14,4 +14,17 @@ class ProjectAuthorizationService(private val aclRepository: ProjectAclRepositor
       } else {
         throw IllegalAccessException("User has no access to this project")
       }
+
+  fun <T> runWhenAuthorizedForAllProjects(
+      userId: UserId,
+      projectIds: Set<ProjectId>,
+      callable: () -> T
+  ): T =
+      if (aclRepository.filterProjectsWithAccess(
+              userId, projectIds.map(ProjectId::toString).toSet())
+          .size == projectIds.size) {
+        callable.invoke()
+      } else {
+        throw IllegalAccessException("User does not have access to all requested projects")
+      }
 }
