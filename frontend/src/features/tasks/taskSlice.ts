@@ -71,7 +71,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                         const update = JSON.parse(message.body);
                         api.updateCachedData(draft => {
                             if (draft) {
-                                taskAdapter.upsertMany(draft, update);
+                                taskAdapter.upsertOne(draft, update);
                             }
                         });
                     });
