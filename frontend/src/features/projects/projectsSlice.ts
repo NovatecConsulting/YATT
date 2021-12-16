@@ -5,7 +5,7 @@ import {Subscription, websocketClient} from "../../app/api";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 import {rsocket} from "../../app/rsocket";
-import {encodeRoute} from 'rsocket-core';
+import {encodeRoute, MESSAGE_RSOCKET_ROUTING, encodeCompositeMetadata} from 'rsocket-core';
 import {ISubscription} from "rsocket-types";
 
 export interface Project {
@@ -83,7 +83,9 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await api.cacheDataLoaded;
                     rsocket.requestStream({
-                        metadata: encodeRoute("projects")
+                        metadata: encodeCompositeMetadata([
+                            [MESSAGE_RSOCKET_ROUTING, encodeRoute("projects")]
+                        ])
                     }).subscribe({
                         onNext(payload) {
                             const update = payload.data
