@@ -33,7 +33,7 @@ import {CreateParticipantForm} from "./features/participants/CreateParticipantFo
 import {ProfilePage} from "./features/auth/ProfilePage";
 import {TasksGanttChart} from "./features/tasks/TasksGanttChart";
 import {websocketClient} from "./app/api";
-import {connectionSuccessful, rsocket, rsocketClient} from "./app/rsocket";
+import {connectRSocket} from "./app/rsocket";
 
 
 function App() {
@@ -57,10 +57,7 @@ function App() {
                 const {data: currentUser} = await dispatch(loadCurrentUser());
                 // TODO error handling if server not reachable
                 if (currentUser) {
-                    rsocketClient.connect().then(connectionSuccessful, error1 => {
-                        console.log("error connection rsocket")
-                        console.log(error1)
-                    });
+                    await connectRSocket();
                     await websocketClient.connect();
                     dispatch(registered(true));
                 }
