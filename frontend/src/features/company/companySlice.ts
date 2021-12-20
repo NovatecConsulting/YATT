@@ -1,9 +1,9 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {Subscription, websocketClient} from "../../app/api";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
+import {rsocket, Subscription} from "../../app/rsocket";
 
 export interface Company {
     identifier: string;
@@ -37,8 +37,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await api.cacheDataLoaded;
 
-                    subscription = websocketClient.subscribe(`/companies`, message => {
-                        const update = JSON.parse(message.body);
+                    subscription = rsocket.subscribeUpdates<Company>(`companies`, update => {
                         api.updateCachedData(draft => {
                             if (draft) {
                                 companiesAdapter.upsertOne(draft, update);
@@ -50,7 +49,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                subscription?.unsubscribe()
+                subscription?.cancel()
             }
         }),
         createCompany: builder.mutation<string, CreateCompanyDto>({

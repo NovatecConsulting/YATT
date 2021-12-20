@@ -1,7 +1,7 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
-import {Subscription, websocketClient} from "../../app/api";
 import {RootState} from "../../app/store";
+import {rsocket, Subscription} from "../../app/rsocket";
 
 export interface Participant {
     identifier: string;
@@ -47,8 +47,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await api.cacheDataLoaded;
 
-                    subscription = websocketClient.subscribe(`/projects/${projectId}/participants`, message => {
-                        const update = JSON.parse(message.body);
+                    subscription = rsocket.subscribeUpdates<Participant>(`projects.${projectId}.participants`, update => {
                         api.updateCachedData(draft => {
                             if (draft) {
                                 entityAdapter.upsertOne(draft, update);
@@ -60,7 +59,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                subscription?.unsubscribe()
+                subscription?.cancel()
             }
         }),
         createParticipant: builder.mutation<string, CreateParticipantDto>({

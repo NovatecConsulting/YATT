@@ -32,7 +32,6 @@ import {ParticipantList} from "./features/participants/ParticipantList";
 import {CreateParticipantForm} from "./features/participants/CreateParticipantForm";
 import {ProfilePage} from "./features/auth/ProfilePage";
 import {TasksGanttChart} from "./features/tasks/TasksGanttChart";
-import {websocketClient} from "./app/api";
 import {rsocket} from "./app/rsocket";
 
 function App() {
@@ -57,7 +56,6 @@ function App() {
                 // TODO error handling if server not reachable
                 if (currentUser) {
                     await rsocket.connect();
-                    await websocketClient.connect();
                     dispatch(registered(true));
                 }
                 dispatch(authLoading(false));
