@@ -1,7 +1,9 @@
 package com.novatecgmbh.eventsourcing.axon.application.config
 
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserProfile
+import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserProfile
+import com.novatecgmbh.eventsourcing.axon.application.security.UserProfile
 import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
-import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
 import org.axonframework.extensions.kotlin.queryOptional
 import org.axonframework.queryhandling.QueryGateway
@@ -51,17 +53,6 @@ class UserProfileAuthenticationConverter(val queryGateway: QueryGateway) :
     }
   }
 }
-
-interface UserProfile
-
-data class RegisteredUserProfile(
-    val identifier: UserId,
-    val externalUserId: String,
-    val firstname: String,
-    val lastname: String
-) : UserProfile
-
-data class UnregisteredUserProfile(val externalUserId: String) : UserProfile
 
 fun UserQueryResult.toRegisteredUserProfile() =
     RegisteredUserProfile(identifier, externalUserId, firstname, lastname)
