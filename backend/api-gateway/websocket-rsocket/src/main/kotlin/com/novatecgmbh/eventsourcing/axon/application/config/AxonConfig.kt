@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.application.config
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_KEYS
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AUDIT_USER_ID_META_DATA_KEY
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserProfile
 import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway
 import org.axonframework.extensions.reactor.messaging.ReactorMessageDispatchInterceptor
