@@ -33,8 +33,7 @@ import {CreateParticipantForm} from "./features/participants/CreateParticipantFo
 import {ProfilePage} from "./features/auth/ProfilePage";
 import {TasksGanttChart} from "./features/tasks/TasksGanttChart";
 import {websocketClient} from "./app/api";
-import {connectRSocket} from "./app/rsocket";
-
+import {rsocket} from "./app/rsocket";
 
 function App() {
     const store = useStore();
@@ -57,7 +56,7 @@ function App() {
                 const {data: currentUser} = await dispatch(loadCurrentUser());
                 // TODO error handling if server not reachable
                 if (currentUser) {
-                    await connectRSocket();
+                    await rsocket.connect();
                     await websocketClient.connect();
                     dispatch(registered(true));
                 }

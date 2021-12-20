@@ -1,12 +1,10 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector, EntityId, EntityState} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {Subscription, websocketClient} from "../../app/api";
 import {QueryDefinition} from "@reduxjs/toolkit/query";
 import {UseQueryStateDefaultResult} from "../../app/rtkQueryHelpers";
 import {rsocket} from "../../app/rsocket";
-import {encodeRoute, MESSAGE_RSOCKET_ROUTING, encodeCompositeMetadata} from 'rsocket-core';
-import {ISubscription} from "rsocket-types";
+import {Subscription} from "../../app/rsocket";
 
 export interface Project {
     identifier: string;
@@ -79,27 +77,16 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 );
             },
             async onCacheEntryAdded(_, api): Promise<void> {
-                let subscription: ISubscription | undefined;
+                let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
-                    rsocket.requestStream({
-                        metadata: encodeCompositeMetadata([
-                            [MESSAGE_RSOCKET_ROUTING, encodeRoute("projects")]
-                        ])
-                    }).subscribe({
-                        onNext(payload) {
-                            const update = payload.data
-                            api.updateCachedData(draft => {
-                                if (draft) {
-                                    projectsAdapter.upsertOne(draft, update);
-                                }
-                            });
-                        },
-                        onSubscribe(_subscription) {
-                            subscription = _subscription
-                            subscription.request(2147483647)
-                        },
-                    })
+                    subscription = rsocket.subscribeUpdates<Project>("projects", update => {
+                        api.updateCachedData(draft => {
+                            if (draft) {
+                                projectsAdapter.upsertOne(draft, update);
+                            }
+                        });
+                    });
                 } catch {
                     // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
                     // in which case `cacheDataLoaded` will throw
@@ -148,8 +135,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await api.cacheDataLoaded;
 
-                    subscription = websocketClient.subscribe(`/projects/${id}/details`, message => {
-                        const update = JSON.parse(message.body);
+                    subscription = rsocket.subscribeUpdates(`projects.${id}.details`, update => {
                         api.updateCachedData(draft => {
                             Object.keys(draft).forEach(key => {
                                 (draft as any)[key] = (update as any)[key];
@@ -161,7 +147,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     // in which case `cacheDataLoaded` will throw
                 }
                 await api.cacheEntryRemoved;
-                subscription?.unsubscribe();
+                subscription?.cancel();
             }
         }),
     })
