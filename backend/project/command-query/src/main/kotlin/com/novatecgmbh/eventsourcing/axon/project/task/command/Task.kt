@@ -84,20 +84,22 @@ class Task : BaseAggregate() {
 
   @CommandHandler
   fun handle(command: RescheduleTaskCommand): Long {
-    if (status == COMPLETED) {
-      throw IllegalArgumentException(
-          "Task is already completed and can not be rescheduled anymore.")
-    }
-    if (status != PLANNED && startDate != command.startDate) {
-      throw IllegalArgumentException(
-          "Task has already started. The start date can not be changed anymore")
-    } else {
-      assertStartDateBeforeEndDate(command.startDate, command.endDate)
-      apply(
-          TaskRescheduledEvent(
-              identifier = command.identifier,
-              startDate = command.startDate,
-              endDate = command.endDate))
+    if (command.startDate != startDate || command.endDate != endDate) {
+      if (status == COMPLETED) {
+        throw IllegalArgumentException(
+            "Task is already completed and can not be rescheduled anymore.")
+      }
+      if (status != PLANNED && startDate != command.startDate) {
+        throw IllegalArgumentException(
+            "Task has already started. The start date can not be changed anymore")
+      } else {
+        assertStartDateBeforeEndDate(command.startDate, command.endDate)
+        apply(
+            TaskRescheduledEvent(
+                identifier = command.identifier,
+                startDate = command.startDate,
+                endDate = command.endDate))
+      }
     }
     return AggregateLifecycle.getVersion()
   }
