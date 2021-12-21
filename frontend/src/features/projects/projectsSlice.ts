@@ -80,7 +80,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 let subscription: Subscription | undefined;
                 try {
                     await api.cacheDataLoaded;
-                    subscription = rsocket.subscribeUpdates<Project>("projects", update => {
+                    subscription = rsocket.subscribeUpdates<Project>("projects.updates", update => {
                         api.updateCachedData(draft => {
                             if (draft) {
                                 projectsAdapter.upsertOne(draft, update);
@@ -95,19 +95,15 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 subscription?.cancel();
             }
         }),
-        createProject: builder.mutation<string, CreateProjectDto>({
-            query: (projectDto: CreateProjectDto) => ({
-                url: '/projects',
-                method: 'POST',
-                body: projectDto
-            }),
+        createProject: builder.mutation<void, CreateProjectDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("projects.create", command);
+            }
         }),
-        rescheduleProject: builder.mutation<number, RescheduleProjectDto>({
-            query: ({identifier, ...patch}) => ({
-                url: `/projects/${identifier}/reschedule`,
-                method: 'POST',
-                body: patch
-            }),
+        rescheduleProject: builder.mutation<void, RescheduleProjectDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("projects.reschedule", command);
+            },
             onQueryStarted({identifier, version, ...patch}, api) {
                 const patchResult = api.dispatch(
                     extendedApiSlice.util.updateQueryData('getProjects', undefined, draft => {
@@ -121,12 +117,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 api.queryFulfilled.catch(patchResult.undo)
             }
         }),
-        renameProject: builder.mutation<string, RenameProjectDto>({
-            query: ({identifier, ...patch}) => ({
-                url: `/projects/${identifier}/rename`,
-                method: 'POST',
-                body: patch
-            }),
+        renameProject: builder.mutation<void, RenameProjectDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("projects.rename", command);
+            },
         }),
         getProjectDetails: builder.query<ProjectDetails, string>({
             query: (id) => `/projects/${id}/details`,
@@ -135,7 +129,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await api.cacheDataLoaded;
 
-                    subscription = rsocket.subscribeUpdates(`projects.${id}.details`, update => {
+                    subscription = rsocket.subscribeUpdates(`projects.${id}.details.updates`, update => {
                         api.updateCachedData(draft => {
                             Object.keys(draft).forEach(key => {
                                 (draft as any)[key] = (update as any)[key];
