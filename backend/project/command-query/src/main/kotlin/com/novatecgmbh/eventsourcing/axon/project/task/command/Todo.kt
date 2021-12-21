@@ -20,7 +20,7 @@ class Todo(entityIdentifier: TodoId, private var description: String, isDone: Bo
     private set
 
   @CommandHandler
-  fun handle(command: MarkTodoAsDoneCommand) {
+  fun handle(command: MarkTodoAsDoneCommand): Long {
     if (!isDone) {
       // TODO rootContextId
       Scope.getCurrentScope<AnnotatedAggregate<Task>>().execute {
@@ -29,6 +29,7 @@ class Todo(entityIdentifier: TodoId, private var description: String, isDone: Bo
             MetaData(mapOf("rootContextId" to it.getRootContextId())))
       }
     }
+    return AggregateLifecycle.getVersion()
   }
 
   @EventSourcingHandler

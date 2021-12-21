@@ -147,13 +147,14 @@ class Project : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: UpdateActualScheduleInternalCommand) {
+  fun handle(command: UpdateActualScheduleInternalCommand): Long {
     val hasActualEndDateChanged = command.endDate != actualEndDate
     if (hasActualEndDateChanged) {
       apply(ActualEndDateChangedEvent(command.aggregateIdentifier, command.endDate))
     }
 
     applyEventIfProjectStatusChanged()
+    return AggregateLifecycle.getVersion()
   }
 
   private fun applyEventIfProjectStatusChanged() {
