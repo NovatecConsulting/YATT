@@ -2,6 +2,7 @@ import {
     RSocketClient,
     JsonSerializer,
     BufferEncoders,
+    UTF8Encoder,
     IdentitySerializer,
     encodeCompositeMetadata,
     MESSAGE_RSOCKET_AUTHENTICATION,
@@ -224,7 +225,10 @@ const clientFactory = () => new RSocketClient({
             url: 'ws://localhost:7000',
             wsCreator: (url: string) => new WebSocket(url),
         },
-        BufferEncoders,
+        {
+            ...BufferEncoders,
+            data: UTF8Encoder,
+        }
     ),
 })
 
@@ -237,6 +241,17 @@ class WebsocketClient {
 
     connect(): Promise<void> {
         return this._rsocket.connect();
+    }
+
+    sendCommand(route: string, command: any): Promise<{ data: void } | { error: any }> {
+        return new Promise((resolve, reject) => {
+            this._rsocket.requestResponse({
+                data: command,
+                metadata: encodeCompositeMetadata([
+                    [MESSAGE_RSOCKET_ROUTING, encodeRoute(route)]
+                ])
+            }).then(_ => resolve({data: undefined}), error => reject({error: error}));
+        });
     }
 
     subscribeUpdates<T>(route: string, onUpdate: (update: T) => void): Subscription {
