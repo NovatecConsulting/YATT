@@ -12,6 +12,7 @@ import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy.CREATE_IF_MISSING
 import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.AggregateMember
 import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
@@ -56,12 +57,12 @@ class Task : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: RenameTaskCommand): TaskId {
+  fun handle(command: RenameTaskCommand): Long {
     if (status == COMPLETED) {
       throw IllegalArgumentException("Task is already completed. Name cannot be changed anymore.")
     }
     apply(TaskRenamedEvent(identifier = command.identifier, name = command.name))
-    return aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @EventSourcingHandler
@@ -70,7 +71,7 @@ class Task : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: ChangeTaskDescriptionCommand): TaskId {
+  fun handle(command: ChangeTaskDescriptionCommand): Long {
     if (status == COMPLETED) {
       throw IllegalArgumentException(
           "Task is already completed. Description cannot be changed anymore.")
@@ -78,11 +79,11 @@ class Task : BaseAggregate() {
     apply(
         TaskDescriptionUpdatedEvent(
             identifier = command.identifier, description = command.description))
-    return aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: RescheduleTaskCommand): TaskId {
+  fun handle(command: RescheduleTaskCommand): Long {
     if (status == COMPLETED) {
       throw IllegalArgumentException(
           "Task is already completed and can not be rescheduled anymore.")
@@ -98,21 +99,21 @@ class Task : BaseAggregate() {
               startDate = command.startDate,
               endDate = command.endDate))
     }
-    return aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: StartTaskCommand): TaskId {
+  fun handle(command: StartTaskCommand): Long {
     when (status) {
       PLANNED -> apply(TaskStartedEvent(aggregateIdentifier))
       STARTED -> {}
       COMPLETED -> throw IllegalStateException("Task is already completed.")
     }
-    return aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: CompleteTaskCommand): TaskId {
+  fun handle(command: CompleteTaskCommand): Long {
     when (status) {
       PLANNED -> throw IllegalStateException("Task has not yet been started.")
       STARTED -> {
@@ -123,7 +124,7 @@ class Task : BaseAggregate() {
       }
       COMPLETED -> {}
     }
-    return aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   private fun isAnyTodoNotDone() = todos.any { !it.isDone }
@@ -167,11 +168,12 @@ class Task : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: AddTodoCommand) {
+  fun handle(command: AddTodoCommand): TodoId {
     if (status == COMPLETED) {
       throw IllegalArgumentException("Task is already completed. Todo can not be added anymore.")
     }
     apply(TodoAddedEvent(command.identifier, command.todoId, command.description, isDone = false))
+    return command.todoId
   }
 
   @EventSourcingHandler
@@ -180,11 +182,12 @@ class Task : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: RemoveTodoCommand) {
+  fun handle(command: RemoveTodoCommand): Long {
     if (status == COMPLETED) {
       throw IllegalArgumentException("Task is already completed. Todo can not be removed anymore.")
     }
     apply(TodoRemovedEvent(command.identifier, command.todoId))
+    return AggregateLifecycle.getVersion()
   }
 
   @EventSourcingHandler

@@ -9,7 +9,10 @@ import com.novatecgmbh.eventsourcing.axon.company.references.ReferenceCheckerSer
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
-import org.axonframework.modelling.command.*
+import org.axonframework.modelling.command.AggregateCreationPolicy
+import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.modelling.command.AggregateLifecycle
+import org.axonframework.modelling.command.CreationPolicy
 import org.axonframework.spring.stereotype.Aggregate
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -54,42 +57,42 @@ class Employee : BaseAggregate() {
   }
 
   @CommandHandler
-  fun handle(command: GrantAdminPermissionToEmployee): EmployeeId {
+  fun handle(command: GrantAdminPermissionToEmployee): Long {
     if (!isAdmin) {
       apply(
           AdminPermissionGrantedForEmployeeEvent(aggregateIdentifier = command.aggregateIdentifier))
     }
-    return command.aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: RemoveAdminPermissionFromEmployee): EmployeeId {
+  fun handle(command: RemoveAdminPermissionFromEmployee): Long {
     if (isAdmin) {
       apply(
           AdminPermissionRemovedFromEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
-    return command.aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: GrantProjectManagerPermissionToEmployee): EmployeeId {
+  fun handle(command: GrantProjectManagerPermissionToEmployee): Long {
     if (!isProjectManager) {
       apply(
           ProjectManagerPermissionGrantedForEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
-    return command.aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @CommandHandler
-  fun handle(command: RemoveProjectManagerPermissionFromEmployee): EmployeeId {
+  fun handle(command: RemoveProjectManagerPermissionFromEmployee): Long {
     if (isProjectManager) {
       apply(
           ProjectManagerPermissionRemovedFromEmployeeEvent(
               aggregateIdentifier = command.aggregateIdentifier))
     }
-    return command.aggregateIdentifier
+    return AggregateLifecycle.getVersion()
   }
 
   @EventSourcingHandler
