@@ -62,12 +62,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 subscription?.cancel()
             }
         }),
-        createParticipant: builder.mutation<string, CreateParticipantDto>({
-            query: (body) => ({
-                url: `/participants`,
-                method: 'POST',
-                body: body
-            }),
+        createParticipant: builder.mutation<void, CreateParticipantDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("participants.create", command);
+            }
         }),
     })
 });

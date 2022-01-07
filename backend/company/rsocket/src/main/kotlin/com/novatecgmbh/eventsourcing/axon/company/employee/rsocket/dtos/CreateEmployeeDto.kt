@@ -6,7 +6,7 @@ import com.novatecgmbh.eventsourcing.axon.company.employee.api.EmployeeId
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 
 data class CreateEmployeeDto(
-    val identifier: EmployeeId,
+    val identifier: EmployeeId = EmployeeId(),
     val companyId: CompanyId,
     val userId: UserId
 ) {
