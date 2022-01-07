@@ -82,57 +82,45 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 subscription?.cancel()
             }
         }),
-        createTask: builder.mutation<string, CreateTaskDto>({
-            query: (taskDto) => ({
-                url: `/tasks`,
-                method: 'POST',
-                body: taskDto
-            }),
+        createTask: builder.mutation<void, CreateTaskDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.create", command);
+            }
         }),
-        renameTask: builder.mutation<string, RenameTaskDto>({
-            query: ({identifier, ...patch}) => ({
-                url: `/tasks/${identifier}/rename`,
-                method: 'POST',
-                body: patch
-            }),
+        renameTask: builder.mutation<void, RenameTaskDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.rename", command);
+            }
         }),
-        startTask: builder.mutation<string, string>({
-            query: (taskId) => ({
-                url: `/tasks/${taskId}/start`,
-                method: 'POST',
-            }),
+        startTask: builder.mutation<void, string>({
+            queryFn(taskId) {
+                return rsocket.sendCommand(`tasks.${taskId}.start`, null);
+            }
         }),
-        completeTask: builder.mutation<string, string>({
-            query: (taskId) => ({
-                url: `/tasks/${taskId}/complete`,
-                method: 'POST',
-            }),
+        completeTask: builder.mutation<void, string>({
+            queryFn(taskId) {
+                return rsocket.sendCommand(`tasks.${taskId}.complete`, null);
+            }
         }),
-        rescheduleTask: builder.mutation<string, RescheduleTaskDto>({
-            query: ({identifier, ...patch}) => ({
-                url: `/tasks/${identifier}/reschedule`,
-                method: 'POST',
-                body: patch,
-            }),
+        rescheduleTask: builder.mutation<void, RescheduleTaskDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.reschedule", command);
+            }
         }),
-        addTodo: builder.mutation<string, AddTodoDto>({
-            query: ({taskId, ...body}) => ({
-                url: `/tasks/${taskId}/todos`,
-                method: 'POST',
-                body: body
-            }),
+        addTodo: builder.mutation<void, AddTodoDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.todos.add", command);
+            }
         }),
-        markTodoAsDone: builder.mutation<string, TaskAndTodoId>({
-            query: ({taskId, todoId}) => ({
-                url: `/tasks/${taskId}/todos/${todoId}/markDone`,
-                method: 'POST',
-            }),
+        markTodoAsDone: builder.mutation<void, TaskAndTodoId>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.todos.markDone", command);
+            }
         }),
-        removeTodo: builder.mutation<string, TaskAndTodoId>({
-            query: ({taskId, todoId}) => ({
-                url: `/tasks/${taskId}/todos/${todoId}`,
-                method: 'DELETE',
-            }),
+        removeTodo: builder.mutation<void, TaskAndTodoId>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.todos.remove", command);
+            }
         }),
     })
 });

@@ -61,18 +61,15 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 subscription?.cancel()
             }
         }),
-        createEmployee: builder.mutation<string, CreateEmployeeDto>({
-            query: (dto) => ({
-                url: `/employees`,
-                method: 'POST',
-                body: dto,
-            })
+        createEmployee: builder.mutation<void, CreateEmployeeDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("employees.create", command);
+            }
         }),
-        grantAdminPermission: builder.mutation<string, string>({
-            query: (id) => ({
-                url: `/employees/${id}/permission/admin/grant`,
-                method: 'POST',
-            }),
+        grantAdminPermission: builder.mutation<void, string>({
+            queryFn(id) {
+                return rsocket.sendCommand(`employees.${id}.permission.admin.grant`, null);
+            },
             onQueryStarted(id, api) {
                 const patchResult = api.dispatch(
                     extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
@@ -85,11 +82,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 api.queryFulfilled.catch(patchResult.undo)
             }
         }),
-        removeAdminPermission: builder.mutation<string, string>({
-            query: (id) => ({
-                url: `/employees/${id}/permission/admin/remove`,
-                method: 'POST',
-            }),
+        removeAdminPermission: builder.mutation<void, string>({
+            queryFn(id) {
+                return rsocket.sendCommand(`employees.${id}.permission.admin.remove`, null);
+            },
             onQueryStarted(id, api) {
                 const patchResult = api.dispatch(
                     extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
@@ -102,11 +98,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 api.queryFulfilled.catch(patchResult.undo)
             }
         }),
-        grantProjectManagerPermission: builder.mutation<string, string>({
-            query: (id) => ({
-                url: `/employees/${id}/permission/projectmanager/grant`,
-                method: 'POST',
-            }),
+        grantProjectManagerPermission: builder.mutation<void, string>({
+            queryFn(id) {
+                return rsocket.sendCommand(`employees.${id}.permission.project-manager.grant`, null);
+            },
             onQueryStarted(id, api) {
                 const patchResult = api.dispatch(
                     extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {
@@ -119,11 +114,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 api.queryFulfilled.catch(patchResult.undo)
             }
         }),
-        removeProjectManagerPermission: builder.mutation<string, string>({
-            query: (id) => ({
-                url: `/employees/${id}/permission/projectmanager/remove`,
-                method: 'POST',
-            }),
+        removeProjectManagerPermission: builder.mutation<void, string>({
+            queryFn(id) {
+                return rsocket.sendCommand(`employees.${id}.permission.project-manager.remove`, null);
+            },
             onQueryStarted(id, api) {
                 const patchResult = api.dispatch(
                     extendedApiSlice.util.updateQueryData('getEmployeesByCompany', id, draft => {

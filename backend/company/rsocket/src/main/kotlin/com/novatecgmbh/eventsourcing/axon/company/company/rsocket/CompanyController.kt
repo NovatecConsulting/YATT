@@ -19,8 +19,8 @@ class CompanyController(
     val commandGateway: ReactorCommandGateway
 ) {
 
-    @MessageMapping("companies.create")
-    fun createCompany(data: CreateCompanyDto): Mono<CompanyId> = commandGateway.send(data.toCommand())
+  @MessageMapping("companies.create")
+  fun createCompany(data: CreateCompanyDto): Mono<CompanyId> = commandGateway.send(data.toCommand())
 
   @MessageMapping("companies")
   fun subscribeAllCompaniesUpdates(): Flux<CompanyQueryResult> =
