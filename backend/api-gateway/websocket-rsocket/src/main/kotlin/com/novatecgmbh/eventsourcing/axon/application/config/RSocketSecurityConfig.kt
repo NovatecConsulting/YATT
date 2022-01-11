@@ -42,6 +42,4 @@ class RSocketSecurityConfig(
             it.authenticationManager(manager)
           }
           .build()
-
-  @Bean fun jwtDecoder(): ReactiveJwtDecoder = ReactiveJwtDecoders.fromIssuerLocation(issuer)
 }
