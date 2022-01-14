@@ -1,0 +1,1231 @@
+{
+	"info": {
+		"_postman_id": "1815bc3a-2174-4021-832a-faab2c4f1f24",
+		"name": "Event Sourcing with Axon (GraphQL API)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "Projects (Name and Status)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    projects{\n        identifier\n        name\n        status\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects (Name) with Tasks (Name and Status)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    projects {\n        name\n        tasks {\n            name\n            status\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects (Name) with Participants (First Name, Last Name, Company)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    projects {\n        name \n        participants {\n            userFirstName\n            userLastName\n            companyName\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project (Name and Status)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    project(identifier: \"8a7b6cf9-6451-44e6-98da-dd92ddef54f3\") {\n        name\n        status\n        tasks  {name}\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    project(identifier: \"39359cf9-08b3-4386-a690-caa3cf863004\") {\n        name\n        status\n        startDate\n        deadline\n        tasks {\n            identifier\n            name\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createProject( \n        projectName: \"Project created via GraphQL API\",\n        plannedStartDate: \"2022-01-01\",\n        deadline: \"2022-06-30\",\n        companyId: \"0f6b259f-a600-4159-a5db-531613e47667\"        \n    ) { identifier }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename Project Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    renameProject( \n        identifier: \"90c279f2-cc72-42ed-8e3b-02cf22fe009b\",\n        version: 0,\n        name: \"Changed name\"\n    ) { identifier }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reschedule Project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    rescheduleProject( \n        identifier: \"90c279f2-cc72-42ed-8e3b-02cf22fe009b\",\n        version: 0,\n        startDate: \"2022-02-01\",\n        deadline: \"2022-07-31\"\n    ) { identifier }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Participant",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createParticipant( \n        projectIdentifier: \"39359cf9-08b3-4386-a690-caa3cf863004\",\n        companyIdentifier: \"a4788c70-9d85-4d3d-aa21-100e13e7d055\",\n        userIdentifier: \"6bc59f95-4e9b-4226-8a2a-0932a4531dbf\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createTask( \n        projectIdentifier: \"39359cf9-08b3-4386-a690-caa3cf863004\",\n        name: \"Task created via GraphQL API\",\n        description: \"Wunderful task\",\n        startDate: \"2022-02-01\",\n        endDate: \"2022-04-14\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createTask( \n        projectIdentifier: \"39359cf9-08b3-4386-a690-caa3cf863004\",\n        name: \"Task created via GraphQL API\",\n        description: \"Wunderful task\",\n        startDate: \"2022-02-01\",\n        endDate: \"2022-04-14\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reschedule Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    rescheduleTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",      \n        startDate: \"2022-03-02\",\n        endDate: \"2022-06-14\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Description of Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    changeDescriptionOfTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",      \n        description: \"Fancy new description for the bluddy task\",        \n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    changeDescriptionOfTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",      \n        description: \"Fancy new description for the bluddy task\",        \n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    completeTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Todo to Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    addTodoToTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",\n        description: \"Book a room\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Todo as Done",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    addTodoToTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",\n        description: \"Book a room\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Todo From Task",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    addTodoToTask( \n        identifier: \"c8a04f17-97db-4bc1-ba72-fed2424eead2\",\n        description: \"Book a room\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Create Company",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createCompany(name: \"New Company\")        \n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Companies (Name)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    companies {\n        name\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Companies (Name) with Employees (First Name, Last Name)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    companies {\n        name\n        employees {\n            userFirstName\n            userLastName\n            isAdmin\n            isProjectManager\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Company",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    company(identifier: \"a4788c70-9d85-4d3d-aa21-100e13e7d055\") {\n        name\n        employees {\n            identifier\n            userFirstName\n            userLastName            \n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Employee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    createCompany(name: \"New Company\")        \n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Employee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    employee(identifier: \"a8b294cd-aa2a-4b57-b352-a2f860c3e161\") {        \n        identifier\n        userFirstName\n        userLastName                    \n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grant Project Manager Permission to Employee Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    grantProjectManagerPermissionToEmployee(\n        identifier: \"c0f84732-28e7-4dd7-a4d3-3aa81e39a859\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Project Manager Permission from Employee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{ mutation \n    grantProjectManagerPermissionToEmployee(\n        identifier: \"c0f84732-28e7-4dd7-a4d3-3aa81e39a859\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grant Admin Permission to Employee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {}\n    grantAdminPermissionToEmployee(\n        identifier: \"c0f84732-28e7-4dd7-a4d3-3aa81e39a859\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Admin Permission From Employee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {}\n    grantAdminPermissionToEmployee(\n        identifier: \"c0f84732-28e7-4dd7-a4d3-3aa81e39a859\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Users (First Name, Last Name)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n    users {\n        identifier\n        firstname\n        lastname\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    renameUser (\n        identifier: \"56d267a7-be43-46ee-ad21-65be9a4e3088\",\n        firstname: \"Carla\",\n        lastname: \"Kolumna\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Current User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    registerUser (        \n        firstname: \"Max\"\n        lastname: \"Mustermann\"\n    )\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "localhost:8088/graphql",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var res = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"TOKEN\", res.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "my-backend",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "test1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8999",
+					"path": [
+						"auth",
+						"realms",
+						"eventsourcing-with-axon",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
