@@ -2,8 +2,11 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="api-gateway.axon.main" target="11" />
+      <module name="api-gateway.axon.test" target="11" />
       <module name="api-gateway.graphql.main" target="11" />
       <module name="api-gateway.graphql.test" target="11" />
+      <module name="api-gateway.spring-cloud" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

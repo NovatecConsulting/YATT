@@ -30,7 +30,7 @@ includeBuild("../user")
 // == Define the inner structure of this component ==
 rootProject.name = "api-gateway"
 
-include("axon")
+include("rest")
 include("graphql")
 include("spring-cloud")
 include("websocket-rsocket")

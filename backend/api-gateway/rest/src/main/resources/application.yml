@@ -1,6 +1,6 @@
 spring:
   application:
-    name: axon-api-gateway
+    name: rest-api
   jackson:
     serialization:
       fail-on-empty-beans: false
