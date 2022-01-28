@@ -62,10 +62,15 @@
       <module name="com.novatecgmbh.eventsourcing.axon.user.user.application.test" target="11" />
       <module name="com.novatecgmbh.eventsourcing.axon.user.user.command-query.main" target="11" />
       <module name="com.novatecgmbh.eventsourcing.axon.user.user.command-query.test" target="11" />
+      <module name="common.command-query.main" target="11" />
+      <module name="common.command-query.test" target="11" />
       <module name="common.web.main" target="11" />
       <module name="common.web.test" target="11" />
       <module name="company.application-without-web.main" target="11" />
       <module name="company.application-without-web.test" target="11" />
+      <module name="company.command-query" target="11" />
+      <module name="company.command-query.main" target="11" />
+      <module name="company.command-query.test" target="11" />
       <module name="company.rsocket" target="11" />
       <module name="company.rsocket.main" target="11" />
       <module name="company.rsocket.test" target="11" />
@@ -74,6 +79,9 @@
       <module name="company.web.test" target="11" />
       <module name="project.application-without-web.main" target="11" />
       <module name="project.application-without-web.test" target="11" />
+      <module name="project.command-query" target="11" />
+      <module name="project.command-query.main" target="11" />
+      <module name="project.command-query.test" target="11" />
       <module name="project.rsocket" target="11" />
       <module name="project.rsocket.main" target="11" />
       <module name="project.rsocket.test" target="11" />
@@ -82,6 +90,8 @@
       <module name="project.web.test" target="11" />
       <module name="user.application-without-web.main" target="11" />
       <module name="user.application-without-web.test" target="11" />
+      <module name="user.command-query.main" target="11" />
+      <module name="user.command-query.test" target="11" />
       <module name="user.web" target="11" />
       <module name="user.web.main" target="11" />
       <module name="user.web.test" target="11" />

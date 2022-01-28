@@ -32,5 +32,4 @@ includeBuild("../user")
 rootProject.name = "company"
 include("api")
 include("application")
-include("command-query")
 
