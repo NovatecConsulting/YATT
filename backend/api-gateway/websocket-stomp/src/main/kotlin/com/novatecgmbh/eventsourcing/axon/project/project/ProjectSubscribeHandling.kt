@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project
+package com.novatecgmbh.eventsourcing.axon.project.project
 
 import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.application.websocket.BaseSubscribeHandling

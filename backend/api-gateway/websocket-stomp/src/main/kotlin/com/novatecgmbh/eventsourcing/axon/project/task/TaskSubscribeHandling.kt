@@ -1,12 +1,13 @@
-package com.novatecgmbh.eventsourcing.axon.company
+package com.novatecgmbh.eventsourcing.axon.project.task
 
 import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.application.websocket.BaseSubscribeHandling
 import com.novatecgmbh.eventsourcing.axon.application.websocket.CurrentUserSubscriptionQueries
-import com.novatecgmbh.eventsourcing.axon.company.company.api.AllCompaniesQuery
-import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
-import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
-import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.project.api.*
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByProjectQuery
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.axonframework.queryhandling.SubscriptionQueryResult
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.AntPathMatcher
 
 @Component
-class CompanySubscribeHandling(
+class TaskSubscribeHandling(
     currentUserSubscriptions: CurrentUserSubscriptionQueries,
     messagingTemplate: SimpMessagingTemplate,
     val queryGateway: QueryGateway,
@@ -27,17 +28,17 @@ class CompanySubscribeHandling(
     val pathMatcher = AntPathMatcher()
     val parts = destination.substring(1).split("/")
     return when {
-      pathMatcher.match("/companies", destination) ->
+      pathMatcher.match("/projects/{projectId}/tasks", destination) ->
           queryGateway.subscriptionQuery(
-              AllCompaniesQuery(),
-              ResponseTypes.multipleInstancesOf(CompanyQueryResult::class.java),
-              ResponseTypes.instanceOf(CompanyQueryResult::class.java),
+              TasksByProjectQuery(ProjectId(parts.component2())),
+              ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
+              ResponseTypes.instanceOf(TaskQueryResult::class.java),
           )
-      pathMatcher.match("/companies/{companyId}", destination) ->
+      pathMatcher.match("/tasks/{taskId}", destination) ->
           queryGateway.subscriptionQuery(
-              CompanyQuery(CompanyId(parts.component2())),
-              ResponseTypes.instanceOf(CompanyQueryResult::class.java),
-              ResponseTypes.instanceOf(CompanyQueryResult::class.java),
+              TaskQuery(TaskId(parts.component2())),
+              ResponseTypes.instanceOf(TaskQueryResult::class.java),
+              ResponseTypes.instanceOf(TaskQueryResult::class.java),
           )
       else -> null
     }
