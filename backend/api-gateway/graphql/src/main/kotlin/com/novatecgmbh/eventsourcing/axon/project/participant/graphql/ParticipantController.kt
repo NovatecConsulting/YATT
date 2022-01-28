@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.controller
+package com.novatecgmbh.eventsourcing.axon.project.participant.graphql
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand

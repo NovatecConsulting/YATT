@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.controller
+package com.novatecgmbh.eventsourcing.axon.user.user.graphql
 
 import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.user.api.*

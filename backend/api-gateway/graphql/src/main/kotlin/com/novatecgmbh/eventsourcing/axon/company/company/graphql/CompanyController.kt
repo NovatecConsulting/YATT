@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.controller
+package com.novatecgmbh.eventsourcing.axon.company.company.graphql
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.*
 import java.util.concurrent.CompletableFuture
