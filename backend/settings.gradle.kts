@@ -7,5 +7,5 @@ includeBuild("build-logic")
 
 includeBuild("data-import")
 
-includeBuild("api-gateway")
+includeBuild("apis")
 includeBuild("services")

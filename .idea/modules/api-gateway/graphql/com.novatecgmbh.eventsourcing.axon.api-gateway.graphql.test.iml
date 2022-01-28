@@ -5,4 +5,5 @@
       <map />
     </option>
   </component>
+  <component name="TestModuleProperties" production-module="api-gateway.graphql.main" />
 </module>
