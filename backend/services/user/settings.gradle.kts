@@ -30,4 +30,3 @@ includeBuild("../common")
 rootProject.name = "user"
 include("api")
 include("application")
-include("command-query")
