@@ -1,4 +1,6 @@
-plugins { id("java-platform") }
+plugins {
+  id("java-platform")
+}
 
 group = "com.novatecgmbh.platform"
 

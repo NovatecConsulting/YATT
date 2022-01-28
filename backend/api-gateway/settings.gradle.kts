@@ -22,10 +22,7 @@ pluginManagement {
 dependencyResolutionManagement { repositories { mavenCentral() } }
 
 includeBuild("../platforms")
-includeBuild("../common")
-includeBuild("../company")
-includeBuild("../project")
-includeBuild("../user")
+includeBuild("../services")
 
 // == Define the inner structure of this component ==
 rootProject.name = "api-gateway"
