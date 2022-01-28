@@ -2,12 +2,24 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="api" target="11" />
       <module name="api-gateway.axon.main" target="11" />
       <module name="api-gateway.axon.test" target="11" />
+      <module name="api-gateway.common-spring-security.main" target="11" />
+      <module name="api-gateway.common-spring-security.test" target="11" />
+      <module name="api-gateway.common-spring-webmvc.main" target="11" />
+      <module name="api-gateway.common-spring-webmvc.test" target="11" />
+      <module name="api-gateway.common-webmvc" target="11" />
       <module name="api-gateway.graphql.main" target="11" />
       <module name="api-gateway.graphql.test" target="11" />
       <module name="api-gateway.spring-cloud.main" target="11" />
       <module name="api-gateway.spring-cloud.test" target="11" />
+      <module name="api.common" target="11" />
+      <module name="backend.common-spring-webmvc" target="11" />
+      <module name="backend.common-spring-webmvc.main" target="11" />
+      <module name="backend.common-spring-webmvc.test" target="11" />
+      <module name="backend.common-webmvc.main" target="11" />
+      <module name="backend.common-webmvc.test" target="11" />
       <module name="com.novatecgmbh.eventsourcing.axon.common.common.api.main" target="11" />
       <module name="com.novatecgmbh.eventsourcing.axon.common.common.api.test" target="11" />
       <module name="com.novatecgmbh.eventsourcing.axon.common.common.auditing.main" target="11" />
