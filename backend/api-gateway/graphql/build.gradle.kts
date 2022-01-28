@@ -7,10 +7,10 @@ plugins {
 
 dependencies {
   implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:web")
   implementation("com.novatecgmbh.eventsourcing.axon.company:api")
   implementation("com.novatecgmbh.eventsourcing.axon.project:api")
   implementation("com.novatecgmbh.eventsourcing.axon.user:api")
+  implementation("com.novatecgmbh.eventsourcing.axon.api-gateway:common")
 
   implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.1.5")

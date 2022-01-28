@@ -27,6 +27,7 @@ includeBuild("../services")
 // == Define the inner structure of this component ==
 rootProject.name = "api-gateway"
 
+include("common")
 include("rest")
 include("graphql")
 include("spring-cloud")
