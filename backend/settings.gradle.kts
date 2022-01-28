@@ -8,7 +8,4 @@ includeBuild("build-logic")
 includeBuild("data-import")
 
 includeBuild("api-gateway")
-includeBuild("common")
-includeBuild("company")
-includeBuild("project")
-includeBuild("user")
+includeBuild("services")

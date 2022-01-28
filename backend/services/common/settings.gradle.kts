@@ -3,7 +3,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal() // if pluginManagement.repositories looks like this, it can be omitted as this is the default
     }
-    includeBuild("../build-logic")
+    includeBuild("../../build-logic")
 
     val springBootVersion: String by settings
     val kotlinVersion: String by settings
@@ -23,9 +23,11 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-includeBuild("../platforms")
-includeBuild("../services")
+includeBuild("../../platforms")
+includeBuild("../user")
 
 // == Define the inner structure of this component ==
-rootProject.name = "data-import"
-include("initial")
+rootProject.name = "common"
+include("api")
+include("auditing")
+include("command-query")
