@@ -31,7 +31,6 @@ includeBuild("../company")
 rootProject.name = "project"
 include("api")
 include("application")
-include("application-without-web")
 include("command-query")
 include("rsocket")
 include("web")

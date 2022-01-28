@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Websocket-with-Stomp-API" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="APIs">
+    <module name="api-gateway.websocket-stomp.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.WebsocketApi" />
+    <option name="PROGRAM_PARAMETERS" value="--server.port=8085" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

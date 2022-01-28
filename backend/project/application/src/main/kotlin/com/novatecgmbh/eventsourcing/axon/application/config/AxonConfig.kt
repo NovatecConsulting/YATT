@@ -84,7 +84,8 @@ class AxonConfig {
         .registerPooledStreamingEventProcessor("task-projector", { it.eventStore() }, psepConfig)
         .registerPooledStreamingEventProcessor(
             "participant-projector", { it.eventStore() }, psepConfig)
-        .registerPooledStreamingEventProcessor("root-context-id-mapping-projector-project", { it.eventStore() }, psepConfig)
+        .registerPooledStreamingEventProcessor(
+            "root-context-id-mapping-projector-project", { it.eventStore() }, psepConfig)
   }
 
   @Autowired

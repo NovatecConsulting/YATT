@@ -1,10 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Project Service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="Routing with Spring Cloud Gateway">
+  <configuration default="false" name="Project Service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="Service Components">
     <module name="project.application.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.AxonApplication" />
-    <option name="PROGRAM_PARAMETERS" value="--server.port=8083" />
     <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
