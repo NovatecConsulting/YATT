@@ -9,8 +9,8 @@ group = "${group}.api-gateway"
 dependencies {
   implementation("com.novatecgmbh.eventsourcing.axon.common:api")
   implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
-  implementation("com.novatecgmbh.eventsourcing.axon.project:rsocket")
-  implementation("com.novatecgmbh.eventsourcing.axon.company:rsocket")
+  implementation("com.novatecgmbh.eventsourcing.axon.project:api")
+  implementation("com.novatecgmbh.eventsourcing.axon.company:api")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.projectreactor:reactor-core")

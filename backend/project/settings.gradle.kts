@@ -32,5 +32,4 @@ rootProject.name = "project"
 include("api")
 include("application")
 include("command-query")
-include("rsocket")
 include("web")
