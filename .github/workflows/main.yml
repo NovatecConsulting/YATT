@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend:
-    name: Build backend with gradle
+    name: Build backend components with gradle
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
@@ -19,24 +19,65 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'gradle'
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permissions for gradlew
         working-directory: ./backend
         run: chmod +x gradlew
-      - name: Build api-gateway with Gradle
-        working-directory: ./backend/api-gateway
-        run: ../gradlew build
-      - name: Build common with Gradle
-        working-directory: ./backend/common
-        run: ../gradlew build
-      - name: Build company context with Gradle
-        working-directory: ./backend/company
-        run: ../gradlew build
-      - name: Build project context with Gradle
-        working-directory: ./backend/project
-        run: ../gradlew build
-      - name: Build user context with Gradle
-        working-directory: ./backend/user
-        run: ../gradlew build
+
+      - name: Build API Common
+        working-directory: ./backend
+        run: ./gradlew :apis:api-common:build
+      - name: Build API REST
+        working-directory: ./backend
+        run: ./gradlew :apis:rest:build
+      - name: Build API GraphQL
+        working-directory: ./backend
+        run: ./gradlew :apis:graphql:build
+      - name: Build API Websocket RSocket
+        working-directory: ./backend
+        run: ./gradlew :apis:websocket-rsocket:build
+      - name: Build API Websocket STOMP
+        working-directory: ./backend
+        run: ./gradlew :apis:websocket-stomp:build
+
+      - name: Build services common api with Gradle
+        working-directory: ./backend
+        run: ./gradlew :common:api:build
+      - name: Build services common application with Gradle
+        working-directory: ./backend
+        run: ./gradlew :common:application:build
+      - name: Build services common command-query with Gradle
+        working-directory: ./backend
+        run: ./gradlew :common:command-query:build
+
+      - name: Build services user api with Gradle
+        working-directory: ./backend
+        run: ./gradlew :user:api:build
+      - name: Build services user application with Gradle
+        working-directory: ./backend
+        run: ./gradlew :user:application:build
+      - name: Build services user command-query with Gradle
+        working-directory: ./backend
+        run: ./gradlew :user:command-query:build
+
+      - name: Build services company api with Gradle
+        working-directory: ./backend
+        run: ./gradlew :company:api:build
+      - name: Build services company application with Gradle
+        working-directory: ./backend
+        run: ./gradlew :company:application:build
+      - name: Build services company command-query with Gradle
+        working-directory: ./backend
+        run: ./gradlew :company:command-query:build
+
+      - name: Build services project api with Gradle
+        working-directory: ./backend
+        run: ./gradlew :project:api:build
+      - name: Build services project application with Gradle
+        working-directory: ./backend
+        run: ./gradlew :project:application:build
+      - name: Build services project command-query with Gradle
+        working-directory: ./backend
+        run: ./gradlew :project:command-query:build
 
   frontend:
     name: Build frontend with npm
