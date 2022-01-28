@@ -6,7 +6,14 @@
       <module name="api-gateway.axon.test" target="11" />
       <module name="api-gateway.graphql.main" target="11" />
       <module name="api-gateway.graphql.test" target="11" />
-      <module name="api-gateway.spring-cloud" target="11" />
+      <module name="api-gateway.spring-cloud.main" target="11" />
+      <module name="api-gateway.spring-cloud.test" target="11" />
+      <module name="company.application-without-web.main" target="11" />
+      <module name="company.application-without-web.test" target="11" />
+      <module name="project.application-without-web.main" target="11" />
+      <module name="project.application-without-web.test" target="11" />
+      <module name="user.application-without-web.main" target="11" />
+      <module name="user.application-without-web.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

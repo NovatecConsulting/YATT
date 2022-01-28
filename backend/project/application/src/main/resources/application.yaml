@@ -19,25 +19,15 @@ spring:
     init:
       mode: always
       platform: postgres
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
-          jwk-set-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/certs
 
 logging:
   level:
     ROOT: warn
+    # io.jaegertracing.internal.reporters.LoggingReporter: info
     org:
       axonframework.eventhandling.pooled.Coordinator: info
       flywaydb.core.internal.command: info
       springframework.boot: info
-      #Configure logging for sql parameters
-#      hibernate:
-#        type.descriptor.sql.BasicBinder: TRACE
-#        SQL: debug
-
 
 axon:
   serializer:

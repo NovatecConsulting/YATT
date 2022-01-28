@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="GraphQlApi" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="GraphQlApi" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" folderName="APIs">
     <module name="com.novatecgmbh.eventsourcing.axon.api-gateway.graphql.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.novatecgmbh.eventsourcing.axon.GraphQlApi" />
     <option name="PROGRAM_PARAMETERS" value="--server.port=8088" />
