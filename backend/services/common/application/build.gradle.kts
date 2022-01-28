@@ -8,7 +8,7 @@ plugins {
 group = "${group}.common"
 
 dependencies {
-  api(project(":api"))
+  implementation("com.novatecgmbh.eventsourcing.axon.common:api")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.projectreactor:reactor-core")

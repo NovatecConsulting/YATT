@@ -5,7 +5,7 @@ plugins {
 group = "${group}.common"
 
 dependencies {
-    api(project(":api"))
+    implementation("com.novatecgmbh.eventsourcing.axon.common:api")
 
     implementation("org.axonframework:axon-modelling")
     implementation("org.springframework.boot:spring-boot-starter-security")
