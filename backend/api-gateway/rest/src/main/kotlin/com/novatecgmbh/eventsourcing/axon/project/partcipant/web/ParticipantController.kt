@@ -1,10 +1,10 @@
-package com.novatecgmbh.eventsourcing.axon.project.participant.web
+package com.novatecgmbh.eventsourcing.axon.project.partcipant.web
 
+import com.novatecgmbh.eventsourcing.axon.project.partcipant.web.dto.CreateParticipantDto
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantByProjectQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.participant.web.dto.CreateParticipantDto
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway

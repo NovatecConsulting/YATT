@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.participant.web.dto
+package com.novatecgmbh.eventsourcing.axon.project.partcipant.web.dto
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand
