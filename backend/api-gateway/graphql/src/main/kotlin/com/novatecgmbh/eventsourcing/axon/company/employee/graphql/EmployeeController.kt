@@ -1,10 +1,9 @@
-package com.novatecgmbh.eventsourcing.axon.controller
+package com.novatecgmbh.eventsourcing.axon.company.employee.graphql
 
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.*
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId
-import jdk.jfr.StackTrace
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway

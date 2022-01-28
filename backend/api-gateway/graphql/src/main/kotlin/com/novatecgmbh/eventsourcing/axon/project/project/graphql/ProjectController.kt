@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.controller
+package com.novatecgmbh.eventsourcing.axon.project.project.graphql
 
 import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
