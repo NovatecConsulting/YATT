@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.user.web.dto
+package com.novatecgmbh.eventsourcing.axon.user.user.web.dto
 
 import com.novatecgmbh.eventsourcing.axon.user.api.RegisterUserCommand
 import com.novatecgmbh.eventsourcing.axon.user.api.UserId

@@ -8,18 +8,28 @@
       <module name="api-gateway.graphql.test" target="11" />
       <module name="api-gateway.spring-cloud.main" target="11" />
       <module name="api-gateway.spring-cloud.test" target="11" />
+      <module name="common.web" target="11" />
       <module name="company.application-without-web.main" target="11" />
       <module name="company.application-without-web.test" target="11" />
       <module name="company.rsocket" target="11" />
       <module name="company.rsocket.main" target="11" />
       <module name="company.rsocket.test" target="11" />
+      <module name="company.web" target="11" />
+      <module name="company.web.main" target="11" />
+      <module name="company.web.test" target="11" />
       <module name="project.application-without-web.main" target="11" />
       <module name="project.application-without-web.test" target="11" />
       <module name="project.rsocket" target="11" />
       <module name="project.rsocket.main" target="11" />
       <module name="project.rsocket.test" target="11" />
+      <module name="project.web" target="11" />
+      <module name="project.web.main" target="11" />
+      <module name="project.web.test" target="11" />
       <module name="user.application-without-web.main" target="11" />
       <module name="user.application-without-web.test" target="11" />
+      <module name="user.web" target="11" />
+      <module name="user.web.main" target="11" />
+      <module name="user.web.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

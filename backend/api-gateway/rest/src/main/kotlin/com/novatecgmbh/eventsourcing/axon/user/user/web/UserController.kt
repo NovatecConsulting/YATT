@@ -1,10 +1,13 @@
-package com.novatecgmbh.eventsourcing.axon.user.web
+package com.novatecgmbh.eventsourcing.axon.user.user.web
 
 import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
-import com.novatecgmbh.eventsourcing.axon.user.api.*
-import com.novatecgmbh.eventsourcing.axon.user.web.dto.RegisterUserDto
-import com.novatecgmbh.eventsourcing.axon.user.web.dto.RenameUserDto
+import com.novatecgmbh.eventsourcing.axon.user.api.AllUsersQuery
+import com.novatecgmbh.eventsourcing.axon.user.api.FindUserByExternalUserIdQuery
+import com.novatecgmbh.eventsourcing.axon.user.api.UserId
+import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
+import com.novatecgmbh.eventsourcing.axon.user.user.web.dto.RegisterUserDto
+import com.novatecgmbh.eventsourcing.axon.user.user.web.dto.RenameUserDto
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
