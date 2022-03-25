@@ -73,7 +73,7 @@ type ProjectQueryResult {
     companyReference: AggregateReference!
     status: ProjectStatus
     actualEndDate: String
-    tasks: [TaskQueryResult]
+    tasks(from: Date, to: Date): [TaskQueryResult]
     participants: [ParticipantQueryResult]
 }
 

@@ -36,6 +36,8 @@ class TaskQueryHandler(
       @AuditUserId userId: String
   ): Iterable<TaskQueryResult> =
       authService.runWhenAuthorizedForAllProjects(UserId(userId), query.projectIds) {
-        repository.findAllByProjectIdIn(query.projectIds).map { it.toQueryResult() }
+        repository.findAllByProjectIdInAndDatesInRange(query.projectIds, query.from, query.to).map {
+          it.toQueryResult()
+        }
       }
 }
