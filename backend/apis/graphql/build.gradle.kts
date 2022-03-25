@@ -22,7 +22,7 @@ dependencies {
   implementation("org.axonframework.extensions.tracing:axon-tracing-spring-boot-starter")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-web")
-  implementation("org.springframework.experimental:graphql-spring-boot-starter:1.0.0-M4")
+  implementation("org.springframework.boot:spring-boot-starter-graphql")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

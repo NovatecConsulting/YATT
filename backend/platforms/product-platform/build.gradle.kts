@@ -10,7 +10,7 @@ javaPlatform.allowDependencies()
 dependencies {
   api(platform("org.springframework.boot:spring-boot-dependencies:2.5.6"))
   api(platform("org.springframework.cloud:spring-cloud-dependencies:2020.0.4"))
-  api(platform("org.axonframework:axon-bom:4.5.5"))
+  api(platform("org.axonframework:axon-bom:4.5.11"))
 
   constraints {
     api("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.3.1")

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AxonConfig {
+class AxonBeansEnhancementsConfiguration {
 
   @Autowired
   fun commandBus(commandBus: CommandBus) {
@@ -26,6 +26,10 @@ class AxonConfig {
   fun queryBus(queryBus: QueryBus) {
     queryBus.run { registerDispatchInterceptor(UserInjectingQueryMessageInterceptor()) }
   }
+}
+
+@Configuration
+class AxonAdditionalBeansConfiguration {
 
   @Bean
   fun correlationDataProviders(): CorrelationDataProvider =
