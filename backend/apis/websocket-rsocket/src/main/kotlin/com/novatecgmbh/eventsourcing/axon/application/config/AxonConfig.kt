@@ -20,7 +20,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import reactor.core.publisher.Mono
 
 @Configuration
-class AxonConfig {
+class AxonBeansEnhancementsConfiguration {
 
   @Autowired
   fun reactiveCommandGateway(queryGateway: ReactorCommandGateway) {
@@ -31,6 +31,10 @@ class AxonConfig {
   fun reactiveQueryGateway(queryGateway: ReactorQueryGateway) {
     queryGateway.registerDispatchInterceptor(UserInjectingQueryMessageDispatchInterceptor())
   }
+}
+
+@Configuration
+class AxonAdditionalBeansConfiguration {
 
   @Bean
   fun correlationDataProviders(): CorrelationDataProvider =
