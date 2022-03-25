@@ -34,4 +34,4 @@ echo "Building Service - Project Application ..."
 
 
 echo "Building Data Importer ..."
-./gradlew :data-import:build
+./gradlew :data-import:initial:build
