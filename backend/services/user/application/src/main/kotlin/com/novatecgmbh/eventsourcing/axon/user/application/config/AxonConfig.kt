@@ -7,7 +7,6 @@ import com.novatecgmbh.eventsourcing.axon.application.auditing.UserInjectingQuer
 import com.novatecgmbh.eventsourcing.axon.application.sequencing.RootContextIdentifierSequencingPolicy
 import com.novatecgmbh.eventsourcing.axon.common.command.ExceptionWrappingCommandMessageHandlerInterceptor
 import com.novatecgmbh.eventsourcing.axon.common.query.ExceptionWrappingQueryMessageHandlerInterceptor
-import java.util.concurrent.Executors
 import org.axonframework.commandhandling.CommandBus
 import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.common.AxonThreadFactory
@@ -24,9 +23,10 @@ import org.axonframework.queryhandling.QueryBus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.util.concurrent.Executors
 
 @Configuration
-class AxonConfig {
+class AxonBeansEnhancementsConfiguration {
 
   @Autowired
   fun commandBus(commandBus: CommandBus) {
@@ -43,14 +43,6 @@ class AxonConfig {
       registerDispatchInterceptor(UserInjectingQueryMessageInterceptor())
     }
   }
-
-  @Bean
-  fun correlationDataProviders(): CorrelationDataProvider =
-      MultiCorrelationDataProvider<CommandMessage<*>>(
-          listOf(
-              SimpleCorrelationDataProvider(*AUDIT_KEYS),
-              MessageOriginProvider(),
-          ))
 
   @Autowired
   fun configureEventProcessingDefaults(processingConfigurer: EventProcessingConfigurer) {
@@ -86,6 +78,18 @@ class AxonConfig {
   ) {
     processingConfigurer.registerDefaultSequencingPolicy { rootContextIdentifierSequencingPolicy }
   }
+}
+
+@Configuration
+class AxonAdditionalBeansConfiguration {
+
+  @Bean
+  fun correlationDataProviders(): CorrelationDataProvider =
+      MultiCorrelationDataProvider<CommandMessage<*>>(
+          listOf(
+              SimpleCorrelationDataProvider(*AUDIT_KEYS),
+              MessageOriginProvider(),
+          ))
 
   @Bean
   fun rootContextIdentifierSequencingPolicy(): RootContextIdentifierSequencingPolicy =

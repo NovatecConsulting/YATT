@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AxonConfig {
+class AxonBeansEnhancementsConfiguration {
 
   @Autowired
   fun commandBus(commandBus: CommandBus) {
@@ -43,14 +43,6 @@ class AxonConfig {
       registerDispatchInterceptor(UserInjectingQueryMessageInterceptor())
     }
   }
-
-  @Bean
-  fun correlationDataProviders(): CorrelationDataProvider =
-      MultiCorrelationDataProvider<CommandMessage<*>>(
-          listOf(
-              SimpleCorrelationDataProvider(*AUDIT_KEYS),
-              MessageOriginProvider(),
-          ))
 
   @Autowired
   fun configureEventProcessingDefaults(processingConfigurer: EventProcessingConfigurer) {
@@ -88,6 +80,18 @@ class AxonConfig {
   ) {
     processingConfigurer.registerDefaultSequencingPolicy { rootContextIdentifierSequencingPolicy }
   }
+}
+
+@Configuration
+class AxonAdditionalBeansConfiguration {
+
+  @Bean
+  fun correlationDataProviders(): CorrelationDataProvider =
+      MultiCorrelationDataProvider<CommandMessage<*>>(
+          listOf(
+              SimpleCorrelationDataProvider(*AUDIT_KEYS),
+              MessageOriginProvider(),
+          ))
 
   @Bean
   fun rootContextIdentifierSequencingPolicy(): RootContextIdentifierSequencingPolicy =
