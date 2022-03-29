@@ -3,6 +3,7 @@ pluginManagement {
   repositories {
     gradlePluginPortal()
     maven("https://repo.spring.io/milestone")
+    maven("https://repo.spring.io/snapshot")
   }
   includeBuild("../build-logic")
 
@@ -19,17 +20,29 @@ pluginManagement {
 }
 
 // == Define locations for components ==
-dependencyResolutionManagement { repositories { mavenCentral() } }
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    maven ("https://repo.spring.io/milestone")
+    maven("https://repo.spring.io/snapshot")
+  }
+}
 
 includeBuild("../platforms")
+
 includeBuild("../services")
 
 // == Define the inner structure of this component ==
 rootProject.name = "apis"
 
 include("api-common")
+
 include("rest")
+
 include("graphql")
+
 include("spring-cloud")
+
 include("websocket-rsocket")
+
 include("websocket-stomp")
