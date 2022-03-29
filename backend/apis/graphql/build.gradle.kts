@@ -1,6 +1,5 @@
 plugins {
   id("com.novatecgmbh.commons-kotlin")
-  id("org.springframework.boot")
   id("io.spring.dependency-management")
   kotlin("plugin.spring")
 }
@@ -25,9 +24,4 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-graphql")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-repositories {
-  mavenCentral()
-  maven("https://repo.spring.io/milestone")
 }
