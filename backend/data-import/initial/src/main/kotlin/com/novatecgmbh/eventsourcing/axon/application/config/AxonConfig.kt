@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AxonConfig {
+class AxonBeansEnhancementsConfiguration {
 
   @Autowired
   fun commandBus(commandBus: CommandBus) {
@@ -29,7 +29,8 @@ class AxonConfig {
 }
 
 @Configuration
-class AxonBeans {
+class AxonAdditionalBeansConfiguration {
+
   @Bean
   fun correlationDataProviders(): CorrelationDataProvider =
       MultiCorrelationDataProvider<CommandMessage<*>>(
