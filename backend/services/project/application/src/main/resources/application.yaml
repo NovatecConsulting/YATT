@@ -5,6 +5,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/projectdb
     username: projectapp
     password: axon
+  flyway:
+    locations: classpath:db/migration/postgres
   jackson:
     serialization:
       fail-on-empty-beans: false
