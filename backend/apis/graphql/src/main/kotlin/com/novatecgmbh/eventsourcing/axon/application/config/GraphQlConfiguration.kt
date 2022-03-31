@@ -1,17 +1,29 @@
 package com.novatecgmbh.eventsourcing.axon.application.config
 
+import com.novatecgmbh.eventsourcing.axon.application.security.CustomUserAuthenticationConverter
+import com.novatecgmbh.eventsourcing.axon.application.security.CustomUserDetailsService
 import graphql.language.StringValue
 import graphql.schema.*
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
+import org.springframework.graphql.web.WebGraphQlHandlerInterceptor
+import org.springframework.graphql.web.WebGraphQlRequest
+import org.springframework.graphql.web.WebGraphQlResponse
 import org.springframework.graphql.web.WebSocketGraphQlHandlerInterceptor
+import org.springframework.http.HttpHeaders
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.JwtDecoders
 import reactor.core.publisher.Mono
 
 @Configuration
-class GraphQlConfiguration {
+class GraphQlConfiguration(
+    @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}") val issuer: String
+) {
 
   @Bean
   fun runtimeWiringConfigurer(): RuntimeWiringConfigurer = RuntimeWiringConfigurer { builder ->
@@ -56,14 +68,33 @@ class GraphQlConfiguration {
               })
           .build()
 
-  @Bean fun interceptor() = CustomWebSocketGraphQlHandlerInterceptor()
+  @Bean
+  fun interceptor(userDetailsService: CustomUserDetailsService) =
+      CustomWebSocketGraphQlHandlerInterceptor(userDetailsService, issuer)
 }
 
-class CustomWebSocketGraphQlHandlerInterceptor : WebSocketGraphQlHandlerInterceptor {
-  override fun handleConnectionInitialization(
-      sessionId: String,
-      connectionInitPayload: MutableMap<String, Any>
-  ): Mono<Any> {
-    return Mono.empty()
+/**
+ * Workaround for bug reported here:
+ * https://github.com/spring-projects/spring-graphql/issues/342
+ * Can be removed once the propagation works out-of-the-box
+ */
+class CustomWebSocketGraphQlHandlerInterceptor(
+    private val userDetailsService: CustomUserDetailsService,
+    private val issuer: String
+) : WebSocketGraphQlHandlerInterceptor {
+
+  override fun intercept(
+      request: WebGraphQlRequest,
+      chain: WebGraphQlHandlerInterceptor.Chain
+  ): Mono<WebGraphQlResponse> {
+    request.headers.getFirst(HttpHeaders.AUTHORIZATION)?.let { accessToken ->
+      val authConverter = CustomUserAuthenticationConverter(userDetailsService)
+      val jwt =
+          JwtDecoders.fromIssuerLocation<JwtDecoder>(issuer)
+              .decode(accessToken.replace("Bearer ", ""))
+      val user = authConverter.convert(jwt)
+      SecurityContextHolder.getContext().authentication = user
+    }
+    return super.intercept(request, chain)
   }
 }
