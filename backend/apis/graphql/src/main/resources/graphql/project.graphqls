@@ -3,6 +3,10 @@ extend type Query {
     projects: [ProjectQueryResult]
 }
 
+type Subscription {
+    projectsAndUpdates: ProjectQueryResult
+}
+
 extend type Mutation {
     createProject(
         projectName: String!,
