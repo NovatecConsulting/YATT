@@ -7,6 +7,8 @@ spring:
     schema:
       printer:
         enabled: true
+    websocket:
+      path: /wsgraphql
   jackson:
     serialization:
       fail-on-empty-beans: false

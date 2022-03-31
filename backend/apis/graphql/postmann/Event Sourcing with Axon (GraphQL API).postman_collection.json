@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "1815bc3a-2174-4021-832a-faab2c4f1f24",
-		"name": "Event Sourcing with Axon (GraphQL API)",
+		"name": "Event Sourcing with Axon (GraphQL over HTTP API)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -225,7 +225,7 @@
 					"response": []
 				},
 				{
-					"name": "Rename Project Copy",
+					"name": "Rename Project",
 					"event": [
 						{
 							"listen": "prerequest",

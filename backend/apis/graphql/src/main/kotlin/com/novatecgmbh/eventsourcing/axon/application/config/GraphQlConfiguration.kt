@@ -7,6 +7,8 @@ import java.time.format.DateTimeParseException
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
+import org.springframework.graphql.web.WebSocketGraphQlHandlerInterceptor
+import reactor.core.publisher.Mono
 
 @Configuration
 class GraphQlConfiguration {
@@ -53,4 +55,15 @@ class GraphQlConfiguration {
                 }
               })
           .build()
+
+  @Bean fun interceptor() = CustomWebSocketGraphQlHandlerInterceptor()
+}
+
+class CustomWebSocketGraphQlHandlerInterceptor : WebSocketGraphQlHandlerInterceptor {
+  override fun handleConnectionInitialization(
+      sessionId: String,
+      connectionInitPayload: MutableMap<String, Any>
+  ): Mono<Any> {
+    return Mono.empty()
+  }
 }

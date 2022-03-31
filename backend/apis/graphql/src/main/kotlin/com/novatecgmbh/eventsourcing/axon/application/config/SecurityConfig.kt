@@ -34,7 +34,7 @@ class SecurityConfig(val userDetailsService: UserDetailsService) : WebSecurityCo
         .exceptionHandling()
         .and()
         .authorizeRequests()
-        .antMatchers("/graphql/schema/**", "/graphiql/**")
+        .antMatchers("/graphql/schema/**", "/graphiql/**", "/wsgraphql/**")
         .permitAll()
         .anyRequest()
         .authenticated()

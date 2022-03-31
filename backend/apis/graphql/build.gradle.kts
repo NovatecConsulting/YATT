@@ -19,9 +19,10 @@ dependencies {
   implementation("org.axonframework:axon-spring-boot-starter")
   implementation("org.axonframework.extensions.kotlin:axon-kotlin")
   implementation("org.axonframework.extensions.tracing:axon-tracing-spring-boot-starter")
+  implementation("org.springframework.boot:spring-boot-starter-graphql")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-web")
-  implementation("org.springframework.boot:spring-boot-starter-graphql")
+  implementation("org.springframework.boot:spring-boot-starter-websocket")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
