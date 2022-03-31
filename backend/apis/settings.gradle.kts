@@ -41,8 +41,6 @@ include("rest")
 
 include("graphql")
 
-include("spring-cloud")
-
 include("websocket-rsocket")
 
 include("websocket-stomp")
