@@ -6,13 +6,16 @@ echo "Building API Common ..."
 echo "Building API GraphQL ..."
 ./gradlew :apis:graphql:build
 
+echo "Building API gRPC"
+./gradlew :apis:grpc:build
+
 echo "Building API REST ..."
 ./gradlew :apis:rest:build
 
-echo "Building API Websocket (RSocket) ..."
+echo "Building API RSocket ..."
 ./gradlew :apis:websocket-rsocket:build
 
-echo "Building API Websocket (Stomp) ..."
+echo "Building API STOMP ..."
 ./gradlew :apis:websocket-stomp:build
 
 
