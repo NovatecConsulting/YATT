@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: grpc-api
+
+logging:
+  level:
+    ROOT: info
+    org:
+      springframework.boot: info
