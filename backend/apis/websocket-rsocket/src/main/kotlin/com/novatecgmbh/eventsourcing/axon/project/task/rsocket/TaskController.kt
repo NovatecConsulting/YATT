@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.rsocket
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
+import com.novatecgmbh.eventsourcing.axon.project.task.rsocket.dto.*
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway
 import org.springframework.messaging.handler.annotation.DestinationVariable

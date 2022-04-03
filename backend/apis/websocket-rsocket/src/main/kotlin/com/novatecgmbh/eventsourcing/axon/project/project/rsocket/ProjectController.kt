@@ -45,6 +45,10 @@ class ProjectController(
   ): Flux<ProjectQueryResult> =
       queryGateway.queryUpdates(MyProjectsQuery(user.identifier), ProjectQueryResult::class.java)
 
+  @MessageMapping("projects.{id}")
+  fun getProject(@DestinationVariable id: ProjectId): Mono<ProjectQueryResult> =
+      queryGateway.query(ProjectQuery(id), ProjectQueryResult::class.java)
+
   @MessageMapping("projects.{id}.updates")
   fun subscribeProjectByIdUpdates(@DestinationVariable id: ProjectId): Flux<ProjectQueryResult> =
       queryGateway.queryUpdates(ProjectQuery(id), ProjectQueryResult::class.java)
