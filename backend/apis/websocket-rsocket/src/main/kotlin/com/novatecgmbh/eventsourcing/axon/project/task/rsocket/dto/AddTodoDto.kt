@@ -1,4 +1,4 @@
-package com.novatecgmbh.eventsourcing.axon.project.task.rsocket
+package com.novatecgmbh.eventsourcing.axon.project.task.rsocket.dto
 
 import com.novatecgmbh.eventsourcing.axon.project.task.api.AddTodoCommand
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
