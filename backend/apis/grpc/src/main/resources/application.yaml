@@ -2,6 +2,13 @@ spring:
   application:
     name: grpc-api
 
+grpc:
+  server:
+    security:
+      enabled: true
+      certificateChain: classpath:certs/localhost.crt
+      privateKey: classpath:certs/localhost.key
+
 logging:
   level:
     ROOT: info
