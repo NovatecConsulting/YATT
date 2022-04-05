@@ -34,7 +34,7 @@ class ProjectController(val commandGateway: CommandGateway, val queryGateway: Qu
       queryGateway.queryMany(
           MyProjectsQuery((user.principal as RegisteredUserPrincipal).identifier))
 
-  @SubscriptionMapping
+  @SubscriptionMapping("projects")
   fun projectsAndUpdates(
       @AuthenticationPrincipal user: UsernamePasswordAuthenticationToken
   ): Flux<ProjectQueryResult> {
