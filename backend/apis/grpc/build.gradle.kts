@@ -10,6 +10,7 @@ plugins {
 group = "${group}.apis"
 
 dependencies {
+  implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
   implementation("com.novatecgmbh.eventsourcing.axon.common:api")
   implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
   implementation("com.novatecgmbh.eventsourcing.axon.company:api")
@@ -25,18 +26,13 @@ dependencies {
   implementation("net.devh:grpc-spring-boot-starter:2.13.1.RELEASE")
   implementation("org.axonframework:axon-spring-boot-starter")
   implementation("org.axonframework.extensions.kotlin:axon-kotlin")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-security")
 }
 
 protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:3.19.2"
-  }
-  plugins {
-    id("grpc") {
-      artifact = "io.grpc:protoc-gen-grpc-java:1.43.2"
-    }
-  }
+  protoc { artifact = "com.google.protobuf:protoc:3.19.2" }
+  plugins { id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:1.43.2" } }
   generateProtoTasks {
     ofSourceSet("main").forEach {
       it.plugins {

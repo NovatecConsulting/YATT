@@ -19,7 +19,6 @@ class UserService(val queryGateway: QueryGateway) : UserServiceGrpc.UserServiceI
       request: AllUsersQueryProto,
       responseObserver: StreamObserver<AllUsersQueryResultProto>
   ) {
-    SecurityContextHelper.setAuthentication("ca509f45-a184-4b62-8769-777df02aeaa5")
     queryGateway.queryMany<UserQueryResult, AllUsersQuery>(AllUsersQuery()).thenApply {
       it.map { it.toUserQueryResultProto() }.apply {
         AllUsersQueryResultProto.newBuilder().addAllUsers(this).build().apply {

@@ -1,13 +1,18 @@
 spring:
   application:
     name: grpc-api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
 
 grpc:
   server:
     security:
       enabled: true
-      certificateChain: classpath:certs/localhost.crt
-      privateKey: classpath:certs/localhost.key
+      certificateChain: classpath:certs/server.crt
+      privateKey: classpath:certs/server.key
 
 logging:
   level:
