@@ -1,22 +1,23 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
 option java_multiple_files = true;
 option java_package = "com.novatecgmbh.eventsourcing.axon";
 option java_outer_classname = "UserServiceProto";
 
 service UserService {
-  rpc findAll(AllUsersQueryProto) returns (AllUsersQueryResultProto) {
-  }
+  rpc findAll(google.protobuf.Empty) returns (UserList) {}
 }
 
-message AllUsersQueryProto {}
-
-message AllUsersQueryResultProto {
-  repeated UserQueryResultProto users = 1;
+message UserList {
+  repeated User users = 1;
 }
 
-message UserQueryResultProto {
+message User {
   string identifier = 1;
   string firstname = 2;
   string lastname = 3;
 }
+

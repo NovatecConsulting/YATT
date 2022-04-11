@@ -41,6 +41,8 @@ include("rest")
 
 include("graphql")
 
+include("grpc-lib")
+
 include("grpc")
 
 include("websocket-rsocket")

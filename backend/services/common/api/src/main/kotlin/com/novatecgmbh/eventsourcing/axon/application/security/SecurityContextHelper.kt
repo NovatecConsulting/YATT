@@ -10,4 +10,15 @@ object SecurityContextHelper {
         UsernamePasswordAuthenticationToken(
             RegisteredUserPrincipal(UserId(userId), "", "", ""), null)
   }
+
+  fun getUser(): UserId? {
+    val auth =
+        SecurityContextHolder.getContext().authentication
+            ?: throw RuntimeException("Authentication from security context holder is null!")
+    val principal = auth.principal
+
+    return if (principal is RegisteredUserPrincipal) {
+      principal.identifier
+    } else null
+  }
 }
