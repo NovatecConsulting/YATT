@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.novatecgmbh.eventsourcing.axon";
+option java_outer_classname = "TaskServiceProtos";
+
+service TaskService {
+  rpc createTask(CreateTaskRequest) returns (TaskIdentifier) {}
+  rpc renameTask(RenameTaskRequest) returns (google.protobuf.Empty) {}
+  rpc rescheduleTask(RescheduleTaskRequest) returns (google.protobuf.Empty) {}
+  rpc startTask(TaskIdentifier) returns (google.protobuf.Empty) {}
+  rpc completeTask(TaskIdentifier) returns (google.protobuf.Empty) {}
+  rpc getTasksByProject(ProjectIdentifier) returns (TaskList) {}
+  rpc subscribeTasksByProject(ProjectIdentifier) returns (stream Task) {}
+  rpc getTaskById(TaskIdentifier) returns (stream Task) {}
+  rpc subscribeTaskById(TaskIdentifier) returns (stream Task) {}
+}
+
+message CreateTaskRequest {
+  ProjectIdentifier project_identifier = 1;
+  string name = 2;
+  optional string description = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+}
+
+message RenameTaskRequest {
+  TaskIdentifier identifier = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message RescheduleTaskRequest {
+  TaskIdentifier identifier = 1;
+  google.protobuf.Timestamp start_date = 2;
+  google.protobuf.Timestamp end_date = 3;
+}
+
+message ProjectIdentifier {
+  string value = 1;
+}
+
+message TaskIdentifier {
+  string value = 1;
+}
+
+message TaskList {
+  repeated Task tasks = 1;
+}
+
+message Task {
+  string identifier = 1;
+  string name = 2;
+  optional string description = 3;
+}

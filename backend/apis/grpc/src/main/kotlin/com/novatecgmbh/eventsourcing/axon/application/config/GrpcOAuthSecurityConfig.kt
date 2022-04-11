@@ -1,5 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.application.config
 
+import com.novatecgmbh.eventsourcing.axon.ProjectServiceGrpc
+import com.novatecgmbh.eventsourcing.axon.TaskServiceGrpc
 import com.novatecgmbh.eventsourcing.axon.UserServiceGrpc
 import com.novatecgmbh.eventsourcing.axon.application.security.CustomUserAuthenticationConverter
 import io.grpc.reflection.v1alpha.ServerReflectionGrpc
@@ -63,6 +65,9 @@ class GrpcOAuthSecurityConfig : GlobalMethodSecurityConfiguration() {
   fun grpcSecurityMetadataSource(): GrpcSecurityMetadataSource? =
       ManualGrpcSecurityMetadataSource().apply {
         set(ServerReflectionGrpc.getServerReflectionInfoMethod(), AccessPredicate.authenticated())
+        set(ProjectServiceGrpc.getFindMyProjectsMethod(), AccessPredicate.authenticated())
+        set(TaskServiceGrpc.getGetTasksByProjectMethod(), AccessPredicate.authenticated())
+        set(TaskServiceGrpc.getSubscribeTasksByProjectMethod(), AccessPredicate.authenticated())
         set(UserServiceGrpc.getFindAllMethod(), AccessPredicate.authenticated())
         setDefault(AccessPredicate.denyAll())
       }

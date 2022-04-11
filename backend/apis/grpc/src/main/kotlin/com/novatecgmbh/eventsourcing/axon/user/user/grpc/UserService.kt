@@ -1,10 +1,9 @@
 package com.novatecgmbh.eventsourcing.axon.user.user.grpc
 
-import com.novatecgmbh.eventsourcing.axon.AllUsersQueryProto
-import com.novatecgmbh.eventsourcing.axon.AllUsersQueryResultProto
-import com.novatecgmbh.eventsourcing.axon.UserQueryResultProto
+import com.google.protobuf.Empty
+import com.novatecgmbh.eventsourcing.axon.User
+import com.novatecgmbh.eventsourcing.axon.UserList
 import com.novatecgmbh.eventsourcing.axon.UserServiceGrpc
-import com.novatecgmbh.eventsourcing.axon.application.security.SecurityContextHelper
 import com.novatecgmbh.eventsourcing.axon.user.api.AllUsersQuery
 import com.novatecgmbh.eventsourcing.axon.user.api.UserQueryResult
 import io.grpc.stub.StreamObserver
@@ -15,13 +14,10 @@ import org.axonframework.queryhandling.QueryGateway
 @GrpcService
 class UserService(val queryGateway: QueryGateway) : UserServiceGrpc.UserServiceImplBase() {
 
-  override fun findAll(
-      request: AllUsersQueryProto,
-      responseObserver: StreamObserver<AllUsersQueryResultProto>
-  ) {
+  override fun findAll(request: Empty, responseObserver: StreamObserver<UserList>) {
     queryGateway.queryMany<UserQueryResult, AllUsersQuery>(AllUsersQuery()).thenApply {
       it.map { it.toUserQueryResultProto() }.apply {
-        AllUsersQueryResultProto.newBuilder().addAllUsers(this).build().apply {
+        UserList.newBuilder().addAllUsers(this).build().apply {
           responseObserver.onNext(this)
           responseObserver.onCompleted()
         }
@@ -29,8 +25,8 @@ class UserService(val queryGateway: QueryGateway) : UserServiceGrpc.UserServiceI
     }
   }
 
-  private fun UserQueryResult.toUserQueryResultProto(): UserQueryResultProto =
-      UserQueryResultProto.newBuilder()
+  private fun UserQueryResult.toUserQueryResultProto(): User =
+      User.newBuilder()
           .also {
             it.identifier = identifier.toString()
             it.firstname = firstname

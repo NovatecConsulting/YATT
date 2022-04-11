@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.novatecgmbh.eventsourcing.axon";
+option java_outer_classname = "ProjectServiceProtos";
+
+service ProjectService {
+  rpc findMyProjects(google.protobuf.Empty) returns (ProjectList) {}
+}
+
+message ProjectList {
+  repeated Project projects = 1;
+}
+
+message Project {
+  string identifier = 1;
+  string name = 2;
+}
