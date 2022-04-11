@@ -7,6 +7,7 @@ import com.novatecgmbh.eventsourcing.axon.ProjectServiceGrpc
 import com.novatecgmbh.eventsourcing.axon.application.security.SecurityContextHelper
 import com.novatecgmbh.eventsourcing.axon.project.project.api.MyProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.toTimestamp
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.axonframework.extensions.kotlin.queryMany
@@ -32,6 +33,9 @@ class ProjectService(val queryGateway: QueryGateway) : ProjectServiceGrpc.Projec
           .also {
             it.identifier = identifier.toString()
             it.name = name
+            it.startDate = startDate.toTimestamp()
+            it.deadline = deadline.toTimestamp()
+            if (actualEndDate != null) it.actualEndDate = actualEndDate!!.toTimestamp()
           }
           .build()
 }

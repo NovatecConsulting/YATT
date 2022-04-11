@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
 option java_package = "com.novatecgmbh.eventsourcing.axon";
@@ -17,4 +18,12 @@ message ProjectList {
 message Project {
   string identifier = 1;
   string name = 2;
+  enum ProjectStatus {
+    ON_TIME = 0;
+    DELAYED = 1;
+  }
+  ProjectStatus status = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp deadline = 5;
+  google.protobuf.Timestamp actual_end_date = 6;
 }

@@ -3,6 +3,9 @@
 # Generate self signed root CA cert
 openssl req -nodes -x509 -newkey rsa:2048 -keyout ca.key -out ca.crt -subj "/C=DE/CN=Example-Root-CA"
 
+# Create ca PEM file
+cat ca.key ca.crt > ca.pem
+
 # Generate server cert to be signed
 openssl req -nodes -newkey rsa:2048 -keyout server.key -out server.csr -config req.conf
 
