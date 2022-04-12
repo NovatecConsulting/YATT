@@ -11,8 +11,10 @@ grpc:
   server:
     security:
       enabled: true
-      certificateChain: classpath:certs/server.crt
-      privateKey: classpath:certs/server.key
+      # certificateChain: classpath:certs/server.crt
+      # privateKey: classpath:certs/serverprivate.key
+      key-store: classpath:certs/server-keystore.p12
+      key-store-password: server
 
 logging:
   level:
