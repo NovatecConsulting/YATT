@@ -1,25 +1,14 @@
 #!/bin/bash
 
-# Generate self signed root CA cert
-openssl req -nodes -x509 -newkey rsa:2048 -keyout ca.key -out ca.crt -subj "/C=DE/CN=Example-Root-CA"
+openssl genrsa -des3 -out serverprivate.key 2048
+# enter passphrase: server
 
-# Create ca PEM file
-cat ca.key ca.crt > ca.pem
+openssl req -new -key serverprivate.key -out server.csr -config server-csr.conf
 
-# Generate server cert to be signed
-openssl req -nodes -newkey rsa:2048 -keyout server.key -out server.csr -config req.conf
+openssl x509 -req -days 3650 -in server.csr -signkey serverprivate.key -out server.crt -extfile server-csr.conf -extensions v3_req
 
-# Sign the server cert
-openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+keytool -import -file server.crt -alias serverCA -keystore server-truststore.jks
+# enter passphrase: server
 
-# Create server PEM file
-cat server.key server.crt > server.pem
-
-# Generate client cert to be signed
-#openssl req -nodes -newkey rsa:2048 -keyout client.key -out client.csr -subj "/CN=localhost"
-
-# Sign the client cert
-#openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAserial ca.srl -out client.crt
-
-# Create client PEM file
-#cat client.key client.crt > client.pem
+openssl pkcs12 -export -in server.crt -inkey serverprivate.key -certfile server.crt -name "servercert" -out server-keystore.p12
+# enter passphrase: server
