@@ -7,14 +7,11 @@ plugins {
 group = "${group}.apis"
 
 dependencies {
-  implementation("com.novatecgmbh.eventsourcing.axon.common:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
-  implementation("com.novatecgmbh.eventsourcing.axon.company:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.project:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.user:api")
+  implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.projectreactor:reactor-core")
+  implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.axonframework:axon-spring-boot-starter")
   implementation("org.axonframework.extensions.kotlin:axon-kotlin")
   implementation("org.axonframework.extensions.reactor:axon-reactor-spring-boot-starter")

@@ -10,11 +10,6 @@ group = "${group}.apis"
 dependencies {
   implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
   implementation("com.novatecgmbh.eventsourcing.axon.apis:grpc-lib")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
-  implementation("com.novatecgmbh.eventsourcing.axon.company:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.project:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.user:api")
 
   implementation("io.projectreactor:reactor-core")
   implementation("jakarta.annotation:jakarta.annotation-api:1.3.5")
