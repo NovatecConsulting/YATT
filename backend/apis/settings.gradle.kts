@@ -45,6 +45,6 @@ include("grpc-lib")
 
 include("grpc")
 
-include("websocket-rsocket")
+include("rsocket")
 
-include("websocket-stomp")
+include("stomp")
