@@ -13,10 +13,10 @@ echo "Building API REST ..."
 ./gradlew :apis:rest:build
 
 echo "Building API RSocket ..."
-./gradlew :apis:websocket-rsocket:build
+./gradlew :apis:rsocket:build
 
 echo "Building API STOMP ..."
-./gradlew :apis:websocket-stomp:build
+./gradlew :apis:stomp:build
 
 
 echo "Building Service - User API ..."
