@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Building API Common ..."
-./gradlew :apis:api-common:build
+./gradlew :apis:common:build
 
 echo "Building API GraphQL ..."
 ./gradlew :apis:graphql:build

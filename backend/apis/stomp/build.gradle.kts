@@ -7,7 +7,7 @@ plugins {
 group = "${group}.apis"
 
 dependencies {
-  implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
+  implementation("com.novatecgmbh.eventsourcing.axon.apis:common")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter")

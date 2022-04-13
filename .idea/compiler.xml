@@ -29,8 +29,8 @@
       <module name="api-gateway.websocket-stomp.test" target="11" />
       <module name="api.api-common" target="11" />
       <module name="api.common" target="11" />
-      <module name="apis.common.main" target="11" />
-      <module name="apis.common.test" target="11" />
+      <module name="apis.api-common.main" target="11" />
+      <module name="apis.api-common.test" target="11" />
       <module name="apis.graphql-websocket" target="11" />
       <module name="apis.graphql-websocket.main" target="11" />
       <module name="apis.graphql-websocket.test" target="11" />

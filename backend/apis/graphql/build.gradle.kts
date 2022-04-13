@@ -7,7 +7,7 @@ plugins {
 group = "${group}.apis"
 
 dependencies {
-  implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
+  implementation("com.novatecgmbh.eventsourcing.axon.apis:common")
 
   implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.1.5")

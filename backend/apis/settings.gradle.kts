@@ -35,7 +35,7 @@ includeBuild("../services")
 // == Define the inner structure of this component ==
 rootProject.name = "apis"
 
-include("api-common")
+include("common")
 
 include("rest")
 
