@@ -8,11 +8,6 @@ group = "${group}.apis"
 
 dependencies {
   implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.common:auditing")
-  implementation("com.novatecgmbh.eventsourcing.axon.company:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.project:api")
-  implementation("com.novatecgmbh.eventsourcing.axon.user:api")
 
   implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.1.5")

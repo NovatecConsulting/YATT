@@ -16,6 +16,7 @@ dependencies {
     api("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.3.1")
     api("io.opentracing.contrib:opentracing-spring-jaeger-starter:3.2.2")
     api("io.projectreactor:reactor-core:3.4.8")
+    api("io.projectreactor.kotlin:reactor-kotlin-extension:1.1.6")
     api("javax.persistence:javax.persistence-api:2.2")
   }
 }
