@@ -26,7 +26,7 @@ jobs:
 
       - name: Build API Common
         working-directory: ./backend
-        run: ./gradlew :apis:api-common:build
+        run: ./gradlew :apis:common:build
       - name: Build API REST
         working-directory: ./backend
         run: ./gradlew :apis:rest:build
@@ -35,10 +35,10 @@ jobs:
         run: ./gradlew :apis:graphql:build
       - name: Build API Websocket RSocket
         working-directory: ./backend
-        run: ./gradlew :apis:websocket-rsocket:build
+        run: ./gradlew :apis:rsocket:build
       - name: Build API Websocket STOMP
         working-directory: ./backend
-        run: ./gradlew :apis:websocket-stomp:build
+        run: ./gradlew :apis:stomp:build
 
       - name: Build services common api with Gradle
         working-directory: ./backend

@@ -8,7 +8,7 @@ plugins {
 group = "${group}.apis"
 
 dependencies {
-  implementation("com.novatecgmbh.eventsourcing.axon.apis:api-common")
+  implementation("com.novatecgmbh.eventsourcing.axon.apis:common")
   implementation("com.novatecgmbh.eventsourcing.axon.apis:grpc-lib")
 
   implementation("io.projectreactor:reactor-core")
