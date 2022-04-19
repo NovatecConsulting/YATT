@@ -1,0 +1,13 @@
+custom:
+  auth:
+    url: http://localhost:8999/realms/eventsourcing-with-axon/protocol/openid-connect/token
+    username: test1
+    password: test
+  rsocket:
+    server:
+      uri: ws://localhost:7001
+
+logging:
+  level:
+    root: info
+    #io.rsocket.FrameLogger: debug

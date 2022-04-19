@@ -1,0 +1,14 @@
+custom:
+  auth:
+    url: http://localhost:8999/realms/eventsourcing-with-axon/protocol/openid-connect/token
+    username: test1
+    password: test
+
+grpc:
+  client:
+    grpcapi:
+      address: static://localhost:8089
+      security:
+        clientAuthEnabled: false
+        trust-store: classpath:certs/server-truststore.jks
+        trust-store-password: server

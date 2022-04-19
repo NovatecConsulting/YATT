@@ -9,3 +9,5 @@ includeBuild("data-import")
 
 includeBuild("apis")
 includeBuild("services")
+
+includeBuild("clients")

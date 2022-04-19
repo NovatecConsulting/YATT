@@ -38,6 +38,9 @@
       <module name="apis.websocket-rsocket.test" target="11" />
       <module name="apis.websocket-stomp.main" target="11" />
       <module name="apis.websocket-stomp.test" target="11" />
+      <module name="backend.cli" target="11" />
+      <module name="backend.cli.main" target="11" />
+      <module name="backend.cli.test" target="11" />
       <module name="backend.common-spring-webmvc" target="11" />
       <module name="backend.common-spring-webmvc.main" target="11" />
       <module name="backend.common-spring-webmvc.test" target="11" />
