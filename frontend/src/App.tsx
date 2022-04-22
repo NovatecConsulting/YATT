@@ -33,6 +33,7 @@ import {CreateParticipantForm} from "./features/participants/CreateParticipantFo
 import {ProfilePage} from "./features/auth/ProfilePage";
 import {TasksGanttChart} from "./features/tasks/TasksGanttChart";
 import {rsocket} from "./app/rsocket";
+import { ChatPage } from './features/chat/ChatPage';
 
 function App() {
     const store = useStore();
@@ -106,6 +107,7 @@ function App() {
                                 <PrivateRoute exact path={"/projects/:projectId/participants/new"}
                                               component={CreateParticipantForm}/>
                                 <PrivateRoute exact path={"/projects/:projectId/tasklist"} component={TaskList}/>
+                                <PrivateRoute exact path={"/projects/:projectId/chat"} component={ChatPage}/>
                                 <PrivateRoute exact path={"/projects/:projectId/tasklist/new"}
                                               component={CreateTaskForm}/>
                                 <PrivateRoute exact path={"/projects/:projectId/taskcalendar"}
