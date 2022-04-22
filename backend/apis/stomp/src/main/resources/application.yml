@@ -9,8 +9,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
-          jwk-set-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8999/realms/eventsourcing-with-axon
+          jwk-set-uri: http://localhost:8999/realms/eventsourcing-with-axon/protocol/openid-connect/certs
 
 app:
   cors:

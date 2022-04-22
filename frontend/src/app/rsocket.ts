@@ -222,7 +222,7 @@ const clientFactory = () => new RSocketClient({
     },
     transport: new RSocketWebSocketClient(
         {
-            url: 'ws://localhost:7000',
+            url: 'ws://localhost:7001',
             wsCreator: (url: string) => new WebSocket(url),
         },
         {

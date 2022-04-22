@@ -1179,7 +1179,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8999/auth/realms/eventsourcing-with-axon/protocol/openid-connect/token",
+					"raw": "http://localhost:8999/realms/eventsourcing-with-axon/protocol/openid-connect/token",
 					"protocol": "http",
 					"host": [
 						"localhost"
