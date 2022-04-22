@@ -13,6 +13,7 @@ export function ProjectDetailsPage() {
     const navigateToTaskList = () => history.push(`/projects/${projectId}/tasklist`)
     const navigateToTaskGanttChart = () => history.push(`/projects/${projectId}/taskcalendar`)
     const navigateToParticipantList = () => history.push(`/projects/${projectId}/participants`)
+    const navigateToChat = () => history.push(`/projects/${projectId}/chat`)
 
     let taskCardContent: ReactJSXElement | null = null;
     if (result.isLoading || result.isSuccess) {
@@ -70,6 +71,12 @@ export function ProjectDetailsPage() {
                     </CardContent>
                     <CardActions>
                         <Button onClick={navigateToParticipantList}>View Participants</Button>
+                    </CardActions>
+                </Card>
+                <Card sx={{width: 300, display: 'flex', flexDirection: 'column'}}>
+                    <CardHeader title='Chat'/>
+                    <CardActions>
+                        <Button onClick={navigateToChat}>Go to Project Chat Room</Button>
                     </CardActions>
                 </Card>
             </Box>
