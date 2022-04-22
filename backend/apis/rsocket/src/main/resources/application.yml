@@ -1,6 +1,6 @@
 spring:
   application:
-    name: websocket-stomp
+    name: rsocket
 
   jackson:
     serialization:
