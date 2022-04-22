@@ -21,7 +21,7 @@ services:
 
 
   axonserver:
-    image: axoniq/axonserver:4.5.8
+    image: axoniq/axonserver:4.5.11
     hostname: axonserver
     volumes:
       - type: bind
@@ -38,12 +38,12 @@ services:
 
 
   keycloak:
-    image: quay.io/keycloak/keycloak:15.0.2
+    image: quay.io/keycloak/keycloak:18.0
     depends_on:
       - keycloak-db
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: 1234
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 1234
       DB_VENDOR: postgres
       DB_ADDR: keycloak-db
       DB_PORT: 5432
@@ -51,14 +51,12 @@ services:
       DB_USER: admin
       DB_PASSWORD: 1234
     command:
-      - "-Dkeycloak.migration.action=import"
-      - "-Dkeycloak.migration.provider=singleFile"
-      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
-      - "-Dkeycloak.migration.file=/tmp/realm.json"
+      - "start-dev"
+      - "--import-realm"
     volumes:
       - type: bind
         source: ./keycloak/realm.json
-        target: /tmp/realm.json
+        target: /opt/keycloak/data/import/realm.json
         read_only: true
     ports:
       - "8999:8080"

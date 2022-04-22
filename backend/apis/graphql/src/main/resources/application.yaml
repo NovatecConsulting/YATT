@@ -16,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8999/auth/realms/eventsourcing-with-axon
+          issuer-uri: http://localhost:8999/realms/eventsourcing-with-axon
 
 app:
   cors:
