@@ -26,7 +26,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OAuth2ResourceServerProperties::class)
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-class GrpcOAuthSecurityConfig : GlobalMethodSecurityConfiguration() {
+class GrpcSecurityConfig : GlobalMethodSecurityConfiguration() {
 
   @Bean
   fun jwtDecoder(properties: OAuth2ResourceServerProperties): JwtDecoder {
