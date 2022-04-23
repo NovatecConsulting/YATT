@@ -109,7 +109,7 @@ class DataImporter(private val commandGateway: CommandGateway) : CommandLineRunn
       val projectId = ProjectId()
       val projectName = "Project $i"
       val projectStartDate =
-          LocalDate.of(2010, 1, 1).datesUntil(LocalDate.of(2022, 12, 31)).toList().random()
+          LocalDate.of(2019, 1, 1).datesUntil(LocalDate.of(2024, 12, 31)).toList().random()
 
       val projectDeadline = projectStartDate.plusYears(1)
       val index = userIds.indices.random()
