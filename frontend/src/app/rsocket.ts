@@ -243,6 +243,15 @@ class WebsocketClient {
         return this._rsocket.connect();
     }
 
+    fireAndForget(route: string, payload: any): void {
+        this._rsocket.fireAndForget({
+            data: payload,
+            metadata: encodeCompositeMetadata([
+                [MESSAGE_RSOCKET_ROUTING, encodeRoute(route)]
+            ])
+        });
+    }
+
     sendCommand(route: string, command: any): Promise<{ data: void } | { error: any }> {
         return new Promise((resolve, reject) => {
             this._rsocket.requestResponse({
