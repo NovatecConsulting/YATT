@@ -56,17 +56,32 @@ class DataImporter(private val commandGateway: CommandGateway) : CommandLineRunn
     commandGateway
         .send<UserId>(
             RegisterUserCommand(
-                userIds[0], "af0d09bf-154b-47c9-af4d-2c585c70083d", "Max", "Mustermann"))
+                userIds[0],
+                "af0d09bf-154b-47c9-af4d-2c585c70083d",
+                "Max",
+                "Mustermann",
+                "max.mustermann@gmail.com",
+                "+4915112345678"))
         .join()
     commandGateway
         .send<UserId>(
             RegisterUserCommand(
-                userIds[1], "d13c404d-a803-452f-9d6e-55f7239ca8e0", "Claire", "Grube"))
+                userIds[1],
+                "d13c404d-a803-452f-9d6e-55f7239ca8e0",
+                "Claire",
+                "Grube",
+                "claire.grube@gmail.com",
+                "+4917312345678"))
         .join()
     commandGateway
         .send<UserId>(
             RegisterUserCommand(
-                userIds[2], "ace9d139-0c88-4380-ae32-7e8cf9bda02c", "Klaus", "Trophobie"))
+                userIds[2],
+                "ace9d139-0c88-4380-ae32-7e8cf9bda02c",
+                "Klaus",
+                "Kuester",
+                "klaus.kuester@gmail.com",
+                "+4917612345678"))
         .join()
   }
 

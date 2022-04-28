@@ -12,7 +12,8 @@ class UserUniqueKeyProjector(private val repository: UserUniqueKeyRepository) {
   fun on(event: UserRegisteredEvent) {
     repository.save(
         UserUniqueKeyProjection(
-            identifier = event.aggregateIdentifier, externalUserId = event.externalUserId)
-    )
+            identifier = event.aggregateIdentifier,
+            externalUserId = event.externalUserId,
+            email = event.email))
   }
 }

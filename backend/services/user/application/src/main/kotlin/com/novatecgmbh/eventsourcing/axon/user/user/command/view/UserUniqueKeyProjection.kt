@@ -10,5 +10,6 @@ import javax.persistence.Table
 @Table(name = "user_unique_key")
 class UserUniqueKeyProjection(
     @EmbeddedId var identifier: UserId,
-    @Column(nullable = false, unique = true) var externalUserId: String
+    @Column(nullable = false, unique = true) var externalUserId: String,
+    @Column(nullable = false, unique = true) var email: String
 )

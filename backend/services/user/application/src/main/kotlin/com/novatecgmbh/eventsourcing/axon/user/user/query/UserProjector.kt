@@ -23,8 +23,9 @@ class UserProjector(
             identifier = event.aggregateIdentifier,
             externalUserId = event.externalUserId,
             firstname = event.firstname,
-            lastname = event.lastname)
-    )
+            lastname = event.lastname,
+            email = event.email,
+            telephone = event.telephone))
   }
 
   @EventHandler

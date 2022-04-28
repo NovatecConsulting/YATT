@@ -30,6 +30,12 @@ export function ProfilePage() {
                         <Typography color={'white'}>
                             {`${currentUser?.firstname} ${currentUser?.lastname}`}
                         </Typography>
+                        <Typography color={'white'}>
+                            {`${currentUser?.email}`}
+                        </Typography>
+                        <Typography color={'white'}>
+                            {`${currentUser?.telephone}`}
+                        </Typography>
                     </React.Fragment>
                 )
             }

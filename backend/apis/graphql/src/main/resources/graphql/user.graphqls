@@ -6,6 +6,8 @@ type Mutation {
     registerUser(
         firstname: String!
         lastname: String!
+        email: String!
+        telephone: String!
     ): ID!
     renameUser(
         identifier: ID!
@@ -18,4 +20,6 @@ type UserQueryResult {
     identifier: ID!
     firstname: String!
     lastname: String!
+    email: String!
+    telephone: String!
 }

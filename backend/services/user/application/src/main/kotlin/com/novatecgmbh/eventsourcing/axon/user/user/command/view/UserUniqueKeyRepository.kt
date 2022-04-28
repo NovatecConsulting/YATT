@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserUniqueKeyRepository : JpaRepository<UserUniqueKeyProjection, UserId> {
   fun existsByExternalUserId(externalUserId: String): Boolean
+  fun existsByEmail(email: String): Boolean
 }
