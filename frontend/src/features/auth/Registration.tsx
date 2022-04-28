@@ -16,6 +16,8 @@ export function Registration() {
         initialValues: {
             firstname: '',
             lastname: '',
+            email: '',
+            telephone: ''
         } as RegisterUserDto,
         onSubmit: async (userDto, formikHelpers) => {
             try {
@@ -60,6 +62,28 @@ export function Registration() {
                         onChange={formik.handleChange}
                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
                         helperText={formik.touched.lastname && formik.errors.lastname}
+                    />
+                    <TextField
+                        required
+                        fullWidth
+                        id="email"
+                        name="email"
+                        label="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
+                    <TextField
+                        required
+                        fullWidth
+                        id="telephone"
+                        name="telephone"
+                        label="telephone"
+                        value={formik.values.telephone}
+                        onChange={formik.handleChange}
+                        error={formik.touched.telephone && Boolean(formik.errors.telephone)}
+                        helperText={formik.touched.telephone && formik.errors.telephone}
                     />
                     <Button
                         variant="contained"

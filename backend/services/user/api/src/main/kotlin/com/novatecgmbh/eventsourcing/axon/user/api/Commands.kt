@@ -11,6 +11,8 @@ data class RegisterUserCommand(
     val externalUserId: String,
     val firstname: String,
     val lastname: String,
+    val email: String,
+    val telephone: String
 ) : UserCommand(aggregateIdentifier)
 
 data class RenameUserCommand(

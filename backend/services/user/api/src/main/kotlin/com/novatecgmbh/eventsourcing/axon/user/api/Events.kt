@@ -9,6 +9,8 @@ data class UserRegisteredEvent(
     val externalUserId: String,
     val firstname: String,
     val lastname: String,
+    val email: String,
+    val telephone: String
 ) : UserEvent(aggregateIdentifier)
 
 data class UserRenamedEvent(

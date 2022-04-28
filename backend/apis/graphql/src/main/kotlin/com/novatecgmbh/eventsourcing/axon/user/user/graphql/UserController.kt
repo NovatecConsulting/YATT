@@ -21,11 +21,14 @@ class UserController(val commandGateway: CommandGateway, val queryGateway: Query
   @MutationMapping
   fun registerUser(
       @Argument firstname: String,
-      @Argument lastname: String
+      @Argument lastname: String,
+      @Argument email: String,
+      @Argument telephone: String,
   ): CompletableFuture<UserId> =
       SecurityContextHolder.getContext().authentication.principal.let {
         if (it is UnregisteredUserPrincipal) {
-          commandGateway.send(RegisterUserCommand(UserId(), it.username, firstname, lastname))
+          commandGateway.send(
+              RegisterUserCommand(UserId(), it.username, firstname, lastname, email, telephone))
         } else {
           throw IllegalStateException("User already registered")
         }

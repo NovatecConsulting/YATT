@@ -56,15 +56,18 @@ create sequence hibernate_sequence start 1 increment 1;
 
     create table user_unique_key (
        identifier varchar(255) not null,
+        email varchar(255) not null,
         external_user_id varchar(255) not null,
         primary key (identifier)
     );
 
     create table users (
        identifier varchar(255) not null,
+        email varchar(255) not null,
         external_user_id varchar(255) not null,
         firstname varchar(255) not null,
         lastname varchar(255) not null,
+        telephone varchar(255) not null,
         primary key (identifier)
     );
 create index IDXk45eqnxkgd8hpdn6xixn8sgft on association_value_entry (saga_type, association_key, association_value);
@@ -78,6 +81,9 @@ create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, s
 
     alter table if exists snapshot_event_entry 
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
+
+    alter table if exists user_unique_key 
+       add constraint UK_7rl1lg6v0c2b4os3hd99hy0un unique (email);
 
     alter table if exists user_unique_key 
        add constraint UK_hbn7ykwddd2spkc6buayh0lm1 unique (external_user_id);

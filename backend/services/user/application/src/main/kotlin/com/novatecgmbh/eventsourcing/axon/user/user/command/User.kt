@@ -21,6 +21,8 @@ class User : BaseAggregate() {
   private lateinit var externalUserId: String
   private lateinit var firstname: String
   private lateinit var lastname: String
+  private lateinit var email: String
+  private lateinit var telephone: String
 
   @CommandHandler
   @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
@@ -37,7 +39,9 @@ class User : BaseAggregate() {
             aggregateIdentifier = command.aggregateIdentifier,
             externalUserId = command.externalUserId,
             firstname = command.firstname,
-            lastname = command.lastname),
+            lastname = command.lastname,
+            email = command.email,
+            telephone = command.telephone),
         MetaData(
             //            mutableMapOf(AUDIT_USER_ID_META_DATA_KEY to
             // command.aggregateIdentifier.identifier)),

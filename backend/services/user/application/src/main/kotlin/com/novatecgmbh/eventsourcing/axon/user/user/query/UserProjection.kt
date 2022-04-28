@@ -13,7 +13,9 @@ class UserProjection(
     @EmbeddedId var identifier: UserId,
     @Column(nullable = false) var externalUserId: String,
     @Column(nullable = false) var firstname: String,
-    @Column(nullable = false) var lastname: String
+    @Column(nullable = false) var lastname: String,
+    @Column(nullable = false) var email: String,
+    @Column(nullable = false) var telephone: String
 ) {
-  fun toQueryResult() = UserQueryResult(identifier, externalUserId, firstname, lastname)
+  fun toQueryResult() = UserQueryResult(identifier, externalUserId, firstname, lastname, email, telephone)
 }

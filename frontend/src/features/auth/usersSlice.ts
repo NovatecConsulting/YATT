@@ -6,11 +6,15 @@ export interface User {
     externalUserId: string;
     firstname: string;
     lastname: string;
+    email: string;
+    telephone: string;
 }
 
 export interface RegisterUserDto {
     firstname: string;
     lastname: string;
+    email: string;
+    telephone: string;
 }
 
 export interface RenameUserDto {
