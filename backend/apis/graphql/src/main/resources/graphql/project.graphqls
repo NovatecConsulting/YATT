@@ -1,10 +1,12 @@
 extend type Query {
-    project(identifier: ID!): ProjectQueryResult
-    projects: [ProjectQueryResult]
+    projects: [Project]
+    project(identifier: ID!): Project
+    task(identifier: ID!): Task
+    participant(identifier: ID!): Participant
 }
 
 type Subscription {
-    projects: ProjectQueryResult
+    projects: Project
 }
 
 extend type Mutation {
@@ -69,7 +71,7 @@ extend type Mutation {
     ): Int!
 }
 
-type ProjectQueryResult {
+type Project {
     identifier: ID!
     name: String!
     startDate: String
@@ -77,31 +79,30 @@ type ProjectQueryResult {
     companyReference: AggregateReference!
     status: ProjectStatus
     actualEndDate: String
-    tasks(from: Date, to: Date): [TaskQueryResult]
-    participants: [ParticipantQueryResult]
+    tasks(from: Date, to: Date): [Task]
+    participants: [Participant]
 }
 
-type TaskQueryResult {
+type Task {
     identifier: ID!
     name: String!
     description: String
     startDate: String
     endDate: String
     status: TaskStatus!
-    todos: [TodoQueryResult]
+    todos: [Todo]
 }
 
-type TodoQueryResult {
+type Todo {
     todoId: ID!
     description: String
     isDone: Boolean!
 }
 
-type ParticipantQueryResult {
+type Participant {
     identifier: ID!
-    companyName: String!
-    userFirstName: String!
-    userLastName: String!
+    company: Company!
+    user: User!
 }
 
 enum ProjectStatus {

@@ -26,7 +26,7 @@ class GraphQlConfiguration(
 ) {
 
   @Bean
-  fun runtimeWiringConfigurer(): RuntimeWiringConfigurer = RuntimeWiringConfigurer { builder ->
+  fun runtimeWiringConfigurer() = RuntimeWiringConfigurer { builder ->
     builder.scalar(dateScalar())
   }
 
@@ -74,8 +74,7 @@ class GraphQlConfiguration(
 }
 
 /**
- * Workaround for bug reported here:
- * https://github.com/spring-projects/spring-graphql/issues/342
+ * Workaround for bug reported here: https://github.com/spring-projects/spring-graphql/issues/342
  * Can be removed once the propagation works out-of-the-box
  */
 class CustomWebSocketGraphQlHandlerInterceptor(

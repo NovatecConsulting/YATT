@@ -1,5 +1,5 @@
 type Query {
-    users: [UserQueryResult]
+    users: [User]
 }
 
 type Mutation {
@@ -16,7 +16,7 @@ type Mutation {
     ): Int!
 }
 
-type UserQueryResult {
+type User {
     identifier: ID!
     firstname: String!
     lastname: String!
