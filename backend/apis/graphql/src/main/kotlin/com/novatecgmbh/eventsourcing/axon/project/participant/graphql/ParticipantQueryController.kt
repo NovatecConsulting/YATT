@@ -1,28 +1,29 @@
 package com.novatecgmbh.eventsourcing.axon.project.participant.graphql
 
-import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
-import com.novatecgmbh.eventsourcing.axon.project.participant.api.CreateParticipantCommand
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantByMultipleProjectsQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQuery
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
-import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.util.concurrent.CompletableFuture
-import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.extensions.kotlin.query
 import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.BatchMapping
-import org.springframework.graphql.data.method.annotation.MutationMapping
+import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
 @Controller
-class ParticipantController(val commandGateway: CommandGateway, val queryGateway: QueryGateway) {
+class ParticipantQueryController(val queryGateway: QueryGateway) {
 
-  @BatchMapping
+  @QueryMapping
+  fun participant(@Argument identifier: ParticipantId): CompletableFuture<ParticipantQueryResult> =
+      queryGateway.query(ParticipantQuery(identifier))
+
+  @BatchMapping(typeName = "Project")
   fun participants(
       projects: List<ProjectQueryResult>
   ): Mono<Map<ProjectQueryResult, List<ParticipantQueryResult>>> =
@@ -36,14 +37,4 @@ class ParticipantController(val commandGateway: CommandGateway, val queryGateway
             }
           }
           .toMono()
-
-  @MutationMapping
-  fun createParticipant(
-      @Argument projectIdentifier: ProjectId,
-      @Argument companyIdentifier: CompanyId,
-      @Argument userIdentifier: UserId
-  ): CompletableFuture<ParticipantId> =
-      commandGateway.send(
-          CreateParticipantCommand(
-              ParticipantId(), projectIdentifier, companyIdentifier, userIdentifier))
 }

@@ -1,22 +1,18 @@
 package com.novatecgmbh.eventsourcing.axon.user.user.graphql
 
 import com.novatecgmbh.eventsourcing.axon.application.security.UnregisteredUserPrincipal
-import com.novatecgmbh.eventsourcing.axon.user.api.*
+import com.novatecgmbh.eventsourcing.axon.user.api.RegisterUserCommand
+import com.novatecgmbh.eventsourcing.axon.user.api.RenameUserCommand
+import com.novatecgmbh.eventsourcing.axon.user.api.UserId
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
-import org.axonframework.extensions.kotlin.queryMany
-import org.axonframework.queryhandling.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
-import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 
 @Controller
-class UserController(val commandGateway: CommandGateway, val queryGateway: QueryGateway) {
-
-  @QueryMapping
-  fun users(): CompletableFuture<List<UserQueryResult>> = queryGateway.queryMany(AllUsersQuery())
+class UserMutationsController(val commandGateway: CommandGateway) {
 
   @MutationMapping
   fun registerUser(
