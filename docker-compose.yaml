@@ -69,7 +69,6 @@ services:
       POSTGRES_PASSWORD: 1234
 
   jaeger:
-    container_name: jaeger
     image: jaegertracing/all-in-one:1.27
     ports:
       - "5775:5775/udp"
