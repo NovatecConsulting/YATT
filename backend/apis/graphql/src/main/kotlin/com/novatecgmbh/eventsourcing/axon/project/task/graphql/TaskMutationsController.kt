@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.graphql
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import java.time.LocalDate
@@ -34,6 +35,16 @@ class TaskMutationsController(val commandGateway: CommandGateway) {
       @Argument endDate: LocalDate
   ): CompletableFuture<Long> =
       commandGateway.send(RescheduleTaskCommand(identifier, startDate, endDate))
+
+  @MutationMapping
+  fun assignTask(
+      @Argument identifier: TaskId,
+      @Argument assignee: ParticipantId
+  ): CompletableFuture<Long> = commandGateway.send(AssignTaskCommand(identifier, assignee))
+
+  @MutationMapping
+  fun unassignTask(@Argument identifier: TaskId): CompletableFuture<Long> =
+      commandGateway.send(UnassignTaskCommand(identifier))
 
   @MutationMapping
   fun changeDescriptionOfTask(

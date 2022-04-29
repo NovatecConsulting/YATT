@@ -51,6 +51,13 @@ extend type Mutation {
         identifier: ID!,
         description: String!
     ): Int!
+    assignTask(
+        identifier: ID!
+        assignee: ID!
+    ): Int!
+    unassignTask(
+        identifier: ID!
+    ): Int!
     startTask(
         identifier: ID!
     ): Int!
@@ -90,6 +97,7 @@ type Task {
     startDate: String
     endDate: String
     status: TaskStatus!
+    participant: Participant
     todos: [Todo]
 }
 
