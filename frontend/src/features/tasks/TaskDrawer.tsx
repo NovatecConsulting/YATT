@@ -411,21 +411,6 @@ export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
         initialValues: {
             assigneeId: props.task.participantId ?? "",
         },
-        validateOnChange: true,
-        validate: values => {
-            if (values.assigneeId != props.task.participantId) {
-                if (values.assigneeId.trim() === "" && !canUnassign) {
-                    return {
-                        assigneeId: `Can only unassign if task is in "PLANNED" status`
-                    }
-                }
-                if (values.assigneeId.trim().length > 0 && props.task.status === 'COMPLETED') {
-                    return {
-                        assigneeId: `Can't reassign if task is already "COMPLETED"`
-                    }
-                }
-            }
-        },
         onSubmit: async (values, formikHelpers) => {
             try {
                 await props.onSave(values.assigneeId);
@@ -463,7 +448,7 @@ export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
                                 label="Assignee"
                                 onChange={formik.handleChange}
                             >
-                                {[noAssignee].concat(participants.data!!).map(participant => (
+                                {(canUnassign ? [noAssignee] : []).concat(participants.data!!).map(participant => (
                                     <MenuItem key={participant.identifier}
                                               value={participant.identifier}>
                                         {`${participant.userFirstName ?? ""} ${participant.userLastName ?? ""}`}
