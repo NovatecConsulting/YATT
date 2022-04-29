@@ -45,7 +45,7 @@ export function ChatPage() {
                         <MessageList>
                             {
                                 messages.map(message => (
-                                    <Message model={{
+                                    <Message key={message.timestamp} model={{
                                         direction: currentUser!!.identifier === message.userIdentifier ? "outgoing" : "incoming",
                                         position: "single",
                                         payload: <Message.CustomContent>
