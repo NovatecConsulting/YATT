@@ -18,5 +18,7 @@ data class ParticipantQueryResult(
     val companyName: String?,
     val userId: UserId,
     val userFirstName: String?,
-    val userLastName: String?
+    val userLastName: String?,
+    val userEmail: String?,
+    val userTelephone: String?,
 )

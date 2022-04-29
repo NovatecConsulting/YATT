@@ -12,6 +12,8 @@ export interface Participant {
     userId: string;
     userFirstName?: string;
     userLastName?: string;
+    userEmail?: string;
+    userTelephone?: string;
 }
 
 export interface CreateParticipantDto {

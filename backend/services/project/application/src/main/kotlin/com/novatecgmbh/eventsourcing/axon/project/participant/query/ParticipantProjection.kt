@@ -23,7 +23,9 @@ class ParticipantProjection(
     @AttributeOverride(name = "identifier", column = Column(name = "userId", nullable = false))
     var userId: UserId,
     var userFirstName: String?,
-    var userLastName: String?
+    var userLastName: String?,
+    var userEmail: String?,
+    var userTelephone: String?,
 ) {
   fun toQueryResult() =
       ParticipantQueryResult(
@@ -34,5 +36,7 @@ class ParticipantProjection(
           companyName,
           userId,
           userFirstName,
-          userLastName)
+          userLastName,
+          userEmail,
+          userTelephone)
 }
