@@ -10,7 +10,11 @@ export interface Task {
     startDate: string;
     endDate: string;
     status: string;
-    todos: Todo[],
+    participantId?: string;
+    assigneeFirstName?: string;
+    assigneeLastName?: string;
+    assigneeCompanyName?: string;
+    todos: Todo[];
 }
 
 export interface Todo {
@@ -45,6 +49,15 @@ export interface TaskAndTodoId {
 export interface AddTodoDto {
     taskId: string;
     description: string;
+}
+
+export interface AssignTaskDto {
+    taskId: string;
+    assignee: string;
+}
+
+export interface UnassignTaskDto {
+    taskId: string;
 }
 
 export const taskAdapter = createEntityAdapter<Task>({
@@ -122,6 +135,16 @@ export const taskApiSlice = apiSlice.injectEndpoints({
                 return rsocket.sendCommand("tasks.todos.remove", command);
             }
         }),
+        assignTask: builder.mutation<void, AssignTaskDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.assign", command);
+            }
+        }),
+        unassignTask: builder.mutation<void, UnassignTaskDto>({
+            queryFn(command) {
+                return rsocket.sendCommand("tasks.unassign", command);
+            }
+        }),
     })
 });
 
@@ -134,7 +157,9 @@ export const {
     useRescheduleTaskMutation,
     useMarkTodoAsDoneMutation,
     useAddTodoMutation,
-    useRemoveTodoMutation
+    useRemoveTodoMutation,
+    useAssignTaskMutation,
+    useUnassignTaskMutation,
 } = taskApiSlice;
 
 const selectGetTasksByProjectResult
