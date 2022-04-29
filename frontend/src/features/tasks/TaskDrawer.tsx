@@ -381,7 +381,7 @@ function AssigneeListItem({task}: { task: Task }) {
             >
                 <ListItemText
                     primary={"Assignee"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
-                    secondary={assigneeName.trim() === "" ? "unassigned" : assigneeName}
+                    secondary={assigneeName.trim() === "" ? "-" : assigneeName}
                     secondaryTypographyProps={{variant: "body1", color: "black"}}
                 />
             </ListItem>
