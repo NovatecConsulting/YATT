@@ -50,4 +50,10 @@ class TaskController(
   @MessageMapping("projects.{id}.tasks")
   fun subscribeTaskByProjectUpdates(@DestinationVariable id: ProjectId): Flux<TaskQueryResult> =
       queryGateway.queryUpdates(TasksByProjectQuery(id), TaskQueryResult::class.java)
+
+  @MessageMapping("tasks.assign")
+  fun assignTask(data: AssignTaskDto): Mono<Unit> = commandGateway.send(data.toCommand())
+
+  @MessageMapping("tasks.unassign")
+  fun unassignTask(data: UnassignTaskDto): Mono<Unit> = commandGateway.send(data.toCommand())
 }
