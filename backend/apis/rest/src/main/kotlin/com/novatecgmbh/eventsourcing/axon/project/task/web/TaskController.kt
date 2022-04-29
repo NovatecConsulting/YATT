@@ -2,10 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.web
 
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
-import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.AddTodoDto
-import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.CreateTaskDto
-import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RenameTaskDto
-import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.RescheduleTaskDto
+import com.novatecgmbh.eventsourcing.axon.project.task.web.dto.*
 import java.util.concurrent.CompletableFuture
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.extensions.kotlin.queryMany
@@ -108,6 +105,16 @@ class TaskController(
       @PathVariable("taskId") taskId: TaskId,
       @RequestBody body: RescheduleTaskDto
   ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
+
+  @PostMapping("/v2/tasks/{taskId}/assign")
+  fun assign(
+      @PathVariable("taskId") taskId: TaskId,
+      @RequestBody body: AssignTaskDto
+  ): CompletableFuture<String> = commandGateway.send(body.toCommand(taskId))
+
+  @PostMapping("/v2/tasks/{taskId}/unassign")
+  fun unassign(@PathVariable("taskId") taskId: TaskId): CompletableFuture<String> =
+      commandGateway.send(UnassignTaskDto().toCommand(taskId))
 
   @PostMapping("/v2/tasks/{taskId}/start")
   fun start(@PathVariable("taskId") taskId: TaskId): CompletableFuture<String> =
