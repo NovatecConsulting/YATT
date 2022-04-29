@@ -1,12 +1,13 @@
 import {
     Box, Button,
     Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider,
-    Drawer, IconButton,
+    Drawer, FormControl, IconButton,
+    InputLabel,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    ListSubheader, TextField,
+    ListSubheader, MenuItem, Select, TextField,
     Toolbar, Tooltip, Typography
 } from "@mui/material";
 import {useParams} from "react-router-dom";
@@ -14,8 +15,9 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectTaskByProjectIdAndTaskId, Task, Todo,
     useAddTodoMutation,
+    useAssignTaskMutation,
     useMarkTodoAsDoneMutation,
-    useRemoveTodoMutation, useRenameTaskMutation, useRescheduleTaskMutation
+    useRemoveTodoMutation, useRenameTaskMutation, useRescheduleTaskMutation, useUnassignTaskMutation
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React, {useState} from "react";
@@ -27,6 +29,8 @@ import dayjs from "dayjs";
 import {RescheduleDialog} from "../../components/EditableDatesTableCell";
 import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
 import {EditableText} from "../../components/EditableText";
+import {Participant, useGetParticipantsByProjectQuery} from "../participants/participantSlice";
+import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 
 const drawerWidth = 350;
 
@@ -335,27 +339,148 @@ function DatesListItem({task}: { task: Task }) {
 }
 
 function AssigneeListItem({task}: { task: Task }) {
+    const [isDialogOpen, setDialogOpen] = React.useState(false);
+    const [assignTask] = useAssignTaskMutation();
+    const [unassignTask] = useUnassignTaskMutation();
     const [isMouseEntered, setIsMouseEntered] = useState(false);
-    const canEditAssignee = task.status !== 'COMPLETED';
-    const openDropdown = () => console.log("dropdown")
-    const assigneeName = (task.assigneeFirstName ?? "") + " " +  (task.assigneeLastName ?? "")
+    const canAssignTask = task.status !== 'COMPLETED';
+    const canUnassignTask = task.status === 'PLANNED';
+    const assigneeName = (task.assigneeFirstName ?? "") + " " + (task.assigneeLastName ?? "")
 
-    return <ListItem
-        secondaryAction={
-            canEditAssignee && isMouseEntered ? (
-                <IconButton edge={"end"} sx={{ml: 1}} onClick={openDropdown}>
-                    <Edit/>
-                </IconButton>
-            ) : null
+    const onSave = async (assigneeId?: string) => {
+        assigneeId = assigneeId?.trim() ?? ""
+        if ((assigneeId ?? "") != (task.participantId ?? "")) {
+            if (assigneeId === "") {
+                unassignTask({taskId: task.identifier});
+            } else {
+                assignTask({taskId: task.identifier, assignee: assigneeId})
+            }
         }
-        onMouseEnter={() => setIsMouseEntered(true)}
-        onMouseLeave={() => setIsMouseEntered(false)}
-    >
-        <ListItemText
-            primary={"Assignee"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
-            secondary={assigneeName.trim() === "" ? "unassigned" : assigneeName}
-            secondaryTypographyProps={{variant: "body1", color: "black"}}
-        />
-    </ListItem>;
+    };
+
+    const openDialog = () => {
+        setDialogOpen(true);
+    };
+
+    const closeDialog = () => {
+        setDialogOpen(false);
+    };
+
+    return (
+        <React.Fragment>
+            <ListItem
+                secondaryAction={
+                    canAssignTask && isMouseEntered ? (
+                        <IconButton edge={"end"} sx={{ml: 1}} onClick={openDialog}>
+                            <Edit/>
+                        </IconButton>
+                    ) : null
+                }
+                onMouseEnter={() => setIsMouseEntered(true)}
+                onMouseLeave={() => setIsMouseEntered(false)}
+            >
+                <ListItemText
+                    primary={"Assignee"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
+                    secondary={assigneeName.trim() === "" ? "unassigned" : assigneeName}
+                    secondaryTypographyProps={{variant: "body1", color: "black"}}
+                />
+            </ListItem>
+            <AssigneeSelectionDialog key={task.identifier}
+                                     task={task}
+                                     open={isDialogOpen}
+                                     onClose={closeDialog}
+                                     onSave={onSave}/>
+        </React.Fragment>
+    );
+}
+
+
+export interface AssigneSelectionDialogProps {
+    open: boolean;
+    onClose: () => void;
+    task: Task;
+    onSave: (selectedAssignee?: string) => Promise<void>;
+}
+
+export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
+    const {projectId} = useParams<{ projectId: string }>();
+    const participants = useGetParticipantsByProjectQuery(projectId, {selectFromResult: selectEntitiesFromResult});
+    const canUnassign = props.task.status === 'PLANNED'
+
+    const formik = useFormik({
+        initialValues: {
+            assigneeId: props.task.participantId ?? "",
+        },
+        validateOnChange: true,
+        validate: values => {
+            if (values.assigneeId != props.task.participantId) {
+                if (values.assigneeId.trim() === "" && !canUnassign) {
+                    return {
+                        assigneeId: `Can only unassign if task is in "PLANNED" status`
+                    }
+                }
+                if (values.assigneeId.trim().length > 0 && props.task.status === 'COMPLETED') {
+                    return {
+                        assigneeId: `Can't reassign if task is already "COMPLETED"`
+                    }
+                }
+            }
+        },
+        onSubmit: async (values, formikHelpers) => {
+            try {
+                await props.onSave(values.assigneeId);
+                props.onClose();
+            } catch (e) {
+                // TODO error handling
+                console.log("assigning task failed");
+            }
+        },
+    });
+
+    const noAssignee = {
+        identifier: "",
+        version: 0,
+        projectId: "",
+        companyId: "",
+        userId: "",
+        userFirstName: "-"
+    } as Participant;
+
+    if (participants.isSuccess) {
+        return (
+            <Dialog open={props.open} onClose={props.onClose} onClick={event => event.stopPropagation()}>
+                <DialogTitle>Assign Participant to Task "{props.task.name}"</DialogTitle>
+                <DialogContent>
+                    <Box component="form" onSubmit={formik.handleSubmit} sx={{p: 1}}>
+                        <FormControl fullWidth>
+                            <InputLabel id="assigneeLabel">Assignee</InputLabel>
+                            <Select
+                                required
+                                labelId="assigneeLabel"
+                                id="assigneeId"
+                                name="assigneeId"
+                                value={formik.values.assigneeId}
+                                label="Assignee"
+                                onChange={formik.handleChange}
+                            >
+                                {[noAssignee].concat(participants.data!!).map(participant => (
+                                    <MenuItem key={participant.identifier}
+                                              value={participant.identifier}>
+                                        {`${participant.userFirstName ?? ""} ${participant.userLastName ?? ""}`}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={props.onClose}>Cancel</Button>
+                    <Button onClick={formik.submitForm} disabled={formik.isSubmitting || !formik.isValid}>Save</Button>
+                </DialogActions>
+            </Dialog>
+        );
+    } else {
+        return null;
+    }
 }
 
