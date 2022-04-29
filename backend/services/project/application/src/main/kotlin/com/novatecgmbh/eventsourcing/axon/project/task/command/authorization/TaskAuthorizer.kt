@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class TaskAuthorizer(
-    val projectAclRepository: ProjectAclRepository,
-    val rootContextIdMappingRepository: RootContextIdMappingRepository,
-    val commandBus: CommandBus
+    private val projectAclRepository: ProjectAclRepository,
+    private val rootContextIdMappingRepository: RootContextIdMappingRepository,
+    private val commandBus: CommandBus
 ) : MessageHandlerInterceptor<CommandMessage<*>> {
 
   @PostConstruct
@@ -42,19 +42,21 @@ class TaskAuthorizer(
         is AddTodoCommand -> authorize(payload, userId)
         is MarkTodoAsDoneCommand -> authorize(payload, userId)
         is RemoveTodoCommand -> authorize(payload, userId)
+        is AssignTaskCommand -> authorize(payload, userId)
+        is UnassignTaskCommand -> authorize(payload, userId)
         else -> throw IllegalStateException("Authorization rule missing for command")
       }
     }
     return interceptorChain.proceed()
   }
 
-  fun authorize(command: CreateTaskCommand, userId: UserId) {
+  private fun authorize(command: CreateTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(userId, command.projectId.identifier)) {
       throw IllegalAccessException("Not authorized to create task in this project")
     }
   }
 
-  fun authorize(command: RescheduleTaskCommand, userId: UserId) {
+  private fun authorize(command: RescheduleTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -62,7 +64,23 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: RenameTaskCommand, userId: UserId) {
+  private fun authorize(command: AssignTaskCommand, userId: UserId) {
+    if (!projectAclRepository.hasAccessToProject(
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
+      throw IllegalAccessException("Not authorized to reschedule task in this project")
+    }
+  }
+
+  private fun authorize(command: UnassignTaskCommand, userId: UserId) {
+    if (!projectAclRepository.hasAccessToProject(
+        userId,
+        rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
+      throw IllegalAccessException("Not authorized to reschedule task in this project")
+    }
+  }
+
+  private fun authorize(command: RenameTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -70,7 +88,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: ChangeTaskDescriptionCommand, userId: UserId) {
+  private fun authorize(command: ChangeTaskDescriptionCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -78,7 +96,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: StartTaskCommand, userId: UserId) {
+  private fun authorize(command: StartTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -86,7 +104,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: CompleteTaskCommand, userId: UserId) {
+  private fun authorize(command: CompleteTaskCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -94,7 +112,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: AddTodoCommand, userId: UserId) {
+  private fun authorize(command: AddTodoCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -102,7 +120,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: MarkTodoAsDoneCommand, userId: UserId) {
+  private fun authorize(command: MarkTodoAsDoneCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {
@@ -110,7 +128,7 @@ class TaskAuthorizer(
     }
   }
 
-  fun authorize(command: RemoveTodoCommand, userId: UserId) {
+  private fun authorize(command: RemoveTodoCommand, userId: UserId) {
     if (!projectAclRepository.hasAccessToProject(
         userId,
         rootContextIdMappingRepository.findProjectIdByTaskId(command.identifier.toString()))) {

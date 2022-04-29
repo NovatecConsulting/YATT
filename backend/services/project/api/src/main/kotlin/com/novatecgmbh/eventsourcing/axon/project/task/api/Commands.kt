@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.api
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.time.LocalDate
 import org.axonframework.modelling.command.TargetAggregateIdentifier
@@ -32,6 +33,14 @@ data class RescheduleTaskCommand(
     val startDate: LocalDate,
     val endDate: LocalDate
 ) : TaskCommand(identifier)
+
+data class AssignTaskCommand(
+    @TargetAggregateIdentifier override val identifier: TaskId,
+    val assignee: ParticipantId
+) : TaskCommand(identifier)
+
+data class UnassignTaskCommand(@TargetAggregateIdentifier override val identifier: TaskId) :
+    TaskCommand(identifier)
 
 data class StartTaskCommand(@TargetAggregateIdentifier override val identifier: TaskId) :
     TaskCommand(identifier)
