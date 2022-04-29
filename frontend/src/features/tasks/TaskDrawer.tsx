@@ -350,7 +350,7 @@ function AssigneeListItem({task}: { task: Task }) {
     const onSave = async (assigneeId?: string) => {
         assigneeId = assigneeId?.trim() ?? ""
         if ((assigneeId ?? "") != (task.participantId ?? "")) {
-            if (assigneeId === "") {
+            if (assigneeId === "" || assigneeId === noAssigneeId) {
                 unassignTask({taskId: task.identifier});
             } else {
                 assignTask({taskId: task.identifier, assignee: assigneeId})
@@ -402,6 +402,8 @@ export interface AssigneSelectionDialogProps {
     onSave: (selectedAssignee?: string) => Promise<void>;
 }
 
+const noAssigneeId = "0"
+
 export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
     const {projectId} = useParams<{ projectId: string }>();
     const participants = useGetParticipantsByProjectQuery(projectId, {selectFromResult: selectEntitiesFromResult});
@@ -409,7 +411,7 @@ export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
 
     const formik = useFormik({
         initialValues: {
-            assigneeId: props.task.participantId ?? "",
+            assigneeId: props.task.participantId ?? noAssigneeId,
         },
         onSubmit: async (values, formikHelpers) => {
             try {
@@ -423,7 +425,7 @@ export function AssigneeSelectionDialog(props: AssigneSelectionDialogProps) {
     });
 
     const noAssignee = {
-        identifier: "",
+        identifier: noAssigneeId,
         version: 0,
         projectId: "",
         companyId: "",
