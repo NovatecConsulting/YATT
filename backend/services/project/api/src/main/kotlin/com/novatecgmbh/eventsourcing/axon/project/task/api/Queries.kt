@@ -23,6 +23,9 @@ data class TaskQueryResult(
     val endDate: LocalDate,
     val status: TaskStatusEnum,
     val participantId: ParticipantId?,
+    val assigneeFirstName: String?,
+    val assigneeLastName: String?,
+    val assigneeCompanyName: String?,
     val todos: List<TodoQueryResult>,
 )
 

@@ -1,5 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.query
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQuery
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskStatusEnum.*
 import org.axonframework.config.ProcessingGroup
@@ -7,6 +9,8 @@ import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
 import org.axonframework.eventhandling.SequenceNumber
 import org.axonframework.extensions.kotlin.emit
+import org.axonframework.extensions.kotlin.queryOptional
+import org.axonframework.queryhandling.QueryGateway
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
 
@@ -14,7 +18,8 @@ import org.springframework.stereotype.Component
 @ProcessingGroup("task-projector")
 class TaskProjector(
     private val repository: TaskProjectionRepository,
-    private val queryUpdateEmitter: QueryUpdateEmitter
+    private val queryUpdateEmitter: QueryUpdateEmitter,
+    private val queryGateway: QueryGateway
 ) {
   @EventHandler
   fun on(event: TaskCreatedEvent, @SequenceNumber aggregateVersion: Long) {
@@ -59,9 +64,17 @@ class TaskProjector(
 
   @EventHandler
   fun on(event: TaskAssignedEvent, @SequenceNumber aggregateVersion: Long) {
-    updateProjection(event.identifier) {
-      it.participantId = event.assignee
-      it.version = aggregateVersion
+    val participant =
+        queryGateway
+            .queryOptional<ParticipantQueryResult, ParticipantQuery>(
+                ParticipantQuery(event.assignee))
+            .get()
+    updateProjection(event.identifier) { task ->
+      task.participantId = event.assignee
+      task.assigneeFirstName = participant.map { it.userFirstName }.orElse(null)
+      task.assigneeLastName = participant.map { it.userLastName }.orElse(null)
+      task.assigneeCompanyName = participant.map { it.companyName }.orElse(null)
+      task.version = aggregateVersion
     }
   }
 
@@ -69,6 +82,9 @@ class TaskProjector(
   fun on(event: TaskUnassignedEvent, @SequenceNumber aggregateVersion: Long) {
     updateProjection(event.identifier) {
       it.participantId = null
+      it.assigneeFirstName = null
+      it.assigneeLastName = null
+      it.assigneeCompanyName = null
       it.version = aggregateVersion
     }
   }

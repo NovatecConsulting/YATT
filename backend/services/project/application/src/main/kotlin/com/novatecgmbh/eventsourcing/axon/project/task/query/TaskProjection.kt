@@ -24,6 +24,9 @@ class TaskProjection(
     @Embedded
     @AttributeOverride(name = "identifier", column = Column(name = "participantId"))
     var participantId: ParticipantId? = null,
+    var assigneeFirstName: String? = null,
+    var assigneeLastName: String? = null,
+    var assigneeCompanyName: String? = null,
     @ElementCollection(fetch = EAGER)
     @CollectionTable(
         name = "task_todos",
@@ -49,6 +52,9 @@ class TaskProjection(
           endDate,
           status,
           participantId,
+          assigneeFirstName,
+          assigneeLastName,
+          assigneeCompanyName,
           todos.map { it.toQueryResult() })
 }
 

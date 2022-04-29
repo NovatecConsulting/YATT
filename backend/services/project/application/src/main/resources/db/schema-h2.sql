@@ -130,6 +130,9 @@ create sequence hibernate_sequence start with 1 increment by 1;
 
     create table tasks (
        identifier varchar(255) not null,
+        assignee_company_name varchar(255),
+        assignee_first_name varchar(255),
+        assignee_last_name varchar(255),
         description varchar(255),
         end_date date not null,
         name varchar(255) not null,

@@ -65,6 +65,7 @@ export function TaskDrawer() {
                         <List subheader={<TaskDetailsHeader task={task}/>}>
                             <StatusListItem key={"task-status"} task={task}/>
                             <DatesListItem key={"task-dates"} task={task}/>
+                            <AssigneeListItem key={"task-assignee"} task={task}/>
                         </List>
                         <Divider/>
                         <List
@@ -331,5 +332,30 @@ function DatesListItem({task}: { task: Task }) {
                               onSave={onSave}/>
         </React.Fragment>
     );
+}
+
+function AssigneeListItem({task}: { task: Task }) {
+    const [isMouseEntered, setIsMouseEntered] = useState(false);
+    const canEditAssignee = task.status !== 'COMPLETED';
+    const openDropdown = () => console.log("dropdown")
+    const assigneeName = (task.assigneeFirstName ?? "") + " " +  (task.assigneeLastName ?? "")
+
+    return <ListItem
+        secondaryAction={
+            canEditAssignee && isMouseEntered ? (
+                <IconButton edge={"end"} sx={{ml: 1}} onClick={openDropdown}>
+                    <Edit/>
+                </IconButton>
+            ) : null
+        }
+        onMouseEnter={() => setIsMouseEntered(true)}
+        onMouseLeave={() => setIsMouseEntered(false)}
+    >
+        <ListItemText
+            primary={"Assignee"} primaryTypographyProps={{variant: "caption", color: "#00000099"}}
+            secondary={assigneeName.trim() === "" ? "unassigned" : assigneeName}
+            secondaryTypographyProps={{variant: "body1", color: "black"}}
+        />
+    </ListItem>;
 }
 
