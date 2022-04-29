@@ -43,7 +43,10 @@ class ParticipantProjector(
             companyName = company.map { it.name }.orElse(null),
             userId = event.userId,
             userFirstName = user.map { it.firstname }.orElse(null),
-            userLastName = user.map { it.lastname }.orElse(null)))
+            userLastName = user.map { it.lastname }.orElse(null),
+            userEmail = user.map { it.email }.orElse(null),
+            userTelephone = user.map { it.telephone }.orElse(null),
+        ))
   }
 
   private fun saveProjection(projection: ParticipantProjection) {

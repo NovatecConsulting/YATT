@@ -28,9 +28,11 @@ create sequence hibernate_sequence start 1 increment 1;
         company_id varchar(255) not null,
         company_name varchar(255),
         project_id varchar(255) not null,
+        user_email varchar(255),
         user_first_name varchar(255),
         user_id varchar(255) not null,
         user_last_name varchar(255),
+        user_telephone varchar(255),
         version int8 not null,
         primary key (identifier)
     );
@@ -131,10 +133,10 @@ create sequence hibernate_sequence start 1 increment 1;
         description varchar(255),
         end_date date not null,
         name varchar(255) not null,
+        participant_id varchar(255),
         project_id varchar(255) not null,
         start_date date not null,
         status int4 not null,
-        participant_id varchar(255),
         version int8 not null,
         primary key (identifier)
     );

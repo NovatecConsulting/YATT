@@ -57,16 +57,28 @@ export function ParticipantList() {
                                 dataKey: "companyName",
                             },
                             {
-                                width: 120,
+                                width: 100,
                                 flexGrow: 1,
                                 label: "First Name",
                                 dataKey: "userFirstName",
                             },
                             {
-                                width: 120,
+                                width: 100,
                                 flexGrow: 1,
                                 label: "Last Name",
                                 dataKey: "userLastName",
+                            },
+                            {
+                                width: 120,
+                                flexGrow: 1,
+                                label: "Email",
+                                dataKey: "userEmail",
+                            },
+                            {
+                                width: 100,
+                                flexGrow: 1,
+                                label: "Phone Number",
+                                dataKey: "userTelephone",
                             },
                         ]}
                     />
