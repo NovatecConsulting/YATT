@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.query
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import java.io.Serializable
@@ -20,6 +21,9 @@ class TaskProjection(
     @Column(nullable = false) var startDate: LocalDate,
     @Column(nullable = false) var endDate: LocalDate,
     @Column(nullable = false) var status: TaskStatusEnum,
+    @Embedded
+    @AttributeOverride(name = "identifier", column = Column(name = "participantId"))
+    var participantId: ParticipantId? = null,
     @ElementCollection(fetch = EAGER)
     @CollectionTable(
         name = "task_todos",
@@ -44,6 +48,7 @@ class TaskProjection(
           startDate,
           endDate,
           status,
+          participantId,
           todos.map { it.toQueryResult() })
 }
 

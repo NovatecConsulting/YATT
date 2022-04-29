@@ -134,6 +134,7 @@ create sequence hibernate_sequence start with 1 increment by 1;
         project_id varchar(255) not null,
         start_date date not null,
         status integer not null,
+        participant_id varchar(255),
         version bigint not null,
         primary key (identifier)
     );
@@ -150,24 +151,24 @@ create sequence hibernate_sequence start with 1 increment by 1;
 create index IDXk45eqnxkgd8hpdn6xixn8sgft on association_value_entry (saga_type, association_key, association_value);
 create index IDXgv5k1v2mh6frxuy5c0hgbau94 on association_value_entry (saga_id, saga_type);
 
-    alter table domain_event_entry 
+    alter table domain_event_entry
        add constraint UK8s1f994p4la2ipb13me2xqm1w unique (aggregate_identifier, sequence_number);
 
-    alter table domain_event_entry 
+    alter table domain_event_entry
        add constraint UK_fwe6lsa8bfo6hyas6ud3m8c7x unique (event_identifier);
 
-    alter table participant_unique_key 
+    alter table participant_unique_key
        add constraint participant_unique_key_constraint unique (project_id, company_id, user_id);
 
-    alter table snapshot_event_entry 
+    alter table snapshot_event_entry
        add constraint UK_e1uucjseo68gopmnd0vgdl44h unique (event_identifier);
 
-    alter table task_todos 
+    alter table task_todos
        add constraint UK_TaskTodos_Identifier unique (identifier, task_identifier);
 
-    alter table task_todos 
-       add constraint FK_TaskTodos_TaskIdentifier 
-       foreign key (task_identifier) 
+    alter table task_todos
+       add constraint FK_TaskTodos_TaskIdentifier
+       foreign key (task_identifier)
        references tasks;
 
 create index IX_TaskTodo_TaskIden on task_todos (task_identifier);

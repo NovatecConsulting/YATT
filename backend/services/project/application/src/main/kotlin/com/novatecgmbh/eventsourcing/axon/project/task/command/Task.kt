@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.axon.project.task.command
 import com.novatecgmbh.eventsourcing.axon.common.command.AlreadyExistsException
 import com.novatecgmbh.eventsourcing.axon.common.command.BaseAggregate
 import com.novatecgmbh.eventsourcing.axon.common.command.PreconditionFailedException
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.references.ReferenceCheckerService
 import com.novatecgmbh.eventsourcing.axon.project.task.api.*
@@ -27,6 +28,7 @@ class Task : BaseAggregate() {
   private lateinit var startDate: LocalDate
   private lateinit var endDate: LocalDate
   private lateinit var status: TaskStatusEnum
+  private var assignee: ParticipantId? = null
   @AggregateMember private var todos: MutableList<Todo> = mutableListOf()
 
   @CommandHandler
@@ -105,6 +107,28 @@ class Task : BaseAggregate() {
   }
 
   @CommandHandler
+  fun handle(command: AssignTaskCommand): Long {
+    if (status == COMPLETED) {
+      throw IllegalArgumentException(
+          "Task is already completed and can therefore not be reassigned.")
+    } else {
+      apply(TaskAssignedEvent(identifier = command.identifier, assignee = command.assignee))
+    }
+    return AggregateLifecycle.getVersion()
+  }
+
+  @CommandHandler
+  fun handle(command: UnassignTaskCommand): Long {
+    if (status != PLANNED) {
+      throw IllegalArgumentException(
+          "Task assignment can only be removed as long as task is planned.")
+    } else {
+      apply(TaskUnassignedEvent(identifier = command.identifier))
+    }
+    return AggregateLifecycle.getVersion()
+  }
+
+  @CommandHandler
   fun handle(command: StartTaskCommand): Long {
     when (status) {
       PLANNED -> apply(TaskStartedEvent(aggregateIdentifier))
@@ -157,6 +181,16 @@ class Task : BaseAggregate() {
   fun on(event: TaskRescheduledEvent) {
     startDate = event.startDate
     endDate = event.endDate
+  }
+
+  @EventSourcingHandler
+  fun on(event: TaskAssignedEvent) {
+    assignee = event.assignee
+  }
+
+  @EventSourcingHandler
+  fun on(event: TaskUnassignedEvent) {
+    assignee = null
   }
 
   @EventSourcingHandler

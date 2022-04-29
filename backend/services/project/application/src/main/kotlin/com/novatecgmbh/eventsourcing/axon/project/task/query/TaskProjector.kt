@@ -28,6 +28,7 @@ class TaskProjector(
             startDate = event.startDate,
             endDate = event.endDate,
             status = PLANNED,
+            participantId = null,
             todos = mutableListOf()))
   }
 
@@ -52,6 +53,22 @@ class TaskProjector(
     updateProjection(event.identifier) {
       it.startDate = event.startDate
       it.endDate = event.endDate
+      it.version = aggregateVersion
+    }
+  }
+
+  @EventHandler
+  fun on(event: TaskAssignedEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
+      it.participantId = event.assignee
+      it.version = aggregateVersion
+    }
+  }
+
+  @EventHandler
+  fun on(event: TaskUnassignedEvent, @SequenceNumber aggregateVersion: Long) {
+    updateProjection(event.identifier) {
+      it.participantId = null
       it.version = aggregateVersion
     }
   }

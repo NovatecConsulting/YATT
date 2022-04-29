@@ -134,6 +134,7 @@ create sequence hibernate_sequence start 1 increment 1;
         project_id varchar(255) not null,
         start_date date not null,
         status int4 not null,
+        participant_id varchar(255),
         version int8 not null,
         primary key (identifier)
     );

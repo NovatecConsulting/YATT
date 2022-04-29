@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.api
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.time.LocalDate
 
@@ -25,6 +26,11 @@ data class TaskRescheduledEvent(
     val startDate: LocalDate,
     val endDate: LocalDate
 ) : TaskEvent(identifier)
+
+data class TaskAssignedEvent(override val identifier: TaskId, val assignee: ParticipantId) :
+    TaskEvent(identifier)
+
+data class TaskUnassignedEvent(override val identifier: TaskId) : TaskEvent(identifier)
 
 data class TaskStartedEvent(override val identifier: TaskId) : TaskEvent(identifier)
 

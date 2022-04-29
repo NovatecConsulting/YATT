@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.api
 
+import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import java.time.LocalDate
 
@@ -21,6 +22,7 @@ data class TaskQueryResult(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val status: TaskStatusEnum,
+    val participantId: ParticipantId?,
     val todos: List<TodoQueryResult>,
 )
 
