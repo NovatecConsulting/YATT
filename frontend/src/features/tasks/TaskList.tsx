@@ -100,6 +100,12 @@ export function TaskList() {
                                                                        onEdit={setTaskToReschedule}/>
                             },
                             {
+                                width: 150,
+                                label: "Assignee",
+                                dataKey: "assignee",
+                                cellRenderer: (cellProps) => <AssigneeCell task={cellProps.rowData as Task}/>
+                            },
+                            {
                                 width: 300,
                                 label: "Status",
                                 dataKey: "status",
@@ -127,6 +133,11 @@ export function TaskList() {
             />
         </Scaffold>
     );
+}
+
+function AssigneeCell({task} : {task: Task}) {
+    const assigneeName = (task.assigneeFirstName ?? "") + " " + (task.assigneeLastName ?? "")
+    return (<React.Fragment>{assigneeName.trim() === "" ? "-" : assigneeName}</React.Fragment>);
 }
 
 function DateCell({task, isStartDate, onEdit}: { task: Task, isStartDate?: boolean, onEdit: (task: Task) => void }) {
