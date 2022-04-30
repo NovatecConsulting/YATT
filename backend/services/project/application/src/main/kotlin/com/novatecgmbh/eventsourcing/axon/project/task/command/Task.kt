@@ -131,7 +131,10 @@ class Task : BaseAggregate() {
   @CommandHandler
   fun handle(command: StartTaskCommand): Long {
     when (status) {
-      PLANNED -> apply(TaskStartedEvent(aggregateIdentifier))
+      PLANNED -> {
+        if (assignee == null) throw IllegalStateException("Task is not yet assigned to a participant")
+        apply(TaskStartedEvent(aggregateIdentifier))
+      }
       STARTED -> {}
       COMPLETED -> throw IllegalStateException("Task is already completed.")
     }
