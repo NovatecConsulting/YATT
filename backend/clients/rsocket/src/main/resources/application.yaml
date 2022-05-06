@@ -5,7 +5,7 @@ custom:
     password: test
   rsocket:
     server:
-      uri: ws://localhost:7001
+      uri: ws://localhost:8086/rsocket
 
 logging:
   level:
