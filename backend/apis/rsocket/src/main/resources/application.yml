@@ -8,7 +8,7 @@ spring:
   rsocket:
     server:
       transport: websocket
-      port: 7001
+      mapping-path: /rsocket
   security:
     oauth2:
       resourceserver:
