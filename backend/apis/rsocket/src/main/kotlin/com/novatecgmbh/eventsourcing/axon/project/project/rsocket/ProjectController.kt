@@ -39,6 +39,16 @@ class ProjectController(
           MyProjectsQuery(user.identifier),
           ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java))
 
+  @MessageMapping("projects.get")
+  fun getMyProjectsAsStream(
+      @AuthenticationPrincipal user: RegisteredUserProfile
+  ): Flux<ProjectQueryResult> =
+      queryGateway
+          .query(
+              MyProjectsQuery(user.identifier),
+              ResponseTypes.multipleInstancesOf(ProjectQueryResult::class.java))
+          .flatMapIterable { list -> list }
+
   @MessageMapping("projects.updates")
   fun subscribeMyProjectUpdates(
       @AuthenticationPrincipal user: RegisteredUserProfile
