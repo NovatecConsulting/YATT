@@ -28,8 +28,6 @@ echo "Building API REST ..."
 ./gradlew :apis:rest:build
 echo "Building API RSocket ..."
 ./gradlew :apis:rsocket:build
-echo "Building API STOMP ..."
-./gradlew :apis:stomp:build
 
 echo "Building Demo Client GRPC ..."
 ./gradlew :clients:grpc:build
