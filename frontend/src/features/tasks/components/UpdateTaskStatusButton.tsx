@@ -8,10 +8,11 @@ import {Button} from "@mui/material";
 export interface UpdateTaskStatusButtonProps {
     taskStatus: string;
     taskId: EntityId;
+    assigned: boolean;
     sx?: SxProps<Theme>;
 }
 
-export function UpdateTaskStatusButton({taskStatus, taskId, sx}: UpdateTaskStatusButtonProps) {
+export function UpdateTaskStatusButton({taskStatus, taskId, assigned, sx}: UpdateTaskStatusButtonProps) {
     const [startTask, {isLoading: isLoadingStart}] = useStartTaskMutation();
     const [completeTask, {isLoading: isLoadingComplete}] = useCompleteTaskMutation();
     const isLoading = isLoadingStart || isLoadingComplete;
@@ -22,7 +23,7 @@ export function UpdateTaskStatusButton({taskStatus, taskId, sx}: UpdateTaskStatu
         taskStateChangeAction(taskId.toString());
     };
     let buttonTitle = '';
-    let showButton = true;
+    let showButton = assigned;
     switch (taskStatus) {
         case 'PLANNED':
             buttonTitle = 'Start Task';

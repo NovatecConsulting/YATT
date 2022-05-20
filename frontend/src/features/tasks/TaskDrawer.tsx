@@ -1,23 +1,41 @@
 import {
-    Box, Button,
-    Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider,
-    Drawer, FormControl, IconButton,
+    Box,
+    Button,
+    Checkbox,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    Drawer,
+    FormControl,
+    IconButton,
     InputLabel,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    ListSubheader, MenuItem, Select, TextField,
-    Toolbar, Tooltip, Typography
+    ListSubheader,
+    MenuItem,
+    Select,
+    TextField,
+    Toolbar,
+    Tooltip,
+    Typography
 } from "@mui/material";
 import {useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
-    selectTaskByProjectIdAndTaskId, Task, Todo,
+    selectTaskByProjectIdAndTaskId,
+    Task,
+    Todo,
     useAddTodoMutation,
     useAssignTaskMutation,
     useMarkTodoAsDoneMutation,
-    useRemoveTodoMutation, useRenameTaskMutation, useRescheduleTaskMutation, useUnassignTaskMutation
+    useRemoveTodoMutation,
+    useRenameTaskMutation,
+    useRescheduleTaskMutation,
+    useUnassignTaskMutation
 } from "./taskSlice";
 import AddIcon from "@mui/icons-material/Add";
 import React, {useState} from "react";
@@ -273,7 +291,8 @@ function StatusListItem(props: { task: Task }) {
         secondaryAction={
             isMouseEntered ? <UpdateTaskStatusButton sx={{ml: 2}}
                                                      taskId={props.task.identifier}
-                                                     taskStatus={props.task.status}/> : null
+                                                     taskStatus={props.task.status}
+                                                     assigned={props.task.assigneeCompanyName != null}/> : null
         }
         onMouseEnter={() => setIsMouseEntered(true)}
         onMouseLeave={() => setIsMouseEntered(false)}
