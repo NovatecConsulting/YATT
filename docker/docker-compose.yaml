@@ -19,23 +19,21 @@ services:
     ports:
       - "8090:8080"
 
-
   axonserver:
     image: axoniq/axonserver:4.5.11
     hostname: axonserver
     volumes:
       - type: bind
-        source: ./axonserver/data
+        source: ../axonserver/data
         target: /data
       - type: bind
-        source: ./axonserver/config
+        source: ../axonserver/config
         target: /config
         read_only: true
     ports:
       - "8024:8024"
       - "8124:8124"
       - "8224:8224"
-
 
   keycloak:
     image: quay.io/keycloak/keycloak:18.0
@@ -55,7 +53,7 @@ services:
       - "--import-realm"
     volumes:
       - type: bind
-        source: ./keycloak/realm.json
+        source: ../keycloak/realm.json
         target: /opt/keycloak/data/import/realm.json
         read_only: true
     ports:
