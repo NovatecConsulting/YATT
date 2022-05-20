@@ -164,7 +164,7 @@ function TaskStatusCell({task}: { task: Task }) {
     return (
         <React.Fragment>
             {task.status}
-            <UpdateTaskStatusButton sx={{ml: 2}} taskId={task.identifier} taskStatus={task.status}/>
+            <UpdateTaskStatusButton sx={{ml: 2}} taskId={task.identifier} taskStatus={task.status} assigned={task.assigneeCompanyName != null}/>
         </React.Fragment>
     );
 }
