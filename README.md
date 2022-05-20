@@ -58,7 +58,7 @@ This application sends commands to the backend services to generate demo data on
 
 ### Infrastructure Components
 
-All required infrastructure services are available as a [docker compose file](docker-compose.yaml)
+All required infrastructure services are available as a [docker compose file](docker/docker-compose.yaml)
 
 #### Keycloak (OAuth Provider)
 
