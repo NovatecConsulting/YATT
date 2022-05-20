@@ -27,47 +27,54 @@ jobs:
       - name: Build API Common
         working-directory: ./backend
         run: ./gradlew :apis:common:build
-      - name: Build API REST
-        working-directory: ./backend
-        run: ./gradlew :apis:rest:build
       - name: Build API GraphQL
         working-directory: ./backend
         run: ./gradlew :apis:graphql:build
-      - name: Build API Websocket RSocket
+      - name: Build API gRPC
+        working-directory: ./backend
+        run: ./gradlew :apis:grpc:build
+      - name: Build API REST
+        working-directory: ./backend
+        run: ./gradlew :apis:rest:build
+      - name: Build API RSocket
         working-directory: ./backend
         run: ./gradlew :apis:rsocket:build
-      - name: Build API Websocket STOMP
-        working-directory: ./backend
-        run: ./gradlew :apis:stomp:build
 
-      - name: Build services common api with Gradle
+      - name: Build services common api
         working-directory: ./backend
         run: ./gradlew :common:api:build
-      - name: Build services common application with Gradle
+      - name: Build services common application
         working-directory: ./backend
         run: ./gradlew :common:application:build
       
-      - name: Build services user api with Gradle
+      - name: Build services user api
         working-directory: ./backend
         run: ./gradlew :user:api:build
-      - name: Build services user application with Gradle
+      - name: Build services user application
         working-directory: ./backend
         run: ./gradlew :user:application:build
       
-      - name: Build services company api with Gradle
+      - name: Build services company api
         working-directory: ./backend
         run: ./gradlew :company:api:build
-      - name: Build services company application with Gradle
+      - name: Build services company application
         working-directory: ./backend
         run: ./gradlew :company:application:build
       
-      - name: Build services project api with Gradle
+      - name: Build services project api
         working-directory: ./backend
         run: ./gradlew :project:api:build
-      - name: Build services project application with Gradle
+      - name: Build services project application
         working-directory: ./backend
         run: ./gradlew :project:application:build
-      
+
+      - name: Build demo client for gRPC API
+        working-directory: ./backend
+        run: ./gradlew :clients:grpc:build
+      - name: Build demo client for RSocket API
+        working-directory: ./backend
+        run: ./gradlew :clients:rsocket:build
+
   frontend:
     name: Build frontend with npm
     runs-on: ubuntu-20.04
