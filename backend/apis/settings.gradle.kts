@@ -46,5 +46,3 @@ include("grpc-lib")
 include("grpc")
 
 include("rsocket")
-
-include("stomp")
