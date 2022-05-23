@@ -3,6 +3,7 @@ import {useFormik} from "formik";
 import {Box, IconButton, TextField, Typography} from "@mui/material";
 import {Check, Clear, Edit} from "@mui/icons-material";
 import {TypographyProps} from "@mui/material/Typography/Typography";
+import {useHighlighting} from "./HighlightingAnimation";
 
 export interface EditableTextProps {
     initialValue: string;
@@ -33,10 +34,12 @@ export function EditableText(props: EditableTextProps) {
         enableReinitialize: true,
     });
 
+    let highlightingColor = useHighlighting(props.initialValue)
+
     return !isEditing ? (
         <Box sx={{display: "flex", alignItems: "center"}}>
             <Typography variant={"body2"} component={"span"} {...props.typographyProps}
-                        sx={{wordBreak: "break-word", boxSizing: "border-box"}}>
+                        sx={{wordBreak: "break-word", boxSizing: "border-box", animation: highlightingColor}}>
                 {props.initialValue}
             </Typography>
             {
