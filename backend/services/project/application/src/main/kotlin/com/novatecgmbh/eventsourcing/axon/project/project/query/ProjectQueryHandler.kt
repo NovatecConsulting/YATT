@@ -26,7 +26,7 @@ class ProjectQueryHandler(
   @QueryHandler
   fun handle(query: MyProjectsQuery, @AuditUserId userId: String): Iterable<ProjectQueryResult> =
       aclRepository.findAllAccessibleProjectsByUser(UserId(userId)).map { ProjectId(it) }.let {
-        repository.findAllByIdentifierIn(it).map(ProjectProjection::toQueryResult)
+        repository.findAllByIdentifierInOrderByName(it).map(ProjectProjection::toQueryResult)
       }
 
   @QueryHandler
