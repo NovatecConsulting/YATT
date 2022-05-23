@@ -4,6 +4,7 @@ dependencyResolutionManagement {
         google()
     }
 }
+
 includeBuild("../platforms")
 
 rootProject.name = "build-logic"

@@ -1,4 +1,3 @@
-// == Define locations for build logic ==
 pluginManagement {
   repositories {
     gradlePluginPortal()
@@ -19,7 +18,6 @@ pluginManagement {
   }
 }
 
-// == Define locations for components ==
 dependencyResolutionManagement {
   repositories {
     mavenCentral()
@@ -29,20 +27,12 @@ dependencyResolutionManagement {
 }
 
 includeBuild("../platforms")
-
 includeBuild("../services")
 
-// == Define the inner structure of this component ==
 rootProject.name = "apis"
-
 include("common")
-
-include("rest")
-
 include("graphql")
-
-include("grpc-lib")
-
 include("grpc")
-
+include("grpc-lib")
+include("rest")
 include("rsocket")
