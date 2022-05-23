@@ -1,24 +1,13 @@
 import {ReactJSXElement} from "@emotion/react/types/jsx-namespace";
-import {
-    Box,
-    CircularProgress, IconButton,
-    Paper,
-} from "@mui/material";
-import {
-    Task,
-    useGetTasksByProjectQuery,
-    useRenameTaskMutation, useRescheduleTaskMutation,
-} from "./taskSlice";
+import {Box, CircularProgress, IconButton, Paper,} from "@mui/material";
+import {Task, useGetTasksByProjectQuery, useRenameTaskMutation, useRescheduleTaskMutation,} from "./taskSlice";
 import {useHistory, useParams} from "react-router-dom";
 import {useAppDispatch} from "../../app/hooks";
 import {Scaffold} from "../../components/scaffold/Scaffold";
 import React, {useEffect, useState} from "react";
 import {selectEntitiesFromResult} from "../../app/rtkQueryHelpers";
 import {TableToolbar} from "../../components/TableToolbar";
-import {
-    selectProjectByIdFromResult,
-    useGetProjectsQuery
-} from "../projects/projectsSlice";
+import {selectProjectByIdFromResult, useGetProjectsQuery} from "../projects/projectsSlice";
 import {EditableText} from "../../components/EditableText";
 import {RescheduleDialog} from "../../components/EditableDatesTableCell";
 import {TaskDrawer} from "./TaskDrawer";
@@ -27,6 +16,7 @@ import {UpdateTaskStatusButton} from "./components/UpdateTaskStatusButton";
 import {VirtualizedTable} from "../../components/VirtualizedTable";
 import dayjs from "dayjs";
 import {Edit} from "@mui/icons-material";
+import {useHighlighting} from "../../components/HighlightingAnimation";
 
 export function TaskList() {
     const history = useHistory();
@@ -135,17 +125,28 @@ export function TaskList() {
     );
 }
 
-function AssigneeCell({task} : {task: Task}) {
+function AssigneeCell({task}: { task: Task }) {
     const assigneeName = (task.assigneeFirstName ?? "") + " " + (task.assigneeLastName ?? "")
-    return (<React.Fragment>{assigneeName.trim() === "" ? "-" : assigneeName}</React.Fragment>);
+    const highlighting = useHighlighting(assigneeName)
+
+    return (
+        <React.Fragment>
+            <div style={{animation: highlighting}}>
+                {assigneeName.trim() === "" ? "-" : assigneeName}
+            </div>
+        </React.Fragment>
+    );
 }
 
 function DateCell({task, isStartDate, onEdit}: { task: Task, isStartDate?: boolean, onEdit: (task: Task) => void }) {
     const canEdit = task.status !== 'COMPLETED';
+    const highlighting = useHighlighting(isStartDate ? task.startDate : task.endDate)
 
     return (
         <React.Fragment>
-            {dayjs(isStartDate ? task.startDate : task.endDate).format('L')}
+            <div style={{animation: highlighting}}>
+                {dayjs(isStartDate ? task.startDate : task.endDate).format('L')}
+            </div>
             {
                 canEdit ? (
                     <IconButton size='small' sx={{ml: 1}} onClick={(event) => {
@@ -161,10 +162,14 @@ function DateCell({task, isStartDate, onEdit}: { task: Task, isStartDate?: boole
 }
 
 function TaskStatusCell({task}: { task: Task }) {
+    const highlighting = useHighlighting(task.status)
     return (
         <React.Fragment>
-            {task.status}
-            <UpdateTaskStatusButton sx={{ml: 2}} taskId={task.identifier} taskStatus={task.status} assigned={task.assigneeCompanyName != null}/>
+            <div style={{animation: highlighting}}>
+                {task.status}
+            </div>
+            <UpdateTaskStatusButton sx={{ml: 2}} taskId={task.identifier} taskStatus={task.status}
+                                    assigned={task.assigneeCompanyName != null}/>
         </React.Fragment>
     );
 }
