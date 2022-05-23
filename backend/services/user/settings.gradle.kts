@@ -1,4 +1,3 @@
-// == Define locations for build logic ==
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -18,7 +17,6 @@ pluginManagement {
     }
 }
 
-// == Define locations for components ==
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -26,10 +24,10 @@ dependencyResolutionManagement {
         maven("https://repo.spring.io/snapshot")
     }
 }
+
 includeBuild("../../platforms")
 includeBuild("../common")
 
-// == Define the inner structure of this component ==
 rootProject.name = "user"
 include("api")
 include("application")

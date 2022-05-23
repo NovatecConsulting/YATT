@@ -1,4 +1,3 @@
-// == Define locations for build logic ==
 pluginManagement {
     repositories {
         gradlePluginPortal() // if pluginManagement.repositories looks like this, it can be omitted as this is the default
@@ -19,7 +18,6 @@ pluginManagement {
     }
 }
 
-// == Define locations for components ==
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -27,9 +25,9 @@ dependencyResolutionManagement {
         maven("https://repo.spring.io/snapshot")
     }
 }
+
 includeBuild("../platforms")
 includeBuild("../services")
 
-// == Define the inner structure of this component ==
 rootProject.name = "data-import"
 include("initial")
