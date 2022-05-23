@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProjectProjectionRepository : JpaRepository<ProjectProjection, ProjectId> {
-  fun findAllByIdentifierIn(projectIds: Collection<ProjectId>): List<ProjectProjection>
+  fun findAllByIdentifierInOrderByName(projectIds: Collection<ProjectId>): List<ProjectProjection>
 }
