@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
-import org.springframework.graphql.web.WebGraphQlHandlerInterceptor
-import org.springframework.graphql.web.WebGraphQlRequest
-import org.springframework.graphql.web.WebGraphQlResponse
-import org.springframework.graphql.web.WebSocketGraphQlHandlerInterceptor
+import org.springframework.graphql.server.WebGraphQlInterceptor
+import org.springframework.graphql.server.WebGraphQlRequest
+import org.springframework.graphql.server.WebGraphQlResponse
+import org.springframework.graphql.server.WebSocketGraphQlInterceptor
 import org.springframework.http.HttpHeaders
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -80,11 +80,11 @@ class GraphQlConfiguration(
 class CustomWebSocketGraphQlHandlerInterceptor(
     private val userDetailsService: CustomUserDetailsService,
     private val issuer: String
-) : WebSocketGraphQlHandlerInterceptor {
+) : WebSocketGraphQlInterceptor {
 
   override fun intercept(
       request: WebGraphQlRequest,
-      chain: WebGraphQlHandlerInterceptor.Chain
+      chain: WebGraphQlInterceptor.Chain
   ): Mono<WebGraphQlResponse> {
     request.headers.getFirst(HttpHeaders.AUTHORIZATION)?.let { accessToken ->
       val authConverter = CustomUserAuthenticationConverter(userDetailsService)

@@ -10,6 +10,6 @@ dependencies {
         api("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:1.6.10")
         api("org.jetbrains.kotlin.plugin.jpa:org.jetbrains.kotlin.plugin.jpa.gradle.plugin:1.6.10")
         api("org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin:1.6.10")
-        api("org.springframework.boot:org.springframework.boot.gradle.plugin:2.6.5")
+        api("org.springframework.boot:org.springframework.boot.gradle.plugin:2.7.0")
     }
 }
