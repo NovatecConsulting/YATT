@@ -1,7 +1,15 @@
 package com.novatecgmbh.eventsourcing.mobile.di
 
+import com.novatecgmbh.eventsourcing.mobile.domain.AuthRepository
+import com.novatecgmbh.eventsourcing.mobile.Constants
+import com.novatecgmbh.eventsourcing.mobile.data.AuthClient
+import com.novatecgmbh.eventsourcing.mobile.data.UserClient
+import com.novatecgmbh.eventsourcing.mobile.domain.UserRepository
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.json
@@ -23,10 +31,14 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication = startKo
 }
 
 var commonModule = module {
-    single { createClient() }
+    single { createClient(get()) }
+    single { AuthClient(get()) }
+    single { AuthRepository(get(), get()) }
+    single { UserClient(get()) }
+    single { UserRepository(get()) }
 }
 
-fun createClient() = HttpClient {
+fun createClient(settings: Settings) = HttpClient {
     expectSuccess = true
 
     install(ContentNegotiation) {
@@ -44,5 +56,21 @@ fun createClient() = HttpClient {
             }
         }
         level = LogLevel.INFO
+    }
+
+    install(Auth) {
+        bearer {
+            loadTokens {
+                BearerTokens(
+                    accessToken = settings.getString(Constants.settingsAccessTokenKey),
+                    refreshToken = settings.getString(
+                        Constants.settingsRefreshTokenKey
+                    )
+                )
+            }
+            sendWithoutRequest { request ->
+                request.url.port == 8080
+            }
+        }
     }
 }
