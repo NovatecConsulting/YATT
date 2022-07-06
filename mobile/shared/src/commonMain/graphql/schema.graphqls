@@ -1,0 +1,184 @@
+type AggregateReference {
+  identifier: String
+
+  displayName: String
+}
+
+type Company {
+  identifier: ID!
+
+  name: String!
+
+  employees: [Employee]
+}
+
+"""
+Java 8 LocalDate as scalar.
+"""
+scalar Date
+
+type Employee {
+  identifier: ID!
+
+  user: User!
+
+  isAdmin: Boolean!
+
+  isProjectManager: Boolean!
+}
+
+type Mutation {
+  registerUser(firstname: String!, lastname: String!, email: String!, telephone: String!): ID!
+
+  renameUser(identifier: ID!, firstname: String!, lastname: String!): Int!
+
+  createCompany(name: String!): ID!
+
+  createEmployee(companyId: ID!, userId: ID!): ID!
+
+  grantProjectManagerPermissionToEmployee(identifier: ID!): Int!
+
+  removeProjectManagerPermissionFromEmployee(identifier: ID!): Int!
+
+  grantAdminPermissionToEmployee(identifier: ID!): Int!
+
+  removeAdminPermissionFromEmployee(identifier: ID!): Int!
+
+  createProject(projectName: String!, plannedStartDate: Date!, deadline: Date!, companyId: String!): ID!
+
+  renameProject(identifier: ID!, version: Int!, name: String!): Int!
+
+  rescheduleProject(identifier: ID!, version: Int!, startDate: Date!, deadline: Date!): Int!
+
+  createParticipant(projectIdentifier: ID!, companyIdentifier: ID!, userIdentifier: ID!): ID!
+
+  createTask(projectIdentifier: ID!, name: String!, description: String, startDate: Date!, endDate: Date!): ID!
+
+  renameTask(identifier: ID, name: String!): Int!
+
+  rescheduleTask(identifier: ID, startDate: Date!, endDate: Date!): Int!
+
+  changeDescriptionOfTask(identifier: ID!, description: String!): Int!
+
+  assignTask(identifier: ID!, assignee: ID!): Int!
+
+  unassignTask(identifier: ID!): Int!
+
+  startTask(identifier: ID!): Int!
+
+  completeTask(identifier: ID!): Int!
+
+  addTodoToTask(identifier: ID!, description: String): ID!
+
+  markTodoAsDone(identifier: ID!, todoIdentifier: ID!): Int!
+
+  removeTodoFromTask(identifier: ID!, todoIdentifier: ID!): Int!
+}
+
+type Participant {
+  identifier: ID!
+
+  company: Company!
+
+  user: User!
+}
+
+type Project {
+  identifier: ID!
+
+  name: String!
+
+  startDate: String
+
+  deadline: String
+
+  companyReference: AggregateReference!
+
+  status: ProjectStatus
+
+  actualEndDate: String
+
+  tasks(from: Date, to: Date): [Task]
+
+  participants: [Participant]
+}
+
+enum ProjectStatus {
+  ON_TIME
+
+  DELAYED
+}
+
+type Query {
+  users: [User]
+
+  company(identifier: ID!): Company
+
+  companies: [Company]
+
+  employee(identifier: ID!): Employee
+
+  projects: [Project]
+
+  project(identifier: ID!): Project
+
+  task(identifier: ID!): Task
+
+  participant(identifier: ID!): Participant
+}
+
+type Subscription {
+  projects: Project
+}
+
+type Task {
+  identifier: ID!
+
+  name: String!
+
+  description: String
+
+  startDate: String
+
+  endDate: String
+
+  status: TaskStatus!
+
+  participant: Participant
+
+  todos: [Todo]
+}
+
+enum TaskStatus {
+  PLANNED
+
+  STARTED
+
+  COMPLETED
+}
+
+type Todo {
+  todoId: ID!
+
+  description: String
+
+  isDone: Boolean!
+}
+
+type User {
+  identifier: ID!
+
+  firstname: String!
+
+  lastname: String!
+
+  email: String!
+
+  telephone: String!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

@@ -1,11 +1,13 @@
 package com.novatecgmbh.eventsourcing.mobile.android
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.novatecgmbh.eventsourcing.mobile.Greeting
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import com.novatecgmbh.eventsourcing.mobile.android.projects.ProjectActivity
 import com.novatecgmbh.eventsourcing.mobile.domain.AuthRepository
 import com.novatecgmbh.eventsourcing.mobile.domain.UserRepository
 import kotlinx.coroutines.launch
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity(), AndroidScopeComponent {
         loginButton.setOnClickListener {
             lifecycleScope.launch {
                 authRepository.login("Test1", "test")
+                val intent = Intent(this@MainActivity, ProjectActivity::class.java)
+                startActivity(intent)
             }
         }
     }

@@ -3,8 +3,9 @@ package com.novatecgmbh.eventsourcing.mobile.data
 import com.novatecgmbh.eventsourcing.mobile.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.*
 import io.ktor.client.request.forms.submitForm
-import io.ktor.http.Parameters
+import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -17,7 +18,10 @@ class AuthClient(private val client: HttpClient) {
             append("username", username)
             append("password", password)
         }
-    ).body()
+    ) {
+       headers {
+        append(HttpHeaders.Host, "localhost:8999")
+    }}.body()
 }
 
 @Serializable

@@ -1,0 +1,5 @@
+query ProjectQuery($id: ID!) {
+    project(identifier: $id){
+        name
+    }
+}

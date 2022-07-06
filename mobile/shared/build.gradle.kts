@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("kotlinx-serialization")
+    id("com.apollographql.apollo3")
 }
 
 kotlin {
@@ -17,10 +18,14 @@ kotlin {
         }
     }
 
+    apollo {
+        packageName.set("de.novatec_gmbh.graphql_kmm.apollo")
+    }
     sourceSets {
         val settingsVersion = "0.9"
         val koinVersion = "3.2.0"
         val ktorVersion = "2.0.2"
+        val apolloVersion = "3.3.2"
 
         val commonMain by getting {
             dependencies {
@@ -31,6 +36,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-auth:$ktorVersion")
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("com.apollographql.apollo3:apollo-runtime:$apolloVersion")
             }
         }
         val commonTest by getting {
