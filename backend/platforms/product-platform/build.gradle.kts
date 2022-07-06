@@ -9,7 +9,7 @@ javaPlatform.allowDependencies()
 
 dependencies {
   api(platform("org.springframework.boot:spring-boot-dependencies:2.7.0"))
-  api(platform("org.springframework.cloud:spring-cloud-dependencies:2021.0.2-SNAPSHOT"))
+  api(platform("org.springframework.cloud:spring-cloud-dependencies:2021.0.2"))
   api(platform("org.axonframework:axon-bom:4.5.11"))
 
   constraints {
