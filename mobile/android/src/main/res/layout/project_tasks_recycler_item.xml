@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Task 1234"
+        android:textColor="@color/darkGray"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/task_date_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2022-01-01 - 2022-12-31"
+        app:layout_constraintTop_toBottomOf="@id/task_name"
+        app:layout_constraintStart_toStartOf="@id/task_name"
+        />
+
+    <TextView
+        android:id="@+id/task_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="PLANNED"
+        app:layout_constraintTop_toBottomOf="@id/task_date_range"
+        app:layout_constraintStart_toStartOf="@id/task_name"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

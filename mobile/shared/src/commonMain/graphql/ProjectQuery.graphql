@@ -6,11 +6,18 @@ query ProjectQuery($id: ID!) {
         actualEndDate
         participants {
             identifier
+            user {
+                firstname
+                lastname
+            }
         }
         status
         tasks {
             identifier
             name
+            startDate
+            endDate
+            status
         }
     }
 }
