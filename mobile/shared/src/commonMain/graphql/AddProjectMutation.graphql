@@ -1,0 +1,7 @@
+mutation createProject ($projectName: String!, $plannedStartDate: Date!, $deadline: Date!, $companyId: String!) {
+    createProject (
+        projectName: $projectName,
+        plannedStartDate: $plannedStartDate,
+        deadline: $deadline,
+        companyId: $companyId)
+}

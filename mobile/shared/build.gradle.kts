@@ -20,6 +20,8 @@ kotlin {
 
     apollo {
         packageName.set("de.novatec_gmbh.graphql_kmm.apollo")
+        mapScalar("Date", "kotlinx.datetime.LocalDate",
+            "com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter")
     }
     sourceSets {
         val settingsVersion = "0.9"
@@ -37,6 +39,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("com.apollographql.apollo3:apollo-runtime:$apolloVersion")
+                implementation("com.apollographql.apollo3:apollo-adapters:$apolloVersion")
             }
         }
         val commonTest by getting {

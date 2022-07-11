@@ -1,0 +1,6 @@
+query CompaniesQuery{
+    companies {
+        identifier
+        name
+    }
+}

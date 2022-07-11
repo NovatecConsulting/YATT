@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp"
+    tools:context=".projects.CreateProjectActivity">
+
+    <EditText
+        android:id="@+id/project_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/project_name"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/start_date_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:longClickable="false"
+        android:focusable="false"
+        android:hint="@string/start_date_input"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintTop_toBottomOf="@id/project_name_input"
+        />
+
+    <EditText
+        android:id="@+id/deadline_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:longClickable="false"
+        android:focusable="false"
+        android:hint="@string/deadline_input"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintTop_toBottomOf="@id/start_date_input"
+        />
+
+    <Spinner
+        android:id="@+id/company_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintTop_toBottomOf="@id/deadline_input"
+        />
+
+    <Button
+        android:id="@+id/create_project_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_project"
+        app:layout_constraintTop_toBottomOf="@id/company_spinner"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

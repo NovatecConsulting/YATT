@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.novatecgmbh.eventsourcing.mobile.Constants
 import com.novatecgmbh.eventsourcing.mobile.android.R
 import com.novatecgmbh.eventsourcing.mobile.android.ui.ProjectsRecyclerViewAdapter
@@ -36,6 +37,12 @@ class ProjectsActivity : AppCompatActivity(), AndroidScopeComponent {
         val recyclerView: RecyclerView = findViewById(R.id.projects_recycler)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val fab: FloatingActionButton = findViewById(R.id.add_project_fab)
+        fab.setOnClickListener {
+            val intent = Intent(this@ProjectsActivity, CreateProjectActivity::class.java)
+            startActivity(intent)
+        }
 
         lifecycleScope.launch {
             adapter.addItems(graphQlClient.getProjects())
