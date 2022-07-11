@@ -6,6 +6,7 @@ import com.novatecgmbh.eventsourcing.mobile.data.AuthClient
 import com.novatecgmbh.eventsourcing.mobile.data.UserClient
 import com.novatecgmbh.eventsourcing.mobile.domain.UserRepository
 import com.novatecgmbh.eventsourcing.mobile.graphQl.GraphQlClient
+import com.novatecgmbh.eventsourcing.mobile.graphQl.AuthenticationInterceptor
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
@@ -37,7 +38,8 @@ var commonModule = module {
     single { AuthRepository(get(), get()) }
     single { UserClient(get()) }
     single { UserRepository(get()) }
-    single { GraphQlClient(get()) }
+    single { AuthenticationInterceptor(get()) }
+    single { GraphQlClient(get(), get()) }
 }
 
 fun createClient(settings: Settings) = HttpClient {
