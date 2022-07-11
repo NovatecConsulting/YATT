@@ -1,13 +1,14 @@
 package com.novatecgmbh.eventsourcing.mobile.android.projects
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.novatecgmbh.eventsourcing.mobile.Constants
 import com.novatecgmbh.eventsourcing.mobile.android.R
-import com.novatecgmbh.eventsourcing.mobile.android.ui.ProjectsRecyclerViewAdapter
 import com.novatecgmbh.eventsourcing.mobile.graphQl.GraphQlClient
+import de.novatec_gmbh.graphql_kmm.apollo.ProjectQuery
+import de.novatec_gmbh.graphql_kmm.apollo.type.ProjectStatus
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.AndroidScopeComponent
@@ -22,16 +23,35 @@ class ProjectActivity : AppCompatActivity(), AndroidScopeComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
+        val extras = intent.extras
+        val projectId = extras?.getString(Constants.projectIdKey)
 
-        val adapter = ProjectsRecyclerViewAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.projects_recycler)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val projectNameText = findViewById<TextView>(R.id.project_heading)
+        val projectIdText = findViewById<TextView>(R.id.project_id)
+        val statusText = findViewById<TextView>(R.id.project_status)
+        val startDateText = findViewById<TextView>(R.id.start_date)
+        val endDateText = findViewById<TextView>(R.id.end_date)
+        val participantsText = findViewById<TextView>(R.id.participants)
+        val tasksText = findViewById<TextView>(R.id.tasks)
 
         lifecycleScope.launch {
-            adapter.addItems(graphQlClient.getProjects())
-            println(adapter.itemCount)
-        }
+            if(projectId != null) {
+                val project = graphQlClient.getProject(projectId)
 
+                projectNameText.text = project?.name
+                projectIdText.text = project?.identifier
+                statusText.text = project?.status.toString()
+                if(project?.status == ProjectStatus.DELAYED) {
+                    statusText.setTextColor(getColor(R.color.red))
+                }
+                else {
+                    statusText.setTextColor(getColor(R.color.green))
+                }
+                startDateText.text = project?.startDate
+                endDateText.text = project?.actualEndDate
+                participantsText.text = project?.participants?.size.toString()
+                tasksText.text = project?.tasks?.size.toString()
+            }
+        }
     }
 }

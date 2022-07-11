@@ -6,6 +6,7 @@ import com.novatecgmbh.eventsourcing.mobile.Constants
 import com.russhwolf.settings.Settings
 import de.novatec_gmbh.graphql_kmm.apollo.ProjectQuery
 import de.novatec_gmbh.graphql_kmm.apollo.ProjectsQuery
+import de.novatec_gmbh.graphql_kmm.apollo.type.Query
 import io.ktor.client.*
 
 class GraphQlClient(private val settings: Settings) {
@@ -21,6 +22,15 @@ class GraphQlClient(private val settings: Settings) {
                 "Bearer ${settings.getString(Constants.settingsAccessTokenKey)}")
         val response = query.execute()
         return response.data?.projects ?: listOf()
+    }
+
+    suspend fun getProject(id: String): ProjectQuery.Project? {
+        val query = apolloClient
+            .query(ProjectQuery(id))
+            .addHttpHeader("Authorization",
+                "Bearer ${settings.getString(Constants.settingsAccessTokenKey)}")
+        val response = query.execute()
+        return response.data?.project
     }
 
 }

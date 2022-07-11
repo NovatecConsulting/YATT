@@ -4,4 +4,11 @@
     <string name="projects">Projects</string>
     <string name="project">Project</string>
     <string name="project_id">ID</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End Date:</string>
+    <string name="statistics">Statistics</string>
+    <string name="participants">Participants</string>
+    <string name="tasks">Tasks</string>
+    <string name="participants_colon">Participants:</string>
+    <string name="tasks_colon">Tasks:</string>
 </resources>

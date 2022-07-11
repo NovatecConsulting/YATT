@@ -1,5 +1,16 @@
 query ProjectQuery($id: ID!) {
     project(identifier: $id){
+        identifier
         name
+        startDate
+        actualEndDate
+        participants {
+            identifier
+        }
+        status
+        tasks {
+            identifier
+            name
+        }
     }
 }

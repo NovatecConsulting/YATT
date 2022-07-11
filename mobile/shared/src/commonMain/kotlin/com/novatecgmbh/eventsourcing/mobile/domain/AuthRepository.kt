@@ -13,14 +13,6 @@ class AuthRepository(private val client: AuthClient, private val settings: Setti
             settings[Constants.settingsAccessTokenKey] = it.accessToken
             settings[Constants.settingsRefreshTokenKey] = it.refreshToken
         }
-
-//        val apolloClient = ApolloClient.Builder()
-//            .serverUrl("http://localhost:8088/graphql")
-//            .addHttpHeader("Authorization", "Bearer ")
-//            .build()
-//
-//        val response = apolloClient.query(ProjectQuery(id = "1")).execute()
-//        println("Project.name=${response.data?.project?.name}")
     }
 
     fun isLoggedIn(): Boolean = settings.getString(Constants.settingsAccessTokenKey).isNotEmpty()

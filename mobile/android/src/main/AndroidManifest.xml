@@ -14,6 +14,9 @@
             android:name=".projects.ProjectActivity"
             android:exported="false" />
         <activity
+            android:name=".projects.ProjectsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
