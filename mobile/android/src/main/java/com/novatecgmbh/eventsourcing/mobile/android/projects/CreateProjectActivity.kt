@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import com.novatecgmbh.eventsourcing.mobile.android.MainActivity
 import com.novatecgmbh.eventsourcing.mobile.android.R
 import com.novatecgmbh.eventsourcing.mobile.android.ui.CompaniesSpinnerAdapter
 import com.novatecgmbh.eventsourcing.mobile.graphQl.GraphQlClient
@@ -60,7 +61,7 @@ class CreateProjectActivity : AppCompatActivity(), AndroidScopeComponent {
                     (companySpinner.selectedItem as CompaniesQuery.Company).identifier
                 )
                 if(projectCreated) {
-                    val intent = Intent(this@CreateProjectActivity, ProjectsActivity::class.java)
+                    val intent = Intent(this@CreateProjectActivity, MainActivity::class.java)
                     startActivity(intent)
                 }
             }

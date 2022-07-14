@@ -20,4 +20,8 @@
     <string name="lastname">Lastname</string>
     <string name="graphql">GraphQL</string>
     <string name="rest">REST</string>
+    <string name="profile">Profile</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="save">Save</string>
 </resources>

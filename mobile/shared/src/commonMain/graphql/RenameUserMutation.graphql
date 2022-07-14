@@ -1,0 +1,7 @@
+mutation renameUser($identifier: ID!, $firstname: String!, $lastname: String!){
+    renameUser (
+        identifier: $identifier,
+        firstname: $firstname,
+        lastname: $lastname
+    )
+}

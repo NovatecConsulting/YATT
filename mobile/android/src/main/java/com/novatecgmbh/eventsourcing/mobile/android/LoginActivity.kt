@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
-import com.novatecgmbh.eventsourcing.mobile.android.projects.ProjectsActivity
 import com.novatecgmbh.eventsourcing.mobile.domain.AuthRepository
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -32,7 +31,7 @@ class LoginActivity : AppCompatActivity(), AndroidScopeComponent {
         loginButton.setOnClickListener {
             lifecycleScope.launch {
                 authRepository.login(userNameInput.text.toString(), passwordInput.text.toString())
-                val intent = Intent(this@LoginActivity, ProjectsActivity::class.java)
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
             }
         }

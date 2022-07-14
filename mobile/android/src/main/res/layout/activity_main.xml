@@ -22,7 +22,7 @@
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/project_bottom_navigation"
+        app:menu="@menu/main_bottom_navigation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

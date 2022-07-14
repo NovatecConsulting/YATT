@@ -20,9 +20,6 @@
             android:name=".projects.CreateProjectActivity"
             android:exported="false" />
         <activity
-            android:name=".projects.ProjectsActivity"
-            android:exported="false" />
-        <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>

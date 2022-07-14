@@ -4,10 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.novatecgmbh.eventsourcing.mobile.Constants
 import com.russhwolf.settings.Settings
-import de.novatec_gmbh.graphql_kmm.apollo.CompaniesQuery
-import de.novatec_gmbh.graphql_kmm.apollo.CreateProjectMutation
-import de.novatec_gmbh.graphql_kmm.apollo.ProjectQuery
-import de.novatec_gmbh.graphql_kmm.apollo.ProjectsQuery
+import de.novatec_gmbh.graphql_kmm.apollo.*
 import de.novatec_gmbh.graphql_kmm.apollo.type.Date
 import kotlinx.datetime.LocalDate
 
@@ -47,6 +44,13 @@ class GraphQlClient(private val settings: Settings, private val httpInterceptor:
                 LocalDate.parse(startDate),
                 LocalDate.parse(deadLine),
                 companyId))
+        val response = mutation.execute()
+        return response.data != null
+    }
+
+    suspend fun renameUser(identifier: String, firstname: String, lastname: String): Boolean {
+        val mutation = apolloClient
+            .mutation(RenameUserMutation(identifier, firstname, lastname))
         val response = mutation.execute()
         return response.data != null
     }
