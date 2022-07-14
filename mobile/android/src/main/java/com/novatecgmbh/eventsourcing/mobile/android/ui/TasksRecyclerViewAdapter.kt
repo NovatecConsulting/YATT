@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.novatecgmbh.eventsourcing.mobile.android.R
+import com.novatecgmbh.eventsourcing.mobile.data.projects.TaskResource
 import de.novatec_gmbh.graphql_kmm.apollo.ProjectQuery
 
-class TasksRecyclerViewAdapter(val dataSet: MutableList<ProjectQuery.Task?> = mutableListOf()): RecyclerView.Adapter<TasksRecyclerViewAdapter.ViewHolder>() {
+class TasksRecyclerViewAdapter(val dataSet: MutableList<TaskResource?> = mutableListOf()): RecyclerView.Adapter<TasksRecyclerViewAdapter.ViewHolder>() {
     private lateinit var listener: ItemClickListener
 
     interface ItemClickListener {
@@ -36,7 +37,7 @@ class TasksRecyclerViewAdapter(val dataSet: MutableList<ProjectQuery.Task?> = mu
         }
     }
 
-    fun addItems(items: List<ProjectQuery.Task?>) {
+    fun addItems(items: List<TaskResource?>) {
         dataSet.addAll(items)
         notifyDataSetChanged()
     }

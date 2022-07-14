@@ -3,6 +3,7 @@ package com.novatecgmbh.eventsourcing.mobile.di
 import com.novatecgmbh.eventsourcing.mobile.domain.AuthRepository
 import com.novatecgmbh.eventsourcing.mobile.Constants
 import com.novatecgmbh.eventsourcing.mobile.data.AuthClient
+import com.novatecgmbh.eventsourcing.mobile.data.projects.ProjectClient
 import com.novatecgmbh.eventsourcing.mobile.data.UserClient
 import com.novatecgmbh.eventsourcing.mobile.domain.UserRepository
 import com.novatecgmbh.eventsourcing.mobile.graphQl.GraphQlClient
@@ -40,6 +41,7 @@ var commonModule = module {
     single { UserRepository(get()) }
     single { AuthenticationInterceptor(get()) }
     single { GraphQlClient(get(), get()) }
+    single { ProjectClient(get()) }
 }
 
 fun createClient(settings: Settings) = HttpClient {

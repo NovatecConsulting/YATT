@@ -11,16 +11,19 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".projects.CreateProjectActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".projects.ProjectActivity"
+            android:name=".projects.ProjectDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".projects.CreateProjectActivity"
             android:exported="false" />
         <activity
             android:name=".projects.ProjectsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

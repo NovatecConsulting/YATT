@@ -29,7 +29,7 @@ class ProjectsActivity : AppCompatActivity(), AndroidScopeComponent {
         val adapter = ProjectsRecyclerViewAdapter()
         adapter.setOnItemClickListener(object: ProjectsRecyclerViewAdapter.ItemClickListener{
             override fun onItemClick(position: Int) {
-                val intent = Intent(this@ProjectsActivity, ProjectActivity::class.java)
+                val intent = Intent(this@ProjectsActivity, ProjectDetailActivity::class.java)
                 intent.putExtra(Constants.projectIdKey, adapter.dataSet[position]?.identifier)
                 startActivity(intent)
             }
@@ -45,7 +45,8 @@ class ProjectsActivity : AppCompatActivity(), AndroidScopeComponent {
         }
 
         lifecycleScope.launch {
-            adapter.addItems(graphQlClient.getProjects())
+            val projects = graphQlClient.getProjects()
+            adapter.addItems(projects)
         }
 
     }

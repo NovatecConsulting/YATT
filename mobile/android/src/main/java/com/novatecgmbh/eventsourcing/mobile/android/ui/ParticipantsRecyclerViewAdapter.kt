@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.novatecgmbh.eventsourcing.mobile.android.R
+import com.novatecgmbh.eventsourcing.mobile.data.projects.ParticipantResource
 import de.novatec_gmbh.graphql_kmm.apollo.ProjectQuery
 
-class ParticipantsRecyclerViewAdapter(val dataSet: MutableList<ProjectQuery.Participant?> = mutableListOf()): RecyclerView.Adapter<ParticipantsRecyclerViewAdapter.ViewHolder>() {
+class ParticipantsRecyclerViewAdapter(val dataSet: MutableList<ParticipantResource?> = mutableListOf()): RecyclerView.Adapter<ParticipantsRecyclerViewAdapter.ViewHolder>() {
     private lateinit var listener: ItemClickListener
 
     interface ItemClickListener {
@@ -34,7 +35,7 @@ class ParticipantsRecyclerViewAdapter(val dataSet: MutableList<ProjectQuery.Part
         }
     }
 
-    fun addItems(items: List<ProjectQuery.Participant?>) {
+    fun addItems(items: List<ParticipantResource?>) {
         dataSet.addAll(items)
         notifyDataSetChanged()
     }
@@ -47,7 +48,7 @@ class ParticipantsRecyclerViewAdapter(val dataSet: MutableList<ProjectQuery.Part
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.userNameText.text =
-            "${dataSet[position]?.user?.firstname} ${dataSet[position]?.user?.lastname}"
+            "${dataSet[position]?.userFirstName} ${dataSet[position]?.userLastName}"
         viewHolder.participantIdText.text = "ID: " + dataSet[position]?.identifier
     }
 

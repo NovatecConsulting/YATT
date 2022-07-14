@@ -1,13 +1,11 @@
 package com.novatecgmbh.eventsourcing.mobile.android.ui
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.novatecgmbh.eventsourcing.mobile.android.R
-import com.novatecgmbh.eventsourcing.mobile.android.projects.ProjectActivity
 import de.novatec_gmbh.graphql_kmm.apollo.ProjectsQuery
 
 class ProjectsRecyclerViewAdapter(val dataSet: MutableList<ProjectsQuery.Project?> = mutableListOf()): RecyclerView.Adapter<ProjectsRecyclerViewAdapter.ViewHolder>() {
