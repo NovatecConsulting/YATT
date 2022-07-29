@@ -71,8 +71,6 @@ class AxonBeansEnhancementsConfiguration {
         .registerPooledStreamingEventProcessor(
             "project-acl-projector", { it.eventStore() }, psepConfig)
         .registerPooledStreamingEventProcessor("project-projector", { it.eventStore() }, psepConfig)
-        .registerPooledStreamingEventProcessor(
-            "project-details-projector", { it.eventStore() }, psepConfig)
         .registerPooledStreamingEventProcessor("task-projector", { it.eventStore() }, psepConfig)
         .registerPooledStreamingEventProcessor(
             "participant-projector", { it.eventStore() }, psepConfig)
