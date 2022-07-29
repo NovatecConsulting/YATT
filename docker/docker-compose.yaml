@@ -2,7 +2,6 @@ version: '3.3'
 services:
   db:
     image: postgres:13.3-alpine
-    restart: always
     volumes:
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     environment:
@@ -20,7 +19,7 @@ services:
       - "8090:8080"
 
   axonserver:
-    image: axoniq/axonserver:4.5.11
+    image: axoniq/axonserver:4.6.1-jdk-17-dev
     hostname: axonserver
     volumes:
       - type: bind

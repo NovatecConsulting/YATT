@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class ProjectProjectorTest {
 
   @MockK private lateinit var repository: ProjectProjectionRepository
+  @MockK private lateinit var lookupRepository: ProjectByTaskLookupProjectionRepository
   @MockK private lateinit var updateEmitter: QueryUpdateEmitter
   @MockK private lateinit var queryGateway: QueryGateway
   @MockK private lateinit var aclRepository: ProjectAclRepository
@@ -39,7 +40,8 @@ class ProjectProjectorTest {
 
   @BeforeEach
   fun setUp() {
-    testSubject = ProjectProjector(repository, aclRepository, updateEmitter, queryGateway)
+    testSubject =
+        ProjectProjector(repository, lookupRepository, aclRepository, updateEmitter, queryGateway)
     every { (repository.findById(ProjectId("1"))) } answers
         {
           Optional.of(
@@ -50,7 +52,13 @@ class ProjectProjectorTest {
                   plannedStartDate = LocalDate.of(2021, 1, 1),
                   deadline = LocalDate.of(2022, 1, 1),
                   companyReference = companyQueryResult.toAggregateReference(),
-                  status = ON_TIME))
+                  status = ON_TIME,
+                  actualEndDate = null,
+                  allTasksCount = 0,
+                  plannedTasksCount = 0,
+                  startedTasksCount = 0,
+                  completedTasksCount = 0,
+              ))
         }
     every { repository.save(capture(projectProjectionCaptor)) } answers
         {
@@ -61,6 +69,9 @@ class ProjectProjectorTest {
 
     justRun {
       updateEmitter.emit(ProjectQuery::class.java, any(), capture(projectQueryResultsCaptor))
+    }
+    justRun {
+      updateEmitter.emit(ProjectDetailsQuery::class.java, any(), any<ProjectDetailsQueryResult>())
     }
     justRun {
       updateEmitter.emit(MyProjectsQuery::class.java, any(), capture(projectQueryResultsCaptor))

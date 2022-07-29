@@ -2,6 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.project.project.query
 
 import com.novatecgmbh.eventsourcing.axon.common.api.AggregateReference
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectDetailsQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectStatus
@@ -25,7 +26,11 @@ class ProjectProjection(
             name = "displayName", column = Column(name = "companyName", nullable = true)))
     var companyReference: AggregateReference<CompanyId>,
     @Column(nullable = false) @Enumerated(STRING) var status: ProjectStatus,
-    var actualEndDate: LocalDate? = null
+    var actualEndDate: LocalDate? = null,
+    @Column(nullable = false) var allTasksCount: Long,
+    @Column(nullable = false) var plannedTasksCount: Long,
+    @Column(nullable = false) var startedTasksCount: Long,
+    @Column(nullable = false) var completedTasksCount: Long,
 ) {
   fun toQueryResult() =
       ProjectQueryResult(
@@ -37,4 +42,16 @@ class ProjectProjection(
           companyReference,
           status,
           actualEndDate)
+
+  fun toDetailedQueryResult() =
+      ProjectDetailsQueryResult(
+          identifier,
+          version,
+          name,
+          plannedStartDate,
+          deadline,
+          allTasksCount,
+          plannedTasksCount,
+          startedTasksCount,
+          completedTasksCount)
 }
